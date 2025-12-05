@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI HelpDesk OneWindow - Панель оператора</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 AI HelpDesk OneWindow</h1>
+            <p class="subtitle">Панель оператора технической поддержки</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('tickets')">📋 Тикеты</button>
+            <button class="tab-btn" onclick="showTab('new-request')">➕ Новое обращение</button>
+            <button class="tab-btn" onclick="showTab('metrics')">📊 Метрики</button>
+        </div>
+
+        <!-- Tickets Tab -->
+        <div id="tickets-tab" class="tab-content active">
+            <div class="filters">
+                <label>
+                    Статус:
+                    <select id="status-filter" onchange="filterTickets()">
+                        <option value="">Все</option>
+                        <option value="new">Новые</option>
+                        <option value="in_progress">В работе</option>
+                        <option value="closed">Закрыты</option>
+                        <option value="closed_auto">Авто-закрыты</option>
+                    </select>
+                </label>
+                <button onclick="loadTickets()" class="refresh-btn">🔄 Обновить</button>
+            </div>
+
+            <div id="tickets-list" class="tickets-list">
+                <p class="loading">Загрузка тикетов...</p>
+            </div>
+
+            <div id="ticket-detail" class="ticket-detail" style="display: none;">
+                <button onclick="closeTicketDetail()" class="close-btn">✕ Закрыть</button>
+                <div id="ticket-content"></div>
+            </div>
+        </div>
+
+        <!-- New Request Tab -->
+        <div id="new-request-tab" class="tab-content">
+            <div class="form-container">
+                <h2>Создать новое обращение</h2>
+                <form id="new-request-form" onsubmit="submitRequest(event)">
+                    <div class="form-group">
+                        <label for="subject">Тема:</label>
+                        <input type="text" id="subject" name="subject" placeholder="Краткое описание проблемы" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="text">Описание:</label>
+                        <textarea id="text" name="text" rows="6" placeholder="Подробное описание проблемы..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">🚀 Отправить</button>
+                </form>
+
+                <div id="request-result" class="result-box" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Metrics Tab -->
+        <div id="metrics-tab" class="tab-content">
+            <div class="metrics-container">
+                <h2>📊 Статистика HelpDesk</h2>
+                <div id="metrics-content" class="metrics-content">
+                    <p class="loading">Загрузка метрик...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
