@@ -1,15 +1,20 @@
 import os
-import warnings
+from dotenv import load_dotenv
 
-# API Configuration
-# Секреты не должны храниться в репозитории. Для локальной разработки создайте `.env`
-# и установите переменные `OPENAI_API_KEY` (и опционально `OPENAI_API_KEY2`).
+# Load environment variables from .env (server-side only)
+load_dotenv()
+
+# API Configuration - READ FROM ENVIRONMENT ONLY
+# Never embed keys in code! This file is for production server only.
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_API_KEY2 = os.getenv("OPENAI_API_KEY2")
-API_MODEL = os.getenv("API_MODEL", "gpt-4")
+OPENAI_API_KEY2 = os.getenv("OPENAI_API_KEY2", "")
+API_MODEL = os.getenv("API_MODEL", "gpt-4-turbo")
 
 if not OPENAI_API_KEY:
-    warnings.warn("OPENAI_API_KEY not set. Set it via environment variable or .env before running in production.")
+    import warnings
+    warnings.warn(
+        "⚠️ OPENAI_API_KEY not set! Set it in environment variables on production server."
+    )
 
 # Database
 DATABASE_URL = "sqlite:///./helpdesk.db"

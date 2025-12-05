@@ -33,63 +33,84 @@ app.include_router(tickets_router, prefix="/api", tags=["tickets"])
 async def root():
     return {"message": "AI HelpDesk OneWindow API", "version": "1.0.0"}
 
-@app.post("/api/ingest", response_model=IngestResponse)
-async def ingest_request(request: IngestRequest, db: Session = Depends(get_db)):
+@app.post("/api/ai-help")
+async def ai_help(request: IngestRequest):
     """
-    Main endpoint for processing user requests
+    Instant AI help endpoint: analyzes problem and provides solution
     
-    Flow:
-    1. Detect language
-    2. Classify category and priority
-    3. Search FAQ
-    4. Auto-resolve or create ticket
+    Accepts: {"text": "problem description"}
+    Returns: {"solution": "detailed solution", "category": "category", "priority": "priority"}
     """
     text = request.text
-    subject = request.subject
     
     # Step 1: Detect language
     language = ai_core.detect_language(text)
     
-    # Step 2: Translate to Russian if needed for processing
+    # Step 2: Translate to Russian if needed
     text_ru = text
     if language == "kz":
         text_ru = ai_core.translate_to_ru(text)
     
-    # Step 3: Classify
+    # Step 3: Classify category and priority
     category = ai_core.classify_category(text_ru)
     priority = ai_core.classify_priority(text_ru)
-    department = ai_core.route_department(category)
     
-    # Step 4: Search FAQ
+    # Step 4: Search FAQ for immediate solution
     faq_result = semantic_search_faq(text_ru, language)
-    similarity = faq_result["similarity"]
-    best_answer = faq_result["best_answer"]
+    best_answer = faq_result.get("best_answer") or faq_result.get("answer")
     
-    # Step 5: Generate summary and suggested reply
-    summary = await ai_core.generate_summary(text_ru)
+    # Step 5: Generate detailed solution
+    solution = best_answer if best_answer else await ai_core.generate_suggested_reply(text_ru, category)
     
-    # Step 6: Decide auto-resolve or create ticket
-    can_auto = ai_core.can_auto_resolve(similarity)
+    # Step 6: Translate solution back to user's language if needed
+    if language == "kz":
+        solution = ai_core.translate_to_kz(solution)
     
-    if can_auto and best_answer:
-        # Auto-resolve
-        answer = best_answer
-        
-        # Translate answer back to user's language
-        if language == "kz":
-            answer = await ai_core.translate_answer(answer, "kz")
-        
-        # Create ticket with closed_auto status
+    return {
+        "solution": solution,
+        "category": category,
+        "priority": priority,
+        "language": language,
+        "has_faq": bool(best_answer)
+    }
+
+@app.post("/api/ingest", response_model=IngestResponse)
+async def ingest_request(request: IngestRequest, db: Session = Depends(get_db)):
+    """
+    Главный унифицированный endpoint для обработки входящих обращений
+    
+    Объединяет:
+    - веб-форму
+    - Telegram-бота
+    - AI-помощника
+    
+    Принимает: {"text": "описание проблемы", "subject": "тема (опционально)"}
+    Возвращает: JSON с статусом (auto/new), ответом или номером тикета
+    
+    Поток:
+    1. Использует новую функцию process_ingest_request из ai_core
+    2. Если auto-resolve - возвращает ответ (тикет не создаётся)
+    3. Если создание тикета - сохраняет в БД и возвращает info
+    """
+    text = request.text
+    subject = request.subject if request.subject else f"Request from {text[:50]}"
+    
+    # Используем унифицированную функцию из AI Core
+    result = await ai_core.process_ingest_request(text=text, subject=subject)
+    
+    # Если auto-resolve - возвращаем ответ напрямую (без создания тикета)
+    if result["status"] == "closed_auto":
+        # Создаём тикет только для записи (архива), но статус = closed_auto
         ticket = Ticket(
             subject=subject,
             body=text,
-            language=language,
-            category=category,
-            priority=priority,
-            department=department,
+            language=result["language"],
+            category=result["category"],
+            priority=result["priority"],
+            department=result["department"],
             status="closed_auto",
-            summary=summary,
-            suggested_reply=answer
+            summary=result["summary"],
+            suggested_reply=result["answer"]
         )
         db.add(ticket)
         db.commit()
@@ -98,32 +119,27 @@ async def ingest_request(request: IngestRequest, db: Session = Depends(get_db)):
         return IngestResponse(
             status="closed_auto",
             ticket_id=ticket.id,  # type: ignore
-            answer=answer,
-            category=category,
-            priority=priority,
-            department=department,
-            summary=summary,
-            language=language
+            answer=result["answer"],
+            category=result["category"],
+            priority=result["priority"],
+            department=result["department"],
+            summary=result["summary"],
+            suggested_reply=result["answer"],
+            language=result["language"]
         )
     
     else:
-        # Create ticket for manual processing
-        suggested_reply = await ai_core.generate_suggested_reply(text_ru, category, best_answer)
-        
-        # Translate suggested reply to user's language
-        if language == "kz":
-            suggested_reply = await ai_core.translate_answer(suggested_reply, "kz")
-        
+        # CREATE TICKET - создаём открытый тикет для оператора
         ticket = Ticket(
             subject=subject,
             body=text,
-            language=language,
-            category=category,
-            priority=priority,
-            department=department,
+            language=result["language"],
+            category=result["category"],
+            priority=result["priority"],
+            department=result["department"],
             status="new",
-            summary=summary,
-            suggested_reply=suggested_reply
+            summary=result["summary"],
+            suggested_reply=result["suggested_reply"]
         )
         db.add(ticket)
         db.commit()
@@ -133,12 +149,12 @@ async def ingest_request(request: IngestRequest, db: Session = Depends(get_db)):
             status="new",
             ticket_id=ticket.id,  # type: ignore
             answer=None,
-            category=category,
-            priority=priority,
-            department=department,
-            summary=summary,
-            suggested_reply=suggested_reply,
-            language=language
+            category=result["category"],
+            priority=result["priority"],
+            department=result["department"],
+            summary=result["summary"],
+            suggested_reply=result["suggested_reply"],
+            language=result["language"]
         )
 
 @app.get("/api/metrics")

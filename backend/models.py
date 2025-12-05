@@ -25,7 +25,7 @@ class Ticket(Base):
 # Pydantic models for API
 class IngestRequest(BaseModel):
     text: str
-    subject: Optional[str] = "No Subject"
+    subject: Optional[str] = None
 
 class IngestResponse(BaseModel):
     status: str

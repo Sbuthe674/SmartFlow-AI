@@ -16,7 +16,7 @@ from typing import Dict, Optional
 load_dotenv()
 
 # Конфигурация
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "8283540866:AAES_K_VXOOEWh7vOK6JpTD4adnbs6wyMVM")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 TELEGRAM_API_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
@@ -122,8 +122,7 @@ def process_user_message(text: str, chat_id: int) -> bool:
         # Отправляем в backend API
         ingest_url = f"{BACKEND_URL}/api/ingest"
         payload = {
-            "text": text,
-            "language": language
+            "text": text
         }
         
         logger.info(f"📤 Отправляю запрос в backend: {ingest_url}")

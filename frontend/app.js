@@ -1,4 +1,5 @@
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'http://localhost:8000/api'; // Update this with your Render backend URL
+// For local development, use: 'http://localhost:8000/api'
 
 let currentTickets = [];
 let currentTicket = null;
@@ -400,7 +401,7 @@ async function sendChatToIngest(text) {
         const response = await fetch(`${API_BASE}/ingest`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subject: 'Чат с сайта', text })
+            body: JSON.stringify({ text })
         });
 
         const result = await response.json();
@@ -424,4 +425,85 @@ async function sendChatToIngest(text) {
     } catch (error) {
         addChatMessage('bot', `❌ Ошибка: ${error.message}`);
     }
+}
+
+// AI Help - unified request handling (combines ingest + AI assistant)
+async function submitUnifiedRequest(event) {
+    event.preventDefault();
+
+    const problemText = document.getElementById('problem-text').value;
+    const resultEl = document.getElementById('unified-result');
+
+    resultEl.style.display = 'none';
+
+    try {
+        // Send to backend /api/ingest (unified endpoint)
+        const response = await fetch(`${API_BASE}/ingest`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: problemText })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            const status = result.status;
+
+            if (status === 'closed_auto') {
+                // AUTO-RESOLVE: Display answer directly
+                resultEl.className = 'result-box success';
+                resultEl.innerHTML = `
+                    <h3>✅ Решение найдено автоматически!</h3>
+                    <div style="margin-bottom: 15px;">
+                        <p><strong>📂 Категория:</strong> ${result.category}</p>
+                        <p><strong>⚡ Приоритет:</strong> <span class="priority-${result.priority}">${result.priority.toUpperCase()}</span></p>
+                        <p><strong>🏢 Отдел:</strong> ${result.department}</p>
+                        <p style="color: #28a745; font-weight: bold;">💾 Ответ из базы знаний</p>
+                    </div>
+                    <div style="background: #d4edda; padding: 20px; border-radius: 6px; border-left: 4px solid #28a745; white-space: pre-wrap;">
+                        <strong>💡 Решение:</strong>
+                        <p style="margin-top: 10px;">${result.answer}</p>
+                    </div>
+                    <p style="margin-top: 15px; color: #666; font-size: 0.9rem;">
+                        🆔 Номер тикета для записи: #${result.ticket_id}
+                    </p>
+                `;
+            } else if (status === 'new') {
+                // CREATE TICKET: Display ticket info + suggested reply
+                resultEl.className = 'result-box info';
+                resultEl.innerHTML = `
+                    <h3>📝 Тикет создан</h3>
+                    <div style="margin-bottom: 15px;">
+                        <p><strong>🆔 Номер тикета:</strong> #${result.ticket_id}</p>
+                        <p><strong>📂 Категория:</strong> ${result.category}</p>
+                        <p><strong>⚡ Приоритет:</strong> <span class="priority-${result.priority}">${result.priority.toUpperCase()}</span></p>
+                        <p><strong>🏢 Отдел:</strong> ${result.department}</p>
+                    </div>
+                    <div style="background: #e7f3ff; padding: 15px; border-radius: 6px; border-left: 4px solid #667eea;">
+                        <strong>📋 Резюме:</strong>
+                        <p style="margin-top: 10px;">${result.summary}</p>
+                    </div>
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 6px; border-left: 4px solid #ffc107; margin-top: 15px; white-space: pre-wrap;">
+                        <strong>🤖 Предложенный ответ:</strong>
+                        <p style="margin-top: 10px;">${result.suggested_reply}</p>
+                    </div>
+                    <p style="margin-top: 15px; color: #666; font-size: 0.9rem;">
+                        Оператор рассмотрит ваше обращение в ближайшее время.
+                    </p>
+                `;
+            }
+
+            // Clear form
+            document.getElementById('unified-request-form').reset();
+        } else {
+            throw new Error('Ошибка обработки запроса');
+        }
+    } catch (error) {
+        resultEl.className = 'result-box error';
+        resultEl.innerHTML = `<h3>❌ Ошибка</h3><p>${error.message}</p>`;
+    }
+
+    resultEl.style.display = 'block';
 }
