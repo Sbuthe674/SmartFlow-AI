@@ -27,21 +27,21 @@
                 </a>
 
                 <div class="menu-category">УПРАВЛЕНИЕ AI</div>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" data-section="knowledge-base">
                     <span class="icon">🧠</span> База Знаний (RAG)
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" data-section="routing-rules">
                     <span class="icon">🔀</span> Правила Маршрутизации
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" data-section="model-training">
                     <span class="icon">🎓</span> Обучение Модели
                 </a>
 
                 <div class="menu-category">ОТЧЕТНОСТЬ</div>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" data-section="sla-kpi">
                     <span class="icon">📊</span> SLA & KPI
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" data-section="language-stats">
                     <span class="icon">🌍</span> Языковая Статистика
                 </a>
             </nav>
@@ -378,6 +378,184 @@
                         </div>
                     </div>
                     
+                </div>
+            </div>
+            
+            <!-- Раздел База Знаний -->
+            <div class="section-content" id="knowledge-base" style="display: none;">
+                <div class="knowledge-grid">
+                    <div class="panel knowledge-panel">
+                        <div class="panel-header">
+                            <h3>🧠 База Знаний (RAG)</h3>
+                            <div class="knowledge-actions">
+                                <button class="action-btn-primary">+ Добавить документ</button>
+                                <button class="refresh-btn">🔄</button>
+                            </div>
+                        </div>
+                        <div class="knowledge-content">
+                            <div class="knowledge-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">1,247</span>
+                                    <span class="stat-label">Документов</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">45.8MB</span>
+                                    <span class="stat-label">Размер базы</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">98.7%</span>
+                                    <span class="stat-label">Индексация</span>
+                                </div>
+                            </div>
+                            <div class="knowledge-list">
+                                <div class="knowledge-item">
+                                    <div class="doc-icon">📄</div>
+                                    <div class="doc-info">
+                                        <div class="doc-name">Инструкция по работе с CRM</div>
+                                        <div class="doc-meta">PDF • 2.3MB • Обновлено 2 дня назад</div>
+                                    </div>
+                                    <div class="doc-status active">Активен</div>
+                                    <div class="doc-actions">
+                                        <button class="doc-btn edit">✏️</button>
+                                        <button class="doc-btn delete">🗑️</button>
+                                    </div>
+                                </div>
+                                <div class="knowledge-item">
+                                    <div class="doc-icon">📊</div>
+                                    <div class="doc-info">
+                                        <div class="doc-name">Тарифные планы компании</div>
+                                        <div class="doc-meta">XLSX • 850KB • Обновлено вчера</div>
+                                    </div>
+                                    <div class="doc-status active">Активен</div>
+                                    <div class="doc-actions">
+                                        <button class="doc-btn edit">✏️</button>
+                                        <button class="doc-btn delete">🗑️</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel search-panel">
+                        <div class="panel-header">
+                            <h3>🔍 Тестирование поиска</h3>
+                        </div>
+                        <div class="search-test">
+                            <input type="text" placeholder="Введите запрос для тестирования..." class="search-input">
+                            <button class="search-btn">Поиск</button>
+                            <div class="search-results">
+                                <div class="result-item">
+                                    <div class="result-score">95%</div>
+                                    <div class="result-text">"Для сброса пароля обратитесь к администратору или воспользуйтесь формой восстановления..."</div>
+                                    <div class="result-source">Источник: Инструкция по работе с CRM</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Раздел Правила Маршрутизации -->
+            <div class="section-content" id="routing-rules" style="display: none;">
+                <div class="routing-grid">
+                    <div class="panel rules-panel">
+                        <div class="panel-header">
+                            <h3>🔀 Правила Маршрутизации</h3>
+                            <button class="action-btn-primary">+ Новое правило</button>
+                        </div>
+                        <div class="rules-list">
+                            <div class="rule-item priority-high">
+                                <div class="rule-header">
+                                    <div class="rule-name">Критические системные ошибки</div>
+                                    <div class="rule-toggle active">●</div>
+                                </div>
+                                <div class="rule-conditions">
+                                    <span class="condition">Содержит: "ошибка", "не работает", "сбой"</span>
+                                </div>
+                                <div class="rule-actions">
+                                    <span class="action">→ Немедленная эскалация на L2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Раздел Обучение Модели -->
+            <div class="section-content" id="model-training" style="display: none;">
+                <div class="training-grid">
+                    <div class="panel training-panel">
+                        <div class="panel-header">
+                            <h3>🎓 Обучение AI Модели</h3>
+                            <button class="action-btn-primary">Начать обучение</button>
+                        </div>
+                        <div class="training-progress">
+                            <div class="progress-header">
+                                <span>Текущее обучение: Улучшение ответов на казахском языке</span>
+                                <span class="progress-percent">73%</span>
+                            </div>
+                            <div class="progress-bar-large">
+                                <div class="progress-fill" style="width: 73%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Раздел SLA & KPI -->
+            <div class="section-content" id="sla-kpi" style="display: none;">
+                <div class="sla-grid">
+                    <div class="panel sla-overview">
+                        <div class="panel-header">
+                            <h3>📊 SLA & KPI Дашборд</h3>
+                        </div>
+                        <div class="sla-metrics">
+                            <div class="sla-card excellent">
+                                <div class="sla-header">
+                                    <span class="sla-title">Время первого ответа</span>
+                                    <span class="sla-target">Цель: &lt;30с</span>
+                                </div>
+                                <div class="sla-value">12.3с</div>
+                                <div class="sla-status">✅ Превышено на 58.9%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Раздел Языковая Статистика -->
+            <div class="section-content" id="language-stats" style="display: none;">
+                <div class="lang-stats-grid">
+                    <div class="panel lang-overview">
+                        <div class="panel-header">
+                            <h3>🌍 Языковая Статистика</h3>
+                        </div>
+                        <div class="lang-distribution">
+                            <div class="lang-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color ru-color"></div>
+                                    <div class="legend-info">
+                                        <div class="legend-lang">Русский</div>
+                                        <div class="legend-stats">1,908 запросов (67%)</div>
+                                    </div>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color kz-color"></div>
+                                    <div class="legend-info">
+                                        <div class="legend-lang">Қазақша</div>
+                                        <div class="legend-stats">797 запросов (28%)</div>
+                                    </div>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color en-color"></div>
+                                    <div class="legend-info">
+                                        <div class="legend-lang">English</div>
+                                        <div class="legend-stats">142 запроса (5%)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
