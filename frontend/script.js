@@ -92,7 +92,13 @@ const translations = {
         modal_no_account: "Нет аккаунта? {link}",
         modal_has_account: "Уже есть аккаунт? {link}",
         modal_link_signup: "Зарегистрироваться",
-        modal_link_login: "Войти"
+        modal_link_login: "Войти",
+        // Сообщения об ошибках
+        error_passwords_mismatch: "❌ Пароли не совпадают",
+        error_user_exists: "❌ Пользователь с таким email уже существует",
+        error_invalid_credentials: "❌ Email или пароль неверные",
+        error_connection: "❌ Ошибка подключения: {error}",
+        success_registration: "✅ Регистрация успешна!"
     },
     kz: {
         title: "A.R.E.S. — Автономды Агент 24/7",
@@ -187,7 +193,13 @@ const translations = {
         modal_no_account: "Аккаунт жоқ па? {link}",
         modal_has_account: "Аккаунт бар ма? {link}",
         modal_link_signup: "Тіркелу",
-        modal_link_login: "Кіру"
+        modal_link_login: "Кіру",
+        // Сообщения об ошибках
+        error_passwords_mismatch: "❌ Құпия сөздер сәйкес келмеді",
+        error_user_exists: "❌ Осындай email-і бар пользователь уже существует",
+        error_invalid_credentials: "❌ Email немесе құпия сөз қателі",
+        error_connection: "❌ Қосылыс қатесі: {error}",
+        success_registration: "✅ Тіркелу табыс болды!"
     },
     en: {
         title: "A.R.E.S. — Autonomous Agent 24/7",
@@ -282,7 +294,13 @@ const translations = {
         modal_no_account: "No account? {link}",
         modal_has_account: "Already have an account? {link}",
         modal_link_signup: "Register",
-        modal_link_login: "Login"
+        modal_link_login: "Login",
+        // Error messages
+        error_passwords_mismatch: "❌ Passwords do not match",
+        error_user_exists: "❌ User with this email already exists",
+        error_invalid_credentials: "❌ Invalid email or password",
+        error_connection: "❌ Connection error: {error}",
+        success_registration: "✅ Registration successful!"
     }
 };
 
@@ -592,13 +610,16 @@ document.addEventListener('DOMContentLoaded', function() {
     if (clientSignupForm) {
         clientSignupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const errorDiv = document.getElementById('client-signup-error');
+            errorDiv.style.display = 'none';
+            
             const name = clientSignupForm.querySelector('.client-signup-name').value;
             const email = clientSignupForm.querySelector('.client-signup-email').value;
             const password = clientSignupForm.querySelector('.client-signup-password').value;
             const passwordConfirm = clientSignupForm.querySelector('.client-signup-password-confirm').value;
-
             if (password !== passwordConfirm) {
-                alert('Пароли не совпадают');
+                errorDiv.textContent = translations[currentLang]['error_passwords_mismatch'];
+                errorDiv.style.display = 'block';
                 return;
             }
 
@@ -624,10 +645,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     closeAllModals();
                     showClientDashboard(data.data.user);
                 } else {
-                    alert('Ошибка: ' + data.message);
+                    // Проверяем если это ошибка "пользователь уже существует"
+                    if (data.detail && data.detail.includes('already exists')) {
+                        errorDiv.textContent = translations[currentLang]['error_user_exists'];
+                    } else {
+                        errorDiv.textContent = '❌ ' + (data.detail || data.message);
+                    }
+                    errorDiv.style.display = 'block';
                 }
             } catch (error) {
-                alert('Ошибка подключения: ' + error.message);
+                errorDiv.textContent = translations[currentLang]['error_connection'].replace('{error}', error.message);
+                errorDiv.style.display = 'block';
             }
         });
     }
@@ -637,6 +665,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (companySignupForm) {
         companySignupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const errorDiv = document.getElementById('company-signup-error');
+            errorDiv.style.display = 'none';
+            
             const name = companySignupForm.querySelector('.company-signup-name').value;
             const email = companySignupForm.querySelector('.company-signup-email').value;
             const contact = companySignupForm.querySelector('.company-signup-contact').value;
@@ -645,7 +676,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const passwordConfirm = companySignupForm.querySelector('.company-signup-password-confirm').value;
 
             if (password !== passwordConfirm) {
-                alert('Пароли не совпадают');
+                errorDiv.textContent = translations[currentLang]['error_passwords_mismatch'];
+                errorDiv.style.display = 'block';
                 return;
             }
 
@@ -674,10 +706,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     closeAllModals();
                     showCompanyDashboard(data.data.user);
                 } else {
-                    alert('Ошибка: ' + data.message);
+                    // Проверяем если это ошибка "пользователь уже существует"
+                    if (data.detail && data.detail.includes('already exists')) {
+                        errorDiv.textContent = translations[currentLang]['error_user_exists'];
+                    } else {
+                        errorDiv.textContent = '❌ ' + (data.detail || data.message);
+                    }
+                    errorDiv.style.display = 'block';
                 }
             } catch (error) {
-                alert('Ошибка подключения: ' + error.message);
+                errorDiv.textContent = translations[currentLang]['error_connection'].replace('{error}', error.message);
+                errorDiv.style.display = 'block';
             }
         });
     }
@@ -687,6 +726,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (clientLoginForm) {
         clientLoginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const errorDiv = document.getElementById('client-login-error');
+            errorDiv.style.display = 'none';
+            
             const email = clientLoginForm.querySelector('.client-login-email').value;
             const password = clientLoginForm.querySelector('.client-login-password').value;
 
@@ -707,10 +749,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     closeAllModals();
                     showClientDashboard(data.data.user);
                 } else {
-                    alert('Ошибка: ' + data.message);
+                    // Единообразное сообщение об ошибке - не раскрываем что именно неверно
+                    errorDiv.textContent = translations[currentLang]['error_invalid_credentials'];
+                    errorDiv.style.display = 'block';
                 }
             } catch (error) {
-                alert('Ошибка подключения: ' + error.message);
+                errorDiv.textContent = translations[currentLang]['error_connection'].replace('{error}', error.message);
+                errorDiv.style.display = 'block';
             }
         });
     }
@@ -720,6 +765,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (companyLoginForm) {
         companyLoginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const errorDiv = document.getElementById('company-login-error');
+            errorDiv.style.display = 'none';
+            
             const email = companyLoginForm.querySelector('.company-login-email').value;
             const password = companyLoginForm.querySelector('.company-login-password').value;
 
@@ -740,10 +788,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     closeAllModals();
                     showCompanyDashboard(data.data.user);
                 } else {
-                    alert('Ошибка: ' + data.message);
+                    // Единообразное сообщение об ошибке - не раскрываем что именно неверно
+                    errorDiv.textContent = translations[currentLang]['error_invalid_credentials'];
+                    errorDiv.style.display = 'block';
                 }
             } catch (error) {
-                alert('Ошибка подключения: ' + error.message);
+                errorDiv.textContent = translations[currentLang]['error_connection'].replace('{error}', error.message);
+                errorDiv.style.display = 'block';
             }
         });
     }

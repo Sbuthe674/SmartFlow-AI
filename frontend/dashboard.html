@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.R.E.S. — Центр Управления (ФИНАЛЬНЫЙ)</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Стиль для обеспечения прокрутки на вкладках, которые могут иметь большой контент */
+        .tab-content {
+            overflow-y: auto; /* Главное изменение */
+            flex-grow: 1;
+            min-height: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="support-container">
+        
+        <header class="top-bar">
+            <div class="logo">A.R.E.S. <span class="subtitle">Dashboard</span></div>
+            <nav class="main-tabs">
+                <a href="#" class="tab-link active" data-tab="support"><i class="fas fa-headset"></i> Центр Поддержки</a>
+                <a href="#" class="tab-link" data-tab="profile"><i class="fas fa-user-circle"></i> Личный Кабинет</a>
+                <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выход</a>
+            </nav>
+        </header>
+
+        <div class="main-content">
+            
+            <div id="support" class="tab-content active" style="display: flex; flex-grow: 1;">
+                
+                <aside class="ticket-sidebar">
+                    <h3><i class="fas fa-clipboard-list"></i> История Тикетов</h3>
+                    <div class="ticket-list" id="ticket-list">
+                        <div class="ticket-item ticket-list-item active" data-ticket-id="1051" data-title="Не могу зайти в аккаунт" data-status="open">
+                            <div class="ticket-title">Не могу зайти в аккаунт</div>
+                            <div class="ticket-meta">
+                                <span class="ticket-status status-open">Открыт</span>
+                                <span class="ticket-id">#1051</span>
+                            </div>
+                        </div>
+                        <div class="ticket-item ticket-list-item" data-ticket-id="1050" data-title="Вопрос по тарифам" data-status="closed">
+                            <div class="ticket-title">Вопрос по тарифам</div>
+                            <div class="ticket-meta">
+                                <span class="ticket-status status-closed">Решен</span>
+                                <span class="ticket-id">#1050</span>
+                            </div>
+                        </div>
+                        <div class="ticket-item ticket-list-item" data-ticket-id="1049" data-title="Ошибка при оплате" data-status="awaiting">
+                            <div class="ticket-title">Ошибка при оплате</div>
+                            <div class="ticket-meta">
+                                <span class="ticket-status status-awaiting">Ждём вас</span>
+                                <span class="ticket-id">#1049</span>
+                            </div>
+                        </div>
+                        <div class="ticket-item ticket-list-item" data-ticket-id="1048" data-title="Проблема с API" data-status="closed">
+                            <div class="ticket-title">Проблема с API</div>
+                            <div class="ticket-meta">
+                                <span class="ticket-status status-closed">Решен</span>
+                                <span class="ticket-id">#1048</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <main class="chat-area">
+                    <div class="current-ticket-info">
+                        <h2 id="current-ticket-title">Тикет #1051: Не могу зайти в аккаунт</h2>
+                        <div class="ticket-status-bar">
+                            <span class="status-label">Статус:</span>
+                            <span class="status-value status-open" id="current-ticket-status-display">Открыт</span>
+                            <button class="close-ticket-btn" id="close-ticket-btn"><i class="fas fa-times-circle"></i> Закрыть Тикет</button>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chat-messages-container">
+                        <div class="message ai-message">
+                            <div class="message-sender"><i class="fas fa-robot"></i> A.R.E.S. Агент</div>
+                            <div class="message-bubble welcome-bubble">
+                                Добро пожаловать! Я готов помочь вам с тикетом #1051.
+                            </div>
+                            <div class="message-time">06.12.2025 02:20</div>
+                        </div>
+                        <div class="message user-message">
+                            <div class="message-sender"><i class="fas fa-user-edit"></i> Вы</div>
+                            <div class="message-bubble">
+                                Да, не могу войти.
+                            </div>
+                            <div class="message-time">06.12.2025 02:22</div>
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <div class="quick-actions" id="quick-actions"></div>
+                        <input type="text" placeholder="Введите ваше сообщение..." id="chat-text">
+                        <button class="send-btn" id="send-message-btn"><i class="fas fa-paper-plane"></i> Отправить</button>
+                    </div>
+                </main>
+            </div>
+            
+            <div id="profile" class="tab-content" style="display: none;">
+                 <div class="profile-container">
+                    <h2 class="profile-header"><i class="fas fa-user-cog"></i> Настройки Аккаунта</h2>
+                    <div class="profile-card">
+                        <div class="avatar-section">
+                            <i class="fas fa-user-circle avatar-icon"></i>
+                            <h3 class="user-name-neon">AcmeClient_77</h3>
+                            <p class="status-open user-status">Статус: Активный</p>
+                        </div>
+                        <div class="info-section">
+                            <h4>Основная информация</h4>
+                            <div class="info-item"><label>Email:</label><span>client@acme.com</span></div>
+                            <div class="info-item"><label>Дата Регистрации:</label><span>15.08.2024</span></div>
+                            <div class="info-item"><label>Тарифный План:</label><span class="plan-pro">Продвинутый (PRO)</span></div>
+                            
+                            <h4 class="usage-header"><i class="fas fa-chart-bar"></i> Использование тарифа</h4>
+                            
+                            <div class="usage-item">
+                                <label>Токены ИИ (90%):</label>
+                                <div class="progress-bar-container"><div class="progress-bar red-fill" style="width: 90%;"></div></div>
+                                <span class="usage-value usage-critical">9,000 из 10,000</span>
+                            </div>
+                            <div class="usage-item">
+                                <label>Запросы API (45%):</label>
+                                <div class="progress-bar-container"><div class="progress-bar green-fill" style="width: 45%;"></div></div>
+                                <span class="usage-value">450 из 1,000</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="action-btn action-red"><i class="fas fa-key"></i> Сменить Пароль</button>
+                        <button class="action-btn action-border"><i class="fas fa-file-invoice"></i> История Платежей</button>
+                        </div>
+                </div>
+            </div>
+
+            </div>
+    </div>
+
+    <script>
+        // --- ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            document.querySelectorAll('.tab-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            const targetContent = document.getElementById(tabId);
+            
+            // Логика отображения: flex для поддержки, block для остального.
+            if (tabId === 'support') {
+                targetContent.style.display = 'flex';
+            } else {
+                // Все остальные вкладки (profile) отображаем как block.
+                targetContent.style.display = 'block'; 
+            }
+            
+            const tabLink = document.querySelector(`.tab-link[data-tab="${tabId}"]`);
+            if (tabLink) {
+                tabLink.classList.add('active');
+            }
+            
+            // Если переключились на поддержку, вызываем прокрутку вниз
+            if (tabId === 'support') {
+                const chatContainer = document.getElementById('chat-messages-container');
+                // Маленькая задержка для корректной отрисовки
+                setTimeout(() => {
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }, 50);
+            }
+        }
+
+        // --- ЛОГИКА ТАБОВ И ТИКЕТОВ (без изменений, кроме вызова switchTab) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Инициализация переключения вкладок
+            document.querySelectorAll('.tab-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabId = e.currentTarget.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+
+            // --- ЛОГИКА ЦЕНТРА ПОДДЕРЖКИ ---
+            const ticketItems = document.querySelectorAll('.ticket-list-item');
+            const titleElement = document.getElementById('current-ticket-title');
+            const statusDisplay = document.getElementById('current-ticket-status-display');
+            const chatContainer = document.getElementById('chat-messages-container');
+            const chatInput = document.getElementById('chat-text');
+            const sendButton = document.getElementById('send-message-btn');
+            const closeButton = document.getElementById('close-ticket-btn');
+            const quickActionsContainer = document.getElementById('quick-actions');
+            let activeTicketId = '1051';
+
+            const quickReplies = [
+                { text: "Спасибо, вопрос решен!", status: "closed" },
+                { text: "Я жду ответа специалиста.", status: "awaiting" },
+                { text: "Когда будет ответ?", status: "open" }
+            ];
+            
+            function updateStatusDisplay(statusKey, element) {
+                let statusText = '';
+                let statusClass = '';
+                let statusIcon = '';
+
+                switch (statusKey) {
+                    case 'open':
+                        statusText = 'Открыт';
+                        statusClass = 'status-open';
+                        statusIcon = '<i class="fas fa-circle-dot"></i> ';
+                        chatInput.placeholder = "Введите ваше сообщение...";
+                        break;
+                    case 'closed':
+                        statusText = 'Решен';
+                        statusClass = 'status-closed';
+                        statusIcon = '<i class="fas fa-check-circle"></i> ';
+                        chatInput.placeholder = "Тикет закрыт. Если проблема осталась, откройте новый.";
+                        break;
+                    case 'awaiting':
+                        statusText = 'Ждём вас';
+                        statusClass = 'status-awaiting';
+                        statusIcon = '<i class="fas fa-clock"></i> ';
+                        chatInput.placeholder = "Мы ждем вашего ответа для продолжения работы.";
+                        break;
+                    default:
+                        statusText = 'Неизвестно';
+                        statusClass = '';
+                }
+                
+                element.className = 'status-value ' + statusClass;
+                element.innerHTML = statusIcon + statusText;
+                
+                if (statusKey === 'closed') {
+                    closeButton.innerHTML = '<i class="fas fa-folder-open"></i> Открыть Тикет';
+                    closeButton.classList.add('status-closed');
+                    closeButton.classList.remove('status-open');
+                    sendButton.disabled = true;
+                } else {
+                    closeButton.innerHTML = '<i class="fas fa-times-circle"></i> Закрыть Тикет';
+                    closeButton.classList.add('status-open');
+                    closeButton.classList.remove('status-closed');
+                    sendButton.disabled = false;
+                }
+            }
+
+            function generateMockChat(id, status) {
+                const now = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+                let chatContent = `
+                    <div class="message ai-message">
+                        <div class="message-sender"><i class="fas fa-robot"></i> A.R.E.S. Агент</div>
+                        <div class="message-bubble welcome-bubble">
+                            Тикет #${id} активен. Я готов помочь вам с проблемой.
+                        </div>
+                        <div class="message-time">${now}</div>
+                    </div>`;
+
+                if (status === 'closed') {
+                    chatContent += `
+                        <div class="message ai-message">
+                            <div class="message-sender"><i class="fas fa-robot"></i> A.R.E.S. Агент</div>
+                            <div class="message-bubble">
+                                Этот тикет был успешно решен и закрыт.
+                            </div>
+                            <div class="message-time">${now}</div>
+                        </div>`;
+                }
+                return chatContent;
+            }
+            
+            function renderQuickActions(statusKey) {
+                quickActionsContainer.innerHTML = '';
+                if (statusKey === 'closed') return;
+
+                quickReplies.forEach(reply => {
+                    const button = document.createElement('button');
+                    button.className = 'quick-reply-btn';
+                    button.textContent = reply.text;
+                    button.addEventListener('click', () => {
+                        chatInput.value = reply.text;
+                        sendMessage(true);
+                    });
+                    quickActionsContainer.appendChild(button);
+                });
+            }
+
+            ticketItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    ticketItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+
+                    const id = item.getAttribute('data-ticket-id');
+                    const title = item.getAttribute('data-title');
+                    const statusKey = item.getAttribute('data-status');
+                    
+                    activeTicketId = id;
+                    titleElement.textContent = `Тикет #${id}: ${title}`;
+                    
+                    updateStatusDisplay(statusKey, statusDisplay);
+                    renderQuickActions(statusKey);
+                    
+                    chatContainer.innerHTML = generateMockChat(id, statusKey);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                    
+                    const statusSpan = item.querySelector('.ticket-status');
+                    statusSpan.className = 'ticket-status status-' + statusKey;
+                    statusSpan.textContent = statusKey === 'open' ? 'Открыт' : (statusKey === 'closed' ? 'Решен' : 'Ждём вас');
+                });
+            });
+            
+            sendButton.addEventListener('click', () => sendMessage(false));
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !sendButton.disabled) {
+                    sendMessage(false);
+                }
+            });
+
+            function sendMessage(isQuickReply) {
+                const text = chatInput.value.trim();
+                if (text === '' || sendButton.disabled) return;
+
+                const now = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                
+                const userMessageHTML = `
+                    <div class="message user-message">
+                        <div class="message-sender"><i class="fas fa-user-edit"></i> Вы</div>
+                        <div class="message-bubble">${text}</div>
+                        <div class="message-time">${now}</div>
+                    </div>
+                `;
+                chatContainer.insertAdjacentHTML('beforeend', userMessageHTML);
+                chatInput.value = '';
+                
+                if (!isQuickReply) {
+                    setTimeout(() => {
+                        const aiResponseHTML = `
+                            <div class="message ai-message">
+                                <div class="message-sender"><i class="fas fa-robot"></i> A.R.E.S. Агент</div>
+                                <div class="message-bubble">
+                                    Я получил ваше сообщение. Тикет #${activeTicketId} принят в обработку.
+                                </div>
+                                <div class="message-time">${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</div>
+                            </div>
+                        `;
+                        chatContainer.insertAdjacentHTML('beforeend', aiResponseHTML);
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    }, 1000);
+                }
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            closeButton.addEventListener('click', () => {
+                const activeItem = document.querySelector('.ticket-item.active');
+                if (!activeItem) return;
+
+                const currentStatus = activeItem.getAttribute('data-status');
+                let newStatus = currentStatus === 'closed' ? 'open' : 'closed';
+                
+                activeItem.setAttribute('data-status', newStatus);
+                
+                const statusSpan = activeItem.querySelector('.ticket-status');
+                statusSpan.className = 'ticket-status status-' + newStatus;
+                statusSpan.textContent = newStatus === 'open' ? 'Открыт' : 'Решен';
+
+                updateStatusDisplay(newStatus, statusDisplay);
+                renderQuickActions(newStatus); 
+
+                chatContainer.innerHTML = generateMockChat(activeTicketId, newStatus);
+            });
+            
+            // Инициализация при загрузке
+            updateStatusDisplay('open', statusDisplay);
+            renderQuickActions('open');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+    </script>
+</body>
+</html>
