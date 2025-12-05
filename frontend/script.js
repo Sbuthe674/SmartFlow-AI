@@ -817,8 +817,8 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('user_type', 'company');
         localStorage.setItem('access_token', user.access_token || '');
         
-        // Перенаправляем на dashboard.html
-        window.location.href = 'http://localhost:3000/dashboard.html';
+        // Перенаправляем на premium_dashboard.html для компаний
+        window.location.href = 'http://localhost:3000/premium_dashboard.html';
     }
 
     // Загрузить запросы клиента

@@ -174,6 +174,8 @@ body {
     gap: 20px;
     flex: 1;
     min-height: 0; /* Важно для скролла внутри */
+    height: calc(100vh - 140px);
+    overflow: hidden;
 }
 
 /* Общие стили панелей */
@@ -196,7 +198,12 @@ body {
 .panel-header h3 { font-size: 14px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
 
 /* --- 7. FLOW PANEL (Визуализация) --- */
-.flow-panel { grid-column: 1 / 2; grid-row: 1 / 2; }
+.flow-panel { 
+    grid-column: 1 / 2; 
+    grid-row: 1 / 2; 
+    overflow: hidden;
+    min-height: 0;
+}
 
 .flow-legend { display: flex; gap: 15px; font-size: 11px; color: var(--text-secondary); }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
@@ -287,7 +294,14 @@ body {
 @keyframes flowDash { to { stroke-dashoffset: -20; } }
 
 /* --- 8. FEED PANEL (Логи) --- */
-.feed-panel { grid-column: 2 / 3; grid-row: 1 / 3; }
+.feed-panel { 
+    grid-column: 2 / 3; 
+    grid-row: 1 / 3; 
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
 
 .badge {
     font-size: 10px; background: var(--accent-red); color: white; padding: 2px 6px; border-radius: 4px;
@@ -296,10 +310,13 @@ body {
 .log-list {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: 10px;
     padding-right: 5px;
+    min-height: 0;
+    max-height: calc(100vh - 200px);
 }
 
 .log-item {

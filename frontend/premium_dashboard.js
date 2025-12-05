@@ -1,5 +1,40 @@
 document.addEventListener('DOMContentLoaded', function() {
     
+    // Load user data from localStorage
+    const userData = localStorage.getItem('user');
+    const userType = localStorage.getItem('user_type');
+    
+    if (userData && userType === 'company') {
+        try {
+            const user = JSON.parse(userData);
+            
+            // Update user info in sidebar
+            const userNameElement = document.querySelector('.user-name');
+            const userRoleElement = document.querySelector('.user-role');
+            
+            if (userNameElement) {
+                userNameElement.textContent = user.company_name || user.username || 'Company';
+            }
+            if (userRoleElement) {
+                userRoleElement.textContent = 'Administrator';
+            }
+        } catch (error) {
+            console.error('Ошибка при загрузке данных пользователя:', error);
+        }
+    } else if (!userData) {
+        // Redirect to main page if no user data
+        window.location.href = 'http://localhost:3000/';
+        return;
+    }
+    
+    // Logout button handler
+    document.querySelector('.logout-btn').addEventListener('click', function() {
+        localStorage.removeItem('user');
+        localStorage.removeItem('user_type');
+        localStorage.removeItem('access_token');
+        window.location.href = 'http://localhost:3000/';
+    });
+    
     // Navigation between sections
     document.querySelectorAll('.menu-item').forEach(item => {
         item.addEventListener('click', function(e) {
