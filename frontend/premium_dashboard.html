@@ -19,10 +19,10 @@
             
             <nav class="menu">
                 <div class="menu-category">МОНИТОРИНГ</div>
-                <a href="#" class="menu-item active">
+                <a href="#" class="menu-item active" data-section="overview">
                     <span class="icon">◎</span> Обзор (Mission Control)
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" data-section="incidents">
                     <span class="icon">⚡</span> Лента Инцидентов
                 </a>
 
@@ -88,6 +88,8 @@
                 </div>
             </header>
 
+            <!-- Раздел Обзор -->
+            <div class="section-content" id="overview" style="display: block;">
             <div class="control-grid">
 
                 <div class="panel flow-panel">
@@ -220,6 +222,163 @@
                     <p class="lang-status">Двуязычный режим активен. Автоопределение работает корректно.</p>
                 </div>
 
+            </div>
+            </div>
+            
+            <!-- Раздел Лента инцидентов -->
+            <div class="section-content" id="incidents" style="display: none;">
+                <div class="incidents-grid">
+                    
+                    <div class="panel incidents-panel">
+                        <div class="panel-header">
+                            <h3>🚨 Активные инциденты</h3>
+                            <div class="incident-filters">
+                                <select class="filter-select">
+                                    <option>Все типы</option>
+                                    <option>Критические</option>
+                                    <option>Высокие</option>
+                                    <option>Средние</option>
+                                </select>
+                                <button class="refresh-btn">🔄</button>
+                            </div>
+                        </div>
+                        <div class="incidents-list">
+                            <div class="incident-item critical">
+                                <div class="incident-header">
+                                    <span class="incident-id">#INC-2025-001</span>
+                                    <span class="incident-priority critical">КРИТИЧЕСКИЙ</span>
+                                    <span class="incident-time">2 мин назад</span>
+                                </div>
+                                <div class="incident-title">AI модель недоступна на канале Email</div>
+                                <div class="incident-details">
+                                    <span class="incident-impact">Затронуто: 127 пользователей</span>
+                                    <span class="incident-assignee">Назначен: AI Ops Team</span>
+                                </div>
+                                <div class="incident-actions">
+                                    <button class="action-btn view">Просмотр</button>
+                                    <button class="action-btn escalate">Эскалация</button>
+                                </div>
+                            </div>
+                            
+                            <div class="incident-item high">
+                                <div class="incident-header">
+                                    <span class="incident-id">#INC-2025-002</span>
+                                    <span class="incident-priority high">ВЫСОКИЙ</span>
+                                    <span class="incident-time">15 мин назад</span>
+                                </div>
+                                <div class="incident-title">Высокая задержка ответов в Chat канале</div>
+                                <div class="incident-details">
+                                    <span class="incident-impact">Затронуто: 45 пользователей</span>
+                                    <span class="incident-assignee">Назначен: Backend Team</span>
+                                </div>
+                                <div class="incident-actions">
+                                    <button class="action-btn view">Просмотр</button>
+                                    <button class="action-btn resolve">Решить</button>
+                                </div>
+                            </div>
+                            
+                            <div class="incident-item medium">
+                                <div class="incident-header">
+                                    <span class="incident-id">#INC-2025-003</span>
+                                    <span class="incident-priority medium">СРЕДНИЙ</span>
+                                    <span class="incident-time">1 час назад</span>
+                                </div>
+                                <div class="incident-title">Неточность классификации запросов KZ языка</div>
+                                <div class="incident-details">
+                                    <span class="incident-impact">Затронуто: 12 пользователей</span>
+                                    <span class="incident-assignee">Назначен: ML Team</span>
+                                </div>
+                                <div class="incident-actions">
+                                    <button class="action-btn view">Просмотр</button>
+                                    <button class="action-btn resolve">Решить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel incident-stats">
+                        <div class="panel-header">
+                            <h3>📊 Статистика инцидентов</h3>
+                            <select class="time-filter">
+                                <option>Последние 24ч</option>
+                                <option>Последние 7 дней</option>
+                                <option>Последний месяц</option>
+                            </select>
+                        </div>
+                        <div class="stat-cards">
+                            <div class="stat-card red">
+                                <div class="stat-number">3</div>
+                                <div class="stat-label">Активные</div>
+                            </div>
+                            <div class="stat-card orange">
+                                <div class="stat-number">7</div>
+                                <div class="stat-label">Решенные</div>
+                            </div>
+                            <div class="stat-card green">
+                                <div class="stat-number">94.3%</div>
+                                <div class="stat-label">SLA</div>
+                            </div>
+                        </div>
+                        
+                        <div class="incident-chart">
+                            <h4>Тренд по категориям</h4>
+                            <div class="chart-bars">
+                                <div class="chart-bar">
+                                    <span class="bar-label">AI Сбои</span>
+                                    <div class="bar-progress"><div class="bar-fill" style="width: 60%;"></div></div>
+                                    <span class="bar-value">6</span>
+                                </div>
+                                <div class="chart-bar">
+                                    <span class="bar-label">Производительность</span>
+                                    <div class="bar-progress"><div class="bar-fill" style="width: 30%;"></div></div>
+                                    <span class="bar-value">3</span>
+                                </div>
+                                <div class="chart-bar">
+                                    <span class="bar-label">Интеграции</span>
+                                    <div class="bar-progress"><div class="bar-fill" style="width: 10%;"></div></div>
+                                    <span class="bar-value">1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel timeline-panel">
+                        <div class="panel-header">
+                            <h3>⏱ Временная лента</h3>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-time">04:32</div>
+                                <div class="timeline-event critical">
+                                    <span class="event-icon">🚨</span>
+                                    <span class="event-text">Критический инцидент #INC-2025-001 создан</span>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">04:17</div>
+                                <div class="timeline-event warning">
+                                    <span class="event-icon">⚠️</span>
+                                    <span class="event-text">Высокий инцидент #INC-2025-002 создан</span>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">03:45</div>
+                                <div class="timeline-event info">
+                                    <span class="event-icon">✅</span>
+                                    <span class="event-text">Инцидент #INC-2024-999 решен</span>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">03:30</div>
+                                <div class="timeline-event info">
+                                    <span class="event-icon">🔄</span>
+                                    <span class="event-text">Автоматическое восстановление AI модели</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
             </div>
         </main>
     </div>

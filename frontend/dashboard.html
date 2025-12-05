@@ -111,8 +111,8 @@
                         </div>
                         <div class="info-section">
                             <h4>Основная информация</h4>
-                            <div class="info-item"><label>Email:</label><span>client@acme.com</span></div>
-                            <div class="info-item"><label>Дата Регистрации:</label><span>15.08.2024</span></div>
+                            <div class="info-item"><label>Email:</label><span id="profile-email">client@acme.com</span></div>
+                            <div class="info-item"><label>Дата Регистрации:</label><span id="profile-date">15.08.2024</span></div>
                             <div class="info-item"><label>Тарифный План:</label><span class="plan-pro">Продвинутый (PRO)</span></div>
                             
                             <h4 class="usage-header"><i class="fas fa-chart-bar"></i> Использование тарифа</h4>
@@ -183,6 +183,17 @@
                     const tabId = e.currentTarget.getAttribute('data-tab');
                     switchTab(tabId);
                 });
+            });
+            
+            // Обработчик кнопки Выход
+            document.querySelector('.logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                // Очищаем localStorage
+                localStorage.removeItem('user');
+                localStorage.removeItem('user_type');
+                localStorage.removeItem('access_token');
+                // Перенаправляем на главную страницу
+                window.location.href = 'http://localhost:3000/';
             });
 
             // --- ЛОГИКА ЦЕНТРА ПОДДЕРЖКИ ---
@@ -376,6 +387,30 @@
             updateStatusDisplay('open', statusDisplay);
             renderQuickActions('open');
             chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // Загружаем данные пользователя из localStorage
+            const userData = localStorage.getItem('user');
+            const userType = localStorage.getItem('user_type');
+            
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    
+                    if (userType === 'client') {
+                        // Обновляем данные клиента
+                        document.querySelector('.user-name-neon').textContent = user.username || 'User';
+                        document.getElementById('profile-email').textContent = user.email || 'N/A';
+                        document.getElementById('profile-date').textContent = new Date(user.created_at).toLocaleDateString('ru-RU');
+                    } else if (userType === 'company') {
+                        // Для компании
+                        document.querySelector('.user-name-neon').textContent = user.company_name || user.username || 'Company';
+                        document.getElementById('profile-email').textContent = user.email || 'N/A';
+                        document.getElementById('profile-date').textContent = new Date(user.created_at).toLocaleDateString('ru-RU');
+                    }
+                } catch (error) {
+                    console.error('Ошибка при загрузке данных пользователя:', error);
+                }
+            }
         });
     </script>
 </body>

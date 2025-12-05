@@ -801,30 +801,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Показать личный кабинет клиента
     function showClientDashboard(user) {
-        document.querySelector('.client-name').textContent = user.username || '-';
-        document.querySelector('.client-email').textContent = user.email || '-';
-        document.querySelector('.client-created').textContent = new Date(user.created_at).toLocaleDateString('ru-RU') || '-';
+        // Сохраняем данные пользователя в localStorage
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('user_type', 'client');
+        localStorage.setItem('access_token', user.access_token || '');
         
-        const modal = document.getElementById('dashboard-client-modal');
-        modal.classList.add('is-visible');
-        
-        updateSignInButton(user, 'client');
-        loadClientRequests(user.id);
+        // Перенаправляем на dashboard.html
+        window.location.href = 'http://localhost:3000/dashboard.html';
     }
 
     // Показать панель управления компании
     function showCompanyDashboard(user) {
-        document.querySelector('.company-name').textContent = user.company_name || user.username || '-';
-        document.querySelector('.company-email').textContent = user.email || '-';
-        document.querySelector('.company-contact').textContent = user.contact_person || '-';
-        document.querySelector('.company-phone').textContent = user.phone || '-';
-        document.querySelector('.company-created').textContent = new Date(user.created_at).toLocaleDateString('ru-RU') || '-';
+        // Сохраняем данные пользователя в localStorage
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('user_type', 'company');
+        localStorage.setItem('access_token', user.access_token || '');
         
-        const modal = document.getElementById('dashboard-company-modal');
-        modal.classList.add('is-visible');
-        
-        updateSignInButton(user, 'company');
-        loadCompanyStats(user.id);
+        // Перенаправляем на dashboard.html
+        window.location.href = 'http://localhost:3000/dashboard.html';
     }
 
     // Загрузить запросы клиента
