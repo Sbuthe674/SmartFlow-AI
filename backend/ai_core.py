@@ -60,7 +60,7 @@ def classify_category(text: str) -> str:
     if not any(category_scores.values()):
         return "Other"
     
-    return max(category_scores, key=category_scores.get)
+    return max(category_scores, key=lambda k: category_scores[k])
 
 def classify_priority(text: str) -> str:
     """Classify request priority"""
@@ -102,7 +102,7 @@ async def generate_summary(text: str) -> str:
     summary = ' '.join(words[:15]) + "..."
     return summary
 
-async def generate_suggested_reply(text: str, category: str, faq_answer: str = None) -> str:
+async def generate_suggested_reply(text: str, category: str, faq_answer: str | None = None) -> str:
     """Generate suggested reply for operator"""
     if faq_answer:
         return faq_answer

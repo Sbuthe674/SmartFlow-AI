@@ -97,7 +97,7 @@ async def ingest_request(request: IngestRequest, db: Session = Depends(get_db)):
         
         return IngestResponse(
             status="closed_auto",
-            ticket_id=ticket.id,
+            ticket_id=ticket.id,  # type: ignore
             answer=answer,
             category=category,
             priority=priority,
@@ -131,7 +131,7 @@ async def ingest_request(request: IngestRequest, db: Session = Depends(get_db)):
         
         return IngestResponse(
             status="new",
-            ticket_id=ticket.id,
+            ticket_id=ticket.id,  # type: ignore
             answer=None,
             category=category,
             priority=priority,

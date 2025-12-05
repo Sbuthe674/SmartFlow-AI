@@ -336,4 +336,92 @@ async function loadMetrics() {
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     loadTickets();
+    // Chat widget wiring
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatWidget = document.getElementById('chat-widget');
+    const chatClose = document.getElementById('chat-close');
+    const chatSend = document.getElementById('chat-send');
+    const chatInput = document.getElementById('chat-input');
+
+    if (chatToggle && chatWidget) {
+        chatToggle.addEventListener('click', () => {
+            chatWidget.classList.toggle('hidden');
+            if (!chatWidget.classList.contains('hidden')) {
+                chatInput.focus();
+            }
+        });
+    }
+
+    if (chatClose) {
+        chatClose.addEventListener('click', () => {
+            chatWidget.classList.add('hidden');
+        });
+    }
+
+    if (chatSend && chatInput) {
+        chatSend.addEventListener('click', async () => {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            addChatMessage('user', text);
+            chatInput.value = '';
+            await sendChatToIngest(text);
+        });
+
+        chatInput.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const text = chatInput.value.trim();
+                if (!text) return;
+                addChatMessage('user', text);
+                chatInput.value = '';
+                await sendChatToIngest(text);
+            }
+        });
+    }
 });
+
+// Append a message to the chat widget
+function addChatMessage(who, text) {
+    const messagesEl = document.getElementById('chat-messages');
+    if (!messagesEl) return;
+
+    const wrap = document.createElement('div');
+    wrap.className = `chat-bubble ${who}`;
+    wrap.textContent = text;
+    messagesEl.appendChild(wrap);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+// Send chat message to backend /ingest
+async function sendChatToIngest(text) {
+    try {
+        addChatMessage('system', 'Отправляю запрос...');
+
+        const response = await fetch(`${API_BASE}/ingest`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ subject: 'Чат с сайта', text })
+        });
+
+        const result = await response.json();
+
+        // Remove the 'Отправляю запрос...' system message
+        const msgs = document.getElementById('chat-messages');
+        if (msgs) {
+            const syst = msgs.querySelectorAll('.chat-bubble.system');
+            syst.forEach(el => el.remove());
+        }
+
+        if (response.ok) {
+            if (result.status === 'closed_auto') {
+                addChatMessage('bot', `✅ Решено автоматически:\n${result.answer}`);
+            } else {
+                addChatMessage('bot', `📋 Тикет создан: #${result.ticket_id} (статус: ${result.status})`);
+            }
+        } else {
+            addChatMessage('bot', '❌ Ошибка отправки сообщения');
+        }
+    } catch (error) {
+        addChatMessage('bot', `❌ Ошибка: ${error.message}`);
+    }
+}

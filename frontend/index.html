@@ -9,6 +9,25 @@
 <body>
     <div class="container">
         <header>
+<!-- Floating Chat / Telegram widget -->
+<div id="chat-widget" class="chat-widget hidden">
+    <div class="chat-header">
+        <strong>Чат поддержки</strong>
+        <button id="chat-close" class="btn btn-secondary">✕</button>
+    </div>
+    <div id="chat-messages" class="chat-messages"></div>
+    <div class="chat-input">
+        <input id="chat-input" type="text" placeholder="Напишите сообщение...">
+        <button id="chat-send" class="btn btn-primary">Отправить</button>
+    </div>
+    <div class="chat-footer">
+        <a id="open-telegram" href="https://t.me/YourBotUsername" target="_blank" rel="noreferrer" class="btn btn-secondary">Открыть в Telegram</a>
+        <small class="text-muted">Или используйте встроенный чат</small>
+    </div>
+</div>
+
+<button id="chat-toggle" class="chat-toggle">💬</button>
+
             <h1>🎯 AI HelpDesk OneWindow</h1>
             <p class="subtitle">Панель оператора технической поддержки</p>
         </header>

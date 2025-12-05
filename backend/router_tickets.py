@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.get("/tickets", response_model=List[TicketResponse])
 async def get_tickets(
-    status: str = None,
+    status: str | None = None,
     db: Session = Depends(get_db)
 ):
     """Get all tickets, optionally filtered by status"""
@@ -43,8 +43,8 @@ async def update_ticket_status(
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")
     
-    ticket.status = request.status
-    ticket.updated_at = datetime.utcnow()
+    ticket.status = request.status  # type: ignore
+    ticket.updated_at = datetime.utcnow()  # type: ignore
     
     db.commit()
     db.refresh(ticket)
