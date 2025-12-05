@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from database import get_db
 from models import Ticket, TicketResponse, UpdateStatusRequest
 from datetime import datetime
@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.get("/tickets", response_model=List[TicketResponse])
 async def get_tickets(
-    status: str | None = None,
+    status: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
     """Get all tickets, optionally filtered by status"""

@@ -2,8 +2,15 @@ fastapi
 uvicorn[standard]
 sqlalchemy
 pydantic
+pydantic[email]
 requests
 python-dotenv
 openai
 python-telegram-bot
 aiohttp
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+langchain
+chromadb
+PyYAML

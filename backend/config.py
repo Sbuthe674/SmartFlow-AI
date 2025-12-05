@@ -19,6 +19,11 @@ if not OPENAI_API_KEY:
 # Database
 DATABASE_URL = "sqlite:///./helpdesk.db"
 
+# JWT Configuration
+SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production-!@#$%^&*()")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
 # AI Settings
 AUTO_RESOLVE_THRESHOLD = 0.85
 SIMILARITY_THRESHOLD = 0.7

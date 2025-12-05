@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.R.E.S. — Mission Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="premium_dashboard.css"> 
+</head>
+<body>
+
+    <div class="dashboard-wrapper">
+        
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo-text">A.R.E.S.</div>
+                <div class="logo-sub">AI Routing System</div>
+            </div>
+            
+            <nav class="menu">
+                <div class="menu-category">МОНИТОРИНГ</div>
+                <a href="#" class="menu-item active">
+                    <span class="icon">◎</span> Обзор (Mission Control)
+                </a>
+                <a href="#" class="menu-item">
+                    <span class="icon">⚡</span> Лента Инцидентов
+                </a>
+
+                <div class="menu-category">УПРАВЛЕНИЕ AI</div>
+                <a href="#" class="menu-item">
+                    <span class="icon">🧠</span> База Знаний (RAG)
+                </a>
+                <a href="#" class="menu-item">
+                    <span class="icon">🔀</span> Правила Маршрутизации
+                </a>
+                <a href="#" class="menu-item">
+                    <span class="icon">🎓</span> Обучение Модели
+                </a>
+
+                <div class="menu-category">ОТЧЕТНОСТЬ</div>
+                <a href="#" class="menu-item">
+                    <span class="icon">📊</span> SLA & KPI
+                </a>
+                <a href="#" class="menu-item">
+                    <span class="icon">🌍</span> Языковая Статистика
+                </a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-info">
+                    <span class="user-name">Admin</span>
+                    <span class="user-role">Superuser</span>
+                </div>
+                <button class="logout-btn">⏻</button>
+            </div>
+        </aside>
+
+        <main class="workspace">
+            
+            <header class="top-bar">
+                <div class="kpi-group">
+                    <div class="kpi-mini">
+                        <span class="label">Автоматизация</span>
+                        <span class="value highlight-green">52.4%</span>
+                        <span class="sub">Цель: 50%</span>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="kpi-mini">
+                        <span class="label">Точность AI</span>
+                        <span class="value highlight-blue">99.1%</span>
+                        <span class="sub">Ошибки: 0.9%</span>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="kpi-mini">
+                        <span class="label">Сэкономлено FTE</span>
+                        <span class="value highlight-purple">4.5</span>
+                        <span class="sub">1-я линия</span>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="kpi-mini">
+                        <span class="label">Avg. SLA</span>
+                        <span class="value">1.2s</span>
+                        <span class="sub">Мгновенно</span>
+                    </div>
+                </div>
+                <div class="system-status">
+                    <span class="status-dot pulse"></span> СИСТЕМА АКТИВНА
+                </div>
+            </header>
+
+            <div class="control-grid">
+
+                <div class="panel flow-panel">
+                    <div class="panel-header">
+                        <h3>Визуализация Маршрутизации (Real-Time)</h3>
+                        <div class="flow-legend">
+                            <span class="legend-item"><i class="dot blue"></i>Вход</span>
+                            <span class="legend-item"><i class="dot red"></i>Классификация</span>
+                            <span class="legend-item"><i class="dot green"></i>Решение</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-container">
+                        <div class="flow-col inputs">
+                            <div class="channel-node email">
+                                <span class="node-icon">✉️</span> Email
+                                <span class="node-val">45/ч</span>
+                            </div>
+                            <div class="channel-node chat">
+                                <span class="node-icon">💬</span> Chat
+                                <span class="node-val">120/ч</span>
+                            </div>
+                            <div class="channel-node portal">
+                                <span class="node-icon">🌐</span> Portal
+                                <span class="node-val">15/ч</span>
+                            </div>
+                        </div>
+
+                        <div class="flow-lines-in">
+                            <svg width="100%" height="100%">
+                                <path class="connection-line" d="M0,50 C50,50 50,150 100,150" />
+                                <path class="connection-line" d="M0,150 C50,150 50,150 100,150" />
+                                <path class="connection-line" d="M0,250 C50,250 50,150 100,150" />
+                            </svg>
+                        </div>
+
+                        <div class="flow-col core">
+                            <div class="ai-brain-node">
+                                <div class="brain-pulse"></div>
+                                <span class="brain-label">A.R.E.S. CORE</span>
+                                <div class="processing-stats">
+                                    <span>RU: 65%</span>
+                                    <span>KZ: 35%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flow-lines-out">
+                            <svg width="100%" height="100%">
+                                <path class="connection-line" d="M0,150 C50,150 50,50 100,50" />
+                                <path class="connection-line" d="M0,150 C50,150 50,250 100,250" />
+                            </svg>
+                        </div>
+
+                        <div class="flow-col outputs">
+                            <div class="output-node auto-solve">
+                                <span class="node-title">АВТО-РЕШЕНИЕ</span>
+                                <span class="node-perc highlight-green">52%</span>
+                                <span class="node-desc">Без участия человека</span>
+                            </div>
+                            <div class="output-node escalation">
+                                <span class="node-title">ЭСКАЛАЦИЯ (L2/L3)</span>
+                                <span class="node-perc highlight-orange">48%</span>
+                                <span class="node-desc">Сложные кейсы</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel feed-panel">
+                    <div class="panel-header">
+                        <h3>Журнал Обработки</h3>
+                        <span class="badge">LIVE</span>
+                    </div>
+                    <div class="log-list" id="log-feed">
+                        <div class="log-item">
+                            <div class="log-time">12:01:05</div>
+                            <div class="log-content">
+                                <span class="tag tag-kz">KZ</span>
+                                <span class="tag tag-chat">Chat</span>
+                                <span class="log-msg">"Тарифті қалай ауыстыруға болады?"</span>
+                            </div>
+                            <div class="log-action action-auto">→ Отправлена инструкция (Auto)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel stats-panel">
+                    <div class="panel-header">
+                        <h3>Эскалация по департаментам</h3>
+                    </div>
+                    <div class="departments-list">
+                        <div class="dept-row">
+                            <span class="dept-name">IT Support (L2)</span>
+                            <div class="progress-bar"><div class="fill" style="width: 45%"></div></div>
+                            <span class="dept-val">45%</span>
+                        </div>
+                        <div class="dept-row">
+                            <span class="dept-name">Бухгалтерия</span>
+                            <div class="progress-bar"><div class="fill" style="width: 20%"></div></div>
+                            <span class="dept-val">20%</span>
+                        </div>
+                        <div class="dept-row">
+                            <span class="dept-name">HR Отдел</span>
+                            <div class="progress-bar"><div class="fill" style="width: 15%"></div></div>
+                            <span class="dept-val">15%</span>
+                        </div>
+                        <div class="dept-row">
+                            <span class="dept-name">Безопасность</span>
+                            <div class="progress-bar"><div class="fill" style="width: 10%"></div></div>
+                            <span class="dept-val">10%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel lang-panel">
+                    <div class="panel-header">
+                        <h3>Языковая модель</h3>
+                    </div>
+                    <div class="lang-visual">
+                        <div class="lang-circle ru-circle">
+                            <span>RU</span>
+                            <small>65%</small>
+                        </div>
+                        <div class="lang-circle kz-circle">
+                            <span>KZ</span>
+                            <small>35%</small>
+                        </div>
+                    </div>
+                    <p class="lang-status">Двуязычный режим активен. Автоопределение работает корректно.</p>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="premium_dashboard.js"></script>
+</body>
+</html>

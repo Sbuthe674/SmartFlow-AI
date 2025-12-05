@@ -7,6 +7,7 @@ from typing import Dict
 from database import init_db, get_db
 from models import IngestRequest, IngestResponse, Ticket
 from router_tickets import router as tickets_router
+from router_auth import router as auth_router
 import ai_core
 from faq_store import semantic_search_faq
 
@@ -26,8 +27,9 @@ app.add_middleware(
 async def startup_event():
     init_db()
 
-# Include tickets router
+# Include routers
 app.include_router(tickets_router, prefix="/api", tags=["tickets"])
+app.include_router(auth_router, prefix="/api", tags=["auth"])
 
 @app.get("/")
 async def root():

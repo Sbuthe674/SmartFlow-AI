@@ -1,4 +1,5 @@
 import re
+from typing import Optional, Tuple
 from config import CATEGORIES, DEPARTMENT_MAPPING, AUTO_RESOLVE_THRESHOLD, OPENAI_API_KEY, API_MODEL
 from faq_store import semantic_search_faq
 
@@ -180,7 +181,7 @@ Respond with ONLY the summary, nothing else."""
             return text
         return ' '.join(words[:15]) + "..."
 
-async def generate_suggested_reply(text: str, category: str, faq_answer: str | None = None) -> str:
+async def generate_suggested_reply(text: str, category: str, faq_answer: Optional[str] = None) -> str:
     """Generate suggested reply using LLM or FAQ/templates"""
     if faq_answer:
         return faq_answer
@@ -329,13 +330,13 @@ async def translate_answer(answer: str, target_language: str) -> str:
     return answer
 
 
-async def semantic_search_with_faq(text: str, language: str) -> tuple[str | None, float]:
+async def semantic_search_with_faq(text: str, language: str) -> Tuple[Optional[str], float]:
     """Search FAQ for similar questions"""
     faq_answer, similarity_score = semantic_search_faq(text, language)
     return faq_answer, similarity_score
 
 
-async def process_ingest_request(text: str, subject: str | None = None, language: str | None = None) -> dict:
+async def process_ingest_request(text: str, subject: Optional[str] = None, language: Optional[str] = None) -> dict:
     """
     Главная функция обработки входящего обращения
     Объединяет весь поток: язык → классификация → приоритет → FAQ → решение/тикет

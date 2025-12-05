@@ -3,85 +3,545 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI HelpDesk OneWindow - Единая система поддержки</title>
-    <link rel="stylesheet" href="styles.css">
+    <title data-key="title">A.R.E.S. — Автономный Агент 24/7</title>
+    
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700;900&display=swap" as="style">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700;900&display=swap">
+    <link rel="stylesheet" href="style.css">
+
+    <meta name="description" content="A.R.E.S. - Автономный AI-агент поддержки и продаж 24/7. Автоматизируйте 90% запросов и повысьте конверсию с нашей высокоскоростной системой.">
+    <meta name="keywords" content="ARES, AI, чат-бот, поддержка, автоматизация, казахстан, ии-агент, crm">
+    <meta name="author" content="A.R.E.S. Project">
+
+    <meta property="og:title" content="A.R.E.S. — Автономный AI-Агент 24/7">
+    <meta property="og:description" content="Автоматизируйте 90% запросов и увеличьте продажи с помощью A.R.E.S.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://www.yourdomain.kz">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🎯 AI HelpDesk OneWindow</h1>
-            <p class="subtitle">Единая система поддержки с ИИ-анализом</p>
-        </header>
 
-        <div id="chat-widget" class="chat-widget hidden">
-            <div class="chat-header">
-                <strong>Чат</strong>
-                <button id="chat-close" class="btn btn-secondary">✕</button>
-            </div>
-            <div id="chat-messages" class="chat-messages"></div>
-            <div class="chat-input">
-                <input id="chat-input" type="text" placeholder="Сообщение...">
-                <button id="chat-send" class="btn btn-primary">Отправить</button>
-            </div>
+    <header class="header">
+        <div class="logo">
+            <span class="logo-a">A.</span><span class="logo-text">R.E.S.</span>
         </div>
-        <button id="chat-toggle" class="chat-toggle">💬</button>
+        <nav class="nav">
+            <a href="#about" data-key="nav_about">О Проекте</a>
+            <a href="#features" data-key="nav_features">Функции</a>
+            <a href="#pricing" data-key="nav_pricing">Цены</a> 
+        </nav>
+        <div class="header-actions">
+            <div class="language-switcher">
+                <span class="lang current-lang" data-key="lang_ru">RU</span>
+                <div class="lang-dropdown">
+                    <button class="lang-btn" data-lang="ru" data-key="lang_ru">RU</button>
+                    <button class="lang-btn" data-lang="kz" data-key="lang_kz">KZ</button>
+                    <button class="lang-btn" data-lang="en" data-key="lang_en">EN</button>
+                </div>
+            </div>
+            <button class="sign-in-button js-open-modal" data-target-modal="auth-type-modal" data-key="btn_signin">Войти</button>
+        </div>
+    </header>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('help')">🤖 Помощь</button>
-            <button class="tab-btn" onclick="showTab('tickets')">📋 Тикеты</button>
-            <button class="tab-btn" onclick="showTab('metrics')">📊 Метрики</button>
+    <main class="main-content">
+        <div class="hero-text-container">
+            <h1 class="main-title" data-key="hero_title_part1">A.R.E.S. — Автономная <span class="highlight" data-key="hero_title_part2">ПОДДЕРЖКА</span> <span class="highlight-text">24/7</span></h1>
+            
+            <p class="subtitle" data-key="hero_subtitle_line1">
+                БЕЗОТКАЗНАЯ, ТОЧНАЯ,<br> 
+                ВЫСОКОСКОРОСТНАЯ ИИ-СИСТЕМА
+            </p>
+            
+            <p class="description" data-key="hero_description">
+                Автоматизируйте до 90% запросов и увеличьте продажи с помощью ИИ-агента, обученного работе с вашим сайтом и документами.
+            </p>
+            <div class="cta-buttons">
+                <button class="cta-primary" data-key="btn_get_bot">Получить своего Чат-бота</button>
+                <button class="cta-secondary" data-key="btn_demo">Демо Чат-бота</button>
+            </div>
+            <p class="free-plan-note" data-key="note_free_plan">Доступен бесплатный план</p>
         </div>
 
-        <div id="help-tab" class="tab-content active">
-            <div class="form-container">
-                <h2>🤖 Помощь от ИИ</h2>
-                <p style="color: #666; margin-bottom: 20px;">Опишите проблему (RU/KZ). ИИ выдаст решение или создаст тикет.</p>
-                
-                <form id="unified-request-form" onsubmit="submitUnifiedRequest(event)">
-                    <div class="form-group">
-                        <label for="problem-text">Ваша проблема:</label>
-                        <textarea id="problem-text" name="problem" rows="10" placeholder="Описание..." required></textarea>
+        <div class="chat-widget-container">
+            <div class="chat-widget">
+                <div class="chat-header">
+                    <div class="chat-header-left">
+                        <div class="ai-avatar">A.R.E.S Support</div>
+                        <div class="status-dot"></div>
                     </div>
-                    <button type="submit" class="submit-btn">⚡ Решить</button>
-                </form>
-
-                <div id="unified-result" class="result-box" style="display: none;"></div>
+                    <div class="chat-header-right">
+                        <span>2</span>
+                    </div>
+                </div>
+                <div class="chat-body"> 
+                    <div class="message incoming">
+                        <div class="message-sender">AI ASSIST</div>
+                        <div class="message-text">Welcome to Acme Widgets!</div>
+                    </div>
+                    <div class="message outgoing">
+                        <div class="message-text">Id like to know more about your today products.</div>
+                    </div>
+                    <div class="message incoming">
+                        <div class="message-sender">AI ASSIST</div>
+                        <div class="message-text">Welcome to Acme more about your products.</div>
+                    </div>
+                    <div class="message outgoing">
+                        <div class="message-text">Great. Are you interested in our family of products.</div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Задайте свой вопрос..." data-key="chat_placeholder">
+                    <button class="send-button">
+                        <span class="arrow-icon">▶</span>
+                    </button>
+                </div>
             </div>
         </div>
+    </main>
 
-        <div id="tickets-tab" class="tab-content">
-            <div class="filters">
-                <label>
-                    Статус:
-                    <select id="status-filter" onchange="filterTickets()">
-                        <option value="">Все</option>
-                        <option value="new">Новые</option>
-                        <option value="in_progress">В работе</option>
-                        <option value="closed">Закрыты</option>
-                        <option value="closed_auto">Авто</option>
-                    </select>
-                </label>
-                <button onclick="loadTickets()" class="refresh-btn">🔄 Обновить</button>
+    <section id="about" class="about-section">
+        <div class="about-content">
+            <div class="about-text">
+                <h2 class="section-title">
+                    <span class="highlight-text" data-key="about_title_part1">Технология</span>, <span data-key="about_title_part2">которая работает на вас</span>
+                </h2>
+                <p class="about-description" data-key="about_desc1">
+                    A.R.E.S. — это не просто чат-бот, это автономный ИИ-агент, разработанный для интеграции и масштабирования. Мы верим, что будущее клиентской поддержки и продаж лежит в персонализированном, мгновенном общении, и наш агент обеспечивает именно это, работая в фоновом режиме 24 часа в сутки.
+                </p>
+                <p class="about-description" data-key="about_desc2">
+                    В основе A.R.E.S. лежат современные языковые модели, обученные справляться с нюансами русского языка и спецификой вашего бизнеса. Наша миссия — устранить рутину и позволить вашему бизнесу сосредоточиться на росте, а не на повторяющихся вопросах.
+                </p>
+                <a href="#pricing" class="cta-secondary about-cta" data-key="btn_choose_plan">
+                    Выбрать тариф A.R.E.S.
+                </a>
             </div>
-
-            <div id="tickets-list" class="tickets-list">
-                <p class="loading">Загрузка...</p>
-            </div>
-
-            <div id="ticket-detail" class="ticket-detail" style="display: none;">
-                <button onclick="closeTicketDetail()" class="close-btn">✕</button>
-                <div id="ticket-content"></div>
+            
+            <div class="about-stats-card">
+                <div class="stat-item">
+                    <div class="stat-number" data-key="stat_90_num">90%</div>
+                    <div class="stat-label" data-key="stat_90_text">Запросов обрабатывает ИИ</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-key="stat_247_num">24/7</div>
+                    <div class="stat-label" data-key="stat_247_text">Доступность и скорость</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-key="stat_5x_num">5x</div>
+                    <div class="stat-label" data-key="stat_5x_text">Увеличение скорости ответа</div>
+                </div>
             </div>
         </div>
+    </section>
+    
+    <section id="features" class="features-section">
+        <h2 class="section-title">
+            <span class="highlight-text" data-key="features_title_part1">Ключевые</span> <span data-key="features_title_part2">Функции A.R.E.S.</span>
+        </h2>
+        <p class="section-subtitle" data-key="features_subtitle">
+            Интеллектуальная система, которая масштабирует вашу поддержку и продажи 24/7.
+        </p>
+        
+        <div class="features-grid">
+            
+            <div class="feature-card">
+                <div class="card-icon">01</div>
+                <h3 class="card-title" data-key="card1_title">Автоматизация 90% запросов</h3>
+                <p class="card-description" data-key="card1_desc">
+                    ИИ-агент решает рутинные вопросы, освобождая команду для сложных задач.
+                </p>
+                <button class="card-link js-toggle-details" data-target="details-1" data-key="btn_more">Подробнее →</button>
+                <div class="card-details" id="details-1">
+                    <p class="details-text" data-key="card1_details">
+                        A.R.E.S. использует генеративные модели для мгновенного ответа на 9 из 10 стандартных обращений. Это снижает нагрузку на операторов и минимизирует время ожидания клиента до нуля.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="card-icon">02</div>
+                <h3 class="card-title" data-key="card2_title">Обучение на Ваших Данных</h3>
+                <p class="card-description" data-key="card2_desc">
+                    Загружайте документы, PDF и ссылки — A.R.E.S. мгновенно изучит и начнет отвечать.
+                </p>
+                <button class="card-link js-toggle-details" data-target="details-2" data-key="btn_more">Подробнее →</button>
+                <div class="card-details" id="details-2">
+                    <p class="details-text" data-key="card2_details">
+                        Технология RAG (Retrieval-Augmented Generation) позволяет агенту оперировать только верифицированной информацией из ваших источников. Он никогда не "придумает" ответ.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="card-icon">03</div>
+                <h3 class="card-title" data-key="card3_title">Поддержка Всех Платформ</h3>
+                <p class="card-description" data-key="card3_desc">
+                    Легкая интеграция в мессенджеры, CRM, на сайт и мобильные приложения.
+                </p>
+                <button class="card-link js-toggle-details" data-target="details-3" data-key="btn_more">Подробнее →</button>
+                <div class="card-details" id="details-3">
+                    <p class="details-text" data-key="card3_details">
+                        A.R.E.S. готов к работе с Telegram, WhatsApp, Facebook Messenger, виджетами на сайтах и любыми внутренними системами через REST API. Единый источник знаний для всех каналов.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="card-icon">04</div>
+                <h3 class="card-title" data-key="card4_title">Повышение Конверсии</h3>
+                <p class="card-description" data-key="card4_desc">
+                    Активное предложение продуктов и сбор контактов для горячих лидов.
+                </p>
+                <button class="card-link js-toggle-details" data-target="details-4" data-key="btn_more">Подробнее →</button>
+                <div class="card-details" id="details-4">
+                    <p class="details-text" data-key="card4_details">
+                        Агент умеет определять намерение пользователя и, при необходимости, мягко переводить разговор на продажу, заполнять форму и квалифицировать лид перед передачей менеджеру.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="card-icon">05</div>
+                <h3 class="card-title" data-key="card5_title">Синтез Отчетов и Аналитика</h3>
+                <p class="card-description" data-key="card5_desc">
+                    Автоматическая генерация еженедельных отчетов о типах запросов и их решении.
+                </p>
+                <button class="card-link js-toggle-details" data-target="details-5" data-key="btn_more">Подробнее →</button>
+                <div class="card-details" id="details-5">
+                    <p class="details-text" data-key="card5_details">
+                        Аналитическая панель позволяет увидеть, какие вопросы задают чаще всего, где бот передает контроль оператору и какие разделы базы знаний нуждаются в уточнении.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="card-icon">06</div>
+                <h3 class="card-title" data-key="card6_title">Безопасность и Приватность</h3>
+                <p class="card-description" data-key="card6_desc">
+                    Соответствие GDPR/ФЗ-152 и сквозное шифрование всех данных.
+                </p>
+                <button class="card-link js-toggle-details" data-target="details-6" data-key="btn_more">Подробнее →</button>
+                <div class="card-details" id="details-6">
+                    <p class="details-text" data-key="card6_details">
+                        Все данные хранятся на защищенных серверах с высоким уровнем защиты. Мы гарантируем, что ваша конфиденциальная информация никогда не будет использована для обучения сторонних моделей.
+                    </p>
+                </div>
+            </div>
 
-        <div id="metrics-tab" class="tab-content">
-            <h2>📊 Статистика</h2>
-            <div id="metrics-content" class="metrics-content">
-                <p class="loading">Загрузка...</p>
+        </div>
+    </section>
+
+    <section id="pricing" class="pricing-section">
+        <h2 class="section-title">
+            <span class="highlight-text" data-key="pricing_title_part1">Выберите</span> <span data-key="pricing_title_part2">Свой План A.R.E.S.</span>
+        </h2>
+        <p class="section-subtitle" data-key="pricing_subtitle">
+            Гибкие тарифы, разработанные для масштабирования вашего бизнеса — от стартапа до корпорации.
+        </p>
+
+        <div class="pricing-grid">
+            
+            <div class="pricing-card">
+                <h3 class="plan-title" data-key="plan1_title">Базовый</h3>
+                <p class="plan-subtitle" data-key="plan1_subtitle">Идеально для старта и тестирования.</p>
+                <div class="plan-price">
+                    <span class="currency">$</span>19
+                    <span class="period" data-key="period">/ месяц</span>
+                </div>
+                <ul class="plan-features">
+                    <li content="✓" data-key="plan1_feat1">✓ 5000 запросов в месяц</li>
+                    <li content="✓" data-key="plan1_feat2">✓ Обучение на 1 источнике данных</li>
+                    <li content="✓" data-key="plan1_feat3">✓ Базовая интеграция (1 канал)</li>
+                    <li content="✗" data-key="plan1_feat4">✗ Приоритетная поддержка</li>
+                </ul>
+                <button class="cta-secondary" data-key="btn_free_start">Начать Бесплатно</button>
+            </div>
+            
+            <div class="pricing-card recommended-card">
+                <div class="ribbon" data-key="ribbon_recommended">Рекомендуем</div>
+                <h3 class="plan-title" data-key="plan2_title">Профессиональный</h3>
+                <p class="plan-subtitle" data-key="plan2_subtitle">Для растущего бизнеса, нуждающегося в масштабе.</p>
+                <div class="plan-price">
+                    <span class="currency">$</span>59
+                    <span class="period" data-key="period">/ месяц</span>
+                </div>
+                <ul class="plan-features">
+                    <li content="✓" data-key="plan2_feat1">✓ 50 000 запросов в месяц</li>
+                    <li content="✓" data-key="plan2_feat2">✓ Обучение на 5 источниках данных</li>
+                    <li content="✓" data-key="plan2_feat3">✓ Полная многоканальная интеграция</li>
+                    <li content="✓" data-key="plan2_feat4">✓ Приоритетная поддержка 24/7</li>
+                </ul>
+                <button class="cta-primary" data-key="btn_select_plan">Выбрать План</button>
+            </div>
+            
+            <div class="pricing-card">
+                <h3 class="plan-title" data-key="plan3_title">Корпоративный</h3>
+                <p class="plan-subtitle" data-key="plan3_subtitle">Неограниченная мощь для крупных систем.</p>
+                <div class="plan-price">
+                    <span class="currency">$</span>199
+                    <span class="period" data-key="period">/ месяц</span>
+                </div>
+                <ul class="plan-features">
+                    <li content="✓" data-key="plan3_feat1">✓ Неограниченное число запросов</li>
+                    <li content="✓" data-key="plan3_feat2">✓ Индивидуальная модель обучения</li>
+                    <li content="✓" data-key="plan3_feat3">✓ API-доступ и кастомная интеграция</li>
+                    <li content="✓" data-key="plan3_feat4">✓ Выделенный менеджер</li>
+                </ul>
+                <button class="cta-secondary" data-key="btn_contact_us">Связаться с нами</button>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-a">A.</span><span class="logo-text">R.E.S.</span>
+                </div>
+                <p class="copyright" data-key="copyright">© 2025 A.R.E.S. All rights reserved.</p>
+            </div>
+            
+            <div class="footer-contacts">
+                <h4 class="footer-title" data-key="footer_contacts_title">Контакты</h4>
+                <p><a href="mailto:contact@ares.com">✉️ contact@ares.com</a></p>
+                <p><a href="tel:+74951234567">📞 +7 (495) 123-45-67</a></p>
+            </div>
+
+            <div class="footer-links">
+                <h4 class="footer-title" data-key="footer_links_title">Ссылки</h4>
+                <p><a href="#about" data-key="nav_about">О проекте</a></p>
+                <p><a href="#" data-key="footer_policy">Политика конфиденциальности</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal: Выбор типа входа -->
+    <div id="auth-type-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <button class="modal-close js-close-modal">&times;</button>
+            <h3 class="modal-title">Выберите тип входа</h3>
+            <div class="auth-type-buttons">
+                <button class="auth-type-btn js-open-modal" data-target-modal="login-client-modal">
+                    <span class="auth-type-icon">👤</span>
+                    <span class="auth-type-text">Войти как клиент</span>
+                </button>
+                <button class="auth-type-btn js-open-modal" data-target-modal="login-company-modal">
+                    <span class="auth-type-icon">🏢</span>
+                    <span class="auth-type-text">Войти как компания</span>
+                </button>
             </div>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Modal: Регистрация типа -->
+    <div id="signup-type-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <button class="modal-close js-close-modal">&times;</button>
+            <h3 class="modal-title">Выберите тип регистрации</h3>
+            <div class="auth-type-buttons">
+                <button class="auth-type-btn js-open-modal" data-target-modal="signup-client-modal">
+                    <span class="auth-type-icon">👤</span>
+                    <span class="auth-type-text">Зарегистрироваться как клиент</span>
+                </button>
+                <button class="auth-type-btn js-open-modal" data-target-modal="signup-company-modal">
+                    <span class="auth-type-icon">🏢</span>
+                    <span class="auth-type-text">Зарегистрироваться как компания</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Логин клиента -->
+    <div id="login-client-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <button class="modal-close js-close-modal">&times;</button>
+            <h3 class="modal-title">👤 Вход как клиент</h3>
+            <form class="modal-form" id="client-login-form">
+                <div class="form-group">
+                    <input type="email" class="client-login-email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="client-login-password" placeholder="Пароль" required>
+                </div>
+                <button type="submit" class="cta-primary">Войти</button>
+                <p class="modal-text">Нет аккаунта? <a href="#" class="js-open-modal" data-target-modal="signup-client-modal">Зарегистрироваться</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Логин компании -->
+    <div id="login-company-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <button class="modal-close js-close-modal">&times;</button>
+            <h3 class="modal-title">🏢 Вход как компания</h3>
+            <form class="modal-form" id="company-login-form">
+                <div class="form-group">
+                    <input type="email" class="company-login-email" placeholder="Email компании" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="company-login-password" placeholder="Пароль" required>
+                </div>
+                <button type="submit" class="cta-primary">Войти</button>
+                <p class="modal-text">Нет аккаунта? <a href="#" class="js-open-modal" data-target-modal="signup-company-modal">Зарегистрироваться</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Регистрация клиента -->
+    <div id="signup-client-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <button class="modal-close js-close-modal">&times;</button>
+            <h3 class="modal-title">👤 Регистрация как клиент</h3>
+            <form class="modal-form" id="client-signup-form">
+                <div class="form-group">
+                    <input type="text" class="client-signup-name" placeholder="Ваше имя" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" class="client-signup-email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="client-signup-password" placeholder="Пароль" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="client-signup-password-confirm" placeholder="Повторите пароль" required>
+                </div>
+                <button type="submit" class="cta-primary">Зарегистрироваться</button>
+                <p class="modal-text">Уже есть аккаунт? <a href="#" class="js-open-modal" data-target-modal="login-client-modal">Войти</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Регистрация компании -->
+    <div id="signup-company-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <button class="modal-close js-close-modal">&times;</button>
+            <h3 class="modal-title">🏢 Регистрация как компания</h3>
+            <form class="modal-form" id="company-signup-form">
+                <div class="form-group">
+                    <input type="text" class="company-signup-name" placeholder="Имя компании" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" class="company-signup-email" placeholder="Email компании" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="company-signup-contact" placeholder="Контактное лицо" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" class="company-signup-phone" placeholder="Телефон" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="company-signup-password" placeholder="Пароль" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="company-signup-password-confirm" placeholder="Повторите пароль" required>
+                </div>
+                <button type="submit" class="cta-primary">Зарегистрироваться</button>
+                <p class="modal-text">Уже есть аккаунт? <a href="#" class="js-open-modal" data-target-modal="login-company-modal">Войти</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Личный кабинет клиента -->
+    <div id="dashboard-client-modal" class="modal-backdrop modal-fullscreen">
+        <div class="modal-content dashboard-content">
+            <button class="modal-close js-close-modal">&times;</button>
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">👤 Личный кабинет</h2>
+                <button class="logout-btn js-logout">Выход</button>
+            </div>
+            <div class="dashboard-body">
+                <div class="dashboard-grid">
+                    <div class="dashboard-card profile-card">
+                        <h3>Профиль</h3>
+                        <div class="profile-info">
+                            <p><strong>Имя:</strong> <span class="client-name">-</span></p>
+                            <p><strong>Email:</strong> <span class="client-email">-</span></p>
+                            <p><strong>Дата регистрации:</strong> <span class="client-created">-</span></p>
+                        </div>
+                    </div>
+                    <div class="dashboard-card requests-card">
+                        <h3>Мои обращения</h3>
+                        <div class="requests-list" id="client-requests">
+                            <p class="loading">Загрузка обращений...</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-card tickets-card">
+                        <h3>Мои тикеты</h3>
+                        <div class="tickets-list" id="client-tickets">
+                            <p class="loading">Загрузка тикетов...</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-card settings-card">
+                        <h3>Быстрые ссылки</h3>
+                        <ul class="quick-links">
+                            <li><a href="#" class="quick-link">📝 Создать обращение</a></li>
+                            <li><a href="#" class="quick-link">📊 Статистика</a></li>
+                            <li><a href="#" class="quick-link">⚙️ Настройки</a></li>
+                            <li><a href="#" class="quick-link">❓ Справка</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Личный кабинет компании -->
+    <div id="dashboard-company-modal" class="modal-backdrop modal-fullscreen">
+        <div class="modal-content dashboard-content">
+            <button class="modal-close js-close-modal">&times;</button>
+            <div class="dashboard-header">
+                <h2 class="dashboard-title">🏢 Панель управления компании</h2>
+                <button class="logout-btn js-logout">Выход</button>
+            </div>
+            <div class="dashboard-body">
+                <div class="dashboard-grid">
+                    <div class="dashboard-card company-info-card">
+                        <h3>Информация о компании</h3>
+                        <div class="company-info">
+                            <p><strong>Компания:</strong> <span class="company-name">-</span></p>
+                            <p><strong>Email:</strong> <span class="company-email">-</span></p>
+                            <p><strong>Контактное лицо:</strong> <span class="company-contact">-</span></p>
+                            <p><strong>Телефон:</strong> <span class="company-phone">-</span></p>
+                            <p><strong>Дата регистрации:</strong> <span class="company-created">-</span></p>
+                        </div>
+                    </div>
+                    <div class="dashboard-card stats-card">
+                        <h3>Статистика</h3>
+                        <div class="stats-info">
+                            <div class="stat-item">
+                                <span class="stat-label">Всего обращений:</span>
+                                <span class="stat-value" id="total-requests">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Активных тикетов:</span>
+                                <span class="stat-value" id="active-tickets">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Закрытых тикетов:</span>
+                                <span class="stat-value" id="closed-tickets">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card recent-tickets-card">
+                        <h3>Последние тикеты</h3>
+                        <div class="recent-tickets-list" id="company-recent-tickets">
+                            <p class="loading">Загрузка тикетов...</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-card management-card">
+                        <h3>Управление</h3>
+                        <ul class="management-links">
+                            <li><a href="#" class="management-link">📋 Все обращения</a></li>
+                            <li><a href="#" class="management-link">📊 Аналитика</a></li>
+                            <li><a href="#" class="management-link">👥 Сотрудники</a></li>
+                            <li><a href="#" class="management-link">⚙️ Настройки</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
 </body>
 </html>
