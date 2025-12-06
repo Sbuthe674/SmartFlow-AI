@@ -442,6 +442,64 @@ document.addEventListener('DOMContentLoaded', async function() {
             window.location.href = 'index.html';
         }, 1000);
     });
+
+    // Navigation between sections - MENU HANDLERS
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetSection = this.getAttribute('data-section');
+            if (!targetSection) return;
+            
+            // Remove active class from all menu items
+            document.querySelectorAll('.menu-item').forEach(menuItem => {
+                menuItem.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            this.classList.add('active');
+            
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show target section
+            const targetElement = document.getElementById(targetSection);
+            if (targetElement) {
+                targetElement.style.display = 'block';
+            }
+            
+            console.log('✅ Переключение на секцию:', targetSection);
+        });
+    });
+    
+    // Initialize default active section (overview)
+    function initializeActiveSection() {
+        // Hide all sections first
+        document.querySelectorAll('.section-content').forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show overview section by default
+        const overviewSection = document.getElementById('overview');
+        if (overviewSection) {
+            overviewSection.style.display = 'block';
+        }
+        
+        // Make sure overview menu item is active
+        document.querySelectorAll('.menu-item').forEach(menuItem => {
+            menuItem.classList.remove('active');
+        });
+        
+        const overviewMenuItem = document.querySelector('[data-section="overview"]');
+        if (overviewMenuItem) {
+            overviewMenuItem.classList.add('active');
+        }
+    }
+    
+    // Call initialization
+    initializeActiveSection();
     
     // Navigation between sections
     document.querySelectorAll('.menu-item').forEach(item => {

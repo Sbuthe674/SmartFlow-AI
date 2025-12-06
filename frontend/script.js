@@ -721,7 +721,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             try {
-                const response = await fetch(`${API_BASE}/auth/register`, {
+                const response = await fetch(`${API_BASE}/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -802,7 +802,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                const response = await fetch(`${API_BASE}/auth/register`, {
+                const response = await fetch(`${API_BASE}/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -860,7 +860,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                const response = await fetch(`${API_BASE}/auth/admin/register`, {
+                const response = await fetch(`${API_BASE}/admin/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -911,7 +911,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = clientLoginForm.querySelector('.client-login-password').value;
 
             try {
-                const response = await fetch(`${API_BASE}/auth/login`, {
+                const response = await fetch(`${API_BASE}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -950,7 +950,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = companyLoginForm.querySelector('.company-login-password').value;
 
             try {
-                const response = await fetch(`${API_BASE}/auth/login`, {
+                const response = await fetch(`${API_BASE}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -1005,7 +1005,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('client-requests');
         try {
             const token = localStorage.getItem('access_token');
-            const response = await fetch(`${API_BASE}/auth/user/${userId}/requests`, {
+            const response = await fetch(`${API_BASE}/user/${userId}/requests`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             
@@ -1031,7 +1031,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadCompanyStats(userId) {
         try {
             const token = localStorage.getItem('access_token');
-            const response = await fetch(`${API_BASE}/auth/company/${userId}/stats`, {
+            const response = await fetch(`${API_BASE}/company/${userId}/stats`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             

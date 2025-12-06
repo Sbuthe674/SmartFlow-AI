@@ -10,7 +10,7 @@ from database import get_db
 from models import User, UserRegister, UserLogin, AdminRegister, UserResponse, AuthResponse
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(tags=["auth"])
 
 # Password hashing with Argon2 (supports unlimited password length)
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")

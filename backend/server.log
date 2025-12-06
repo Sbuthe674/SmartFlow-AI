@@ -9,124 +9,49 @@
         [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
         
   @app.on_event("startup")
-INFO:     Started server process [30762]
+INFO:     Started server process [72455]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:__main__:📧 Email отправлен:
-INFO:__main__:  To: support@company.com
-INFO:__main__:  Subject: Тест
-INFO:__main__:  Ticket ID: 1051
-INFO:__main__:  Body: Test...
-INFO:     127.0.0.1:56413 - "POST /api/email/send HTTP/1.1" 200 OK
-INFO:     127.0.0.1:56433 - "OPTIONS /api/email/send HTTP/1.1" 200 OK
-INFO:__main__:📧 Email отправлен:
-INFO:__main__:  To: support@company.com
-INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
-INFO:__main__:  Ticket ID: 1051
-INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
-Тикет: #1051
-Время: 06.12.2025, 08:42:06
-
-Сообщение...
-INFO:     127.0.0.1:56433 - "POST /api/email/send HTTP/1.1" 200 OK
-INFO:__main__:📧 Email отправлен:
-INFO:__main__:  To: support@company.com
-INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
-INFO:__main__:  Ticket ID: 1051
-INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
-Тикет: #1051
-Время: 06.12.2025, 08:42:10
-
-Сообщение...
-INFO:     127.0.0.1:56433 - "POST /api/email/send HTTP/1.1" 200 OK
-INFO:__main__:📧 Email отправлен:
-INFO:__main__:  To: support@company.com
-INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
-INFO:__main__:  Ticket ID: 1051
-INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
-Тикет: #1051
-Время: 06.12.2025, 08:42:53
-
-Сообщение...
-INFO:     127.0.0.1:56457 - "POST /api/email/send HTTP/1.1" 200 OK
-INFO:     127.0.0.1:56466 - "OPTIONS /api/auth/login HTTP/1.1" 200 OK
-INFO:     127.0.0.1:56466 - "POST /api/auth/login HTTP/1.1" 200 OK
-INFO:__main__:📧 Email отправлен:
-INFO:__main__:  To: support@company.com
-INFO:__main__:  Subject: Новое обращение от uzbek - Тикет #1051
-INFO:__main__:  Ticket ID: 1051
-INFO:__main__:  Body: Обращение от: uzbek (uzbek@gmail.com)
-Тикет: #1051
-Время: 06.12.2025, 08:46:54
-
-Сообщение:
-вфывф
-
---...
-INFO:     127.0.0.1:56555 - "POST /api/email/send HTTP/1.1" 200 OK
-INFO:__main__:📧 Email отправлен:
-INFO:__main__:  To: support@company.com
-INFO:__main__:  Subject: Новое обращение от uzbek - Тикет #1051
-INFO:__main__:  Ticket ID: 1051
-INFO:__main__:  Body: Обращение от: uzbek (uzbek@gmail.com)
-Тикет: #1051
-Время: 06.12.2025, 08:46:57
-
-Сообщение:
-выфвфывф
-...
-INFO:     127.0.0.1:56555 - "POST /api/email/send HTTP/1.1" 200 OK
-INFO:__main__:📧 Email отправлен:
-INFO:__main__:  To: support@company.com
-INFO:__main__:  Subject: Новое обращение от uzbek - Тикет #1051
-INFO:__main__:  Ticket ID: 1051
-INFO:__main__:  Body: Обращение от: uzbek (uzbek@gmail.com)
-Тикет: #1051
-Время: 06.12.2025, 08:46:59
-
-Сообщение:
-выфвыф
-
--...
-INFO:     127.0.0.1:56555 - "POST /api/email/send HTTP/1.1" 200 OK
-INFO:__main__:📧 Email отправлен:
-INFO:__main__:  To: support@company.com
-INFO:__main__:  Subject: Новое обращение от uzbek - Тикет #1051
-INFO:__main__:  Ticket ID: 1051
-INFO:__main__:  Body: Обращение от: uzbek (uzbek@gmail.com)
-Тикет: #1051
-Время: 06.12.2025, 08:50:16
-
-Сообщение:
-выфвфы
-
--...
-INFO:     127.0.0.1:56619 - "POST /api/email/send HTTP/1.1" 200 OK
-INFO:__main__:📧 Email отправлен:
-INFO:__main__:  To: support@company.com
-INFO:__main__:  Subject: Новое обращение от uzbek - Тикет #1051
-INFO:__main__:  Ticket ID: 1051
-INFO:__main__:  Body: Обращение от: uzbek (uzbek@gmail.com)
-Тикет: #1051
-Время: 06.12.2025, 08:51:06
-
-Сообщение:
-у меня не...
-INFO:     127.0.0.1:56631 - "POST /api/email/send HTTP/1.1" 200 OK
-INFO:     127.0.0.1:56650 - "OPTIONS /api/email/send HTTP/1.1" 200 OK
-INFO:__main__:📧 Email отправлен:
-INFO:__main__:  To: support@company.com
-INFO:__main__:  Subject: Новое обращение от uzbek - Тикет #1051
-INFO:__main__:  Ticket ID: 1051
-INFO:__main__:  Body: Обращение от: uzbek (uzbek@gmail.com)
-Тикет: #1051
-Время: 06.12.2025, 08:53:44
-
-Сообщение:
-ваиравира...
-INFO:     127.0.0.1:56650 - "POST /api/email/send HTTP/1.1" 200 OK
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [30762]
+INFO:     127.0.0.1:55912 - "POST /api/register HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55921 - "POST /api/register HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "POST /api/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55929 - "GET /docs HTTP/1.1" 200 OK
