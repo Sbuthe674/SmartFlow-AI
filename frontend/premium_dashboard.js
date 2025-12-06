@@ -1350,6 +1350,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Инициализация функциональности правил маршрутизации
     setupRoutingRulesActions();
     
+    // Инициализация функциональности обучения модели
+    setupModelTrainingActions();
+    
+    // Инициализация SLA & KPI функциональности
+    setupSLAActions();
+    
     // Инициализация визуализации маршрутизации
     setupVisualizationControls();
 
@@ -1870,36 +1876,86 @@ function initializeDashboard() {
 let currentEditingRule = null;
 let nextRuleId = 4;
 
-// Mock data для правил маршрутизации
-let routingRules = [
-    {
-        id: 1,
-        name: 'Критические системные ошибки',
-        conditions: 'Содержит: "ошибка", "не работает", "сбой"',
-        actions: 'Немедленная эскалация на L2',
-        priority: 10,
-        active: true
-    },
-    {
-        id: 2,
-        name: 'Запросы на смену пароля',
-        conditions: 'Содержит: "пароль", "забыл", "сменить"',
-        actions: 'Автоответ с инструкцией + направить в IT',
-        priority: 7,
-        active: true
-    },
-    {
-        id: 3,
-        name: 'Общие вопросы',
-        conditions: 'Не соответствует другим правилам',
-        actions: 'Базовый AI ответ',
-        priority: 1,
-        active: false
+// Функции для работы с localStorage
+function saveRulesToStorage() {
+    try {
+        localStorage.setItem('routingRules', JSON.stringify(routingRules));
+        localStorage.setItem('nextRuleId', nextRuleId.toString());
+        console.log('✅ Правила сохранены в localStorage');
+    } catch (error) {
+        console.error('❌ Ошибка сохранения правил:', error);
     }
-];
+}
+
+function loadRulesFromStorage() {
+    try {
+        const savedRules = localStorage.getItem('routingRules');
+        const savedNextId = localStorage.getItem('nextRuleId');
+        
+        if (savedRules) {
+            routingRules = JSON.parse(savedRules);
+            console.log('✅ Загружено правил:', routingRules.length);
+        }
+        
+        if (savedNextId) {
+            nextRuleId = parseInt(savedNextId);
+        }
+        
+        // Если нет сохраненных правил, создаем демо-данные
+        if (routingRules.length === 0) {
+            createDefaultRules();
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('❌ Ошибка загрузки правил:', error);
+        createDefaultRules();
+        return false;
+    }
+}
+
+function createDefaultRules() {
+    routingRules = [
+        {
+            id: 1,
+            name: 'Критические системные ошибки',
+            conditions: 'Содержит: "ошибка", "не работает", "сбой"',
+            actions: 'Немедленная эскалация на L2',
+            priority: 10,
+            active: true
+        },
+        {
+            id: 2,
+            name: 'Запросы на смену пароля',
+            conditions: 'Содержит: "пароль", "забыл", "сменить"',
+            actions: 'Автоответ с инструкцией + направить в IT',
+            priority: 7,
+            active: true
+        },
+        {
+            id: 3,
+            name: 'Общие вопросы',
+            conditions: 'Не соответствует другим правилам',
+            actions: 'Базовый AI ответ',
+            priority: 1,
+            active: false
+        }
+    ];
+    nextRuleId = 4;
+    saveRulesToStorage();
+}
+
+// Mock data для правил маршрутизации
+let routingRules = [];
 
 // Функция инициализации обработчиков правил маршрутизации
 function setupRoutingRulesActions() {
+    // Загрузить правила из localStorage
+    loadRulesFromStorage();
+    
+    // Обновить DOM с загруженными правилами
+    updateRulesDisplay();
+    
     // Кнопка создания нового правила
     const createBtn = document.getElementById('create-rule-btn');
     if (createBtn) {
@@ -1987,6 +2043,9 @@ function deleteRule(ruleId) {
         // Удалить из массива
         routingRules = routingRules.filter(r => r.id !== ruleId);
         
+        // Сохранить в localStorage
+        saveRulesToStorage();
+        
         // Удалить из DOM с анимацией
         const ruleElement = document.querySelector(`[data-rule-id="${ruleId}"]`);
         if (ruleElement) {
@@ -2007,6 +2066,9 @@ function toggleRule(ruleId) {
     if (!rule) return;
 
     rule.active = !rule.active;
+    
+    // Сохранить в localStorage
+    saveRulesToStorage();
     
     // Обновить в DOM
     const ruleElement = document.querySelector(`[data-rule-id="${ruleId}"]`);
@@ -2098,6 +2160,8 @@ function saveRule() {
         showRoutingNotification('Правило создано', 'success');
     }
 
+    // Сохранить в localStorage
+    saveRulesToStorage();
     updateRulesStats();
     closeRuleModal();
 }
@@ -2138,6 +2202,36 @@ function updateRuleInDOM(rule) {
         toggle.classList.add('inactive');
         toggle.textContent = '○';
     }
+}
+
+// Функция обновления отображения всех правил
+function updateRulesDisplay() {
+    const rulesList = document.querySelector('.rules-list');
+    if (!rulesList) return;
+    
+    // Очистить существующие правила (кроме статических)
+    const existingRules = rulesList.querySelectorAll('.rule-item');
+    existingRules.forEach(rule => {
+        // Проверяем, есть ли это правило в нашем массиве
+        const ruleId = parseInt(rule.dataset.ruleId);
+        if (!routingRules.find(r => r.id === ruleId)) {
+            rule.remove();
+        }
+    });
+    
+    // Добавить все правила из массива
+    routingRules.forEach(rule => {
+        const existing = rulesList.querySelector(`[data-rule-id="${rule.id}"]`);
+        if (!existing) {
+            addRuleToDOM(rule);
+        }
+    });
+    
+    // Обновить статистику
+    updateRulesStats();
+    
+    // Переустановить обработчики событий
+    setupRuleEventHandlers();
 }
 
 // Добавление нового правила в DOM
@@ -2552,4 +2646,569 @@ function updateVisualizationButtons() {
             resetBtn.style.opacity = '1';
         }
     }
+}
+
+// === MODEL TRAINING FUNCTIONALITY ===
+
+let trainingState = {
+    isTraining: false,
+    isPaused: false,
+    progress: 0,
+    startTime: null,
+    currentTask: '',
+    epochs: { current: 0, total: 100 },
+    accuracy: 0,
+    trainingInterval: null
+};
+
+function setupModelTrainingActions() {
+    const startBtn = document.getElementById('start-training-btn');
+    const pauseBtn = document.getElementById('pause-training-btn');
+    const stopBtn = document.getElementById('stop-training-btn');
+    const refreshHistoryBtn = document.getElementById('refresh-history');
+    
+    if (startBtn) startBtn.addEventListener('click', startTraining);
+    if (pauseBtn) pauseBtn.addEventListener('click', pauseTraining);
+    if (stopBtn) stopBtn.addEventListener('click', stopTraining);
+    if (refreshHistoryBtn) refreshHistoryBtn.addEventListener('click', refreshTrainingHistory);
+}
+
+function startTraining() {
+    if (trainingState.isTraining && trainingState.isPaused) {
+        resumeTraining();
+        return;
+    }
+    
+    const trainingType = document.getElementById('training-type')?.value || 'language';
+    const intensity = document.getElementById('training-intensity')?.value || 'medium';
+    const backupModel = document.getElementById('backup-model')?.checked || false;
+    
+    const taskNames = {
+        'language': 'Улучшение языковых навыков',
+        'classification': 'Улучшение классификации запросов',
+        'response': 'Улучшение качества ответов',
+        'multilingual': 'Многоязычное обучение'
+    };
+    
+    const intensitySettings = {
+        'low': { duration: 120000, updateInterval: 2000 },
+        'medium': { duration: 60000, updateInterval: 1000 },
+        'high': { duration: 30000, updateInterval: 500 }
+    };
+    
+    trainingState = {
+        isTraining: true,
+        isPaused: false,
+        progress: 0,
+        startTime: new Date(),
+        currentTask: taskNames[trainingType],
+        epochs: { current: 0, total: 100 },
+        accuracy: 90 + Math.random() * 8,
+        trainingInterval: null,
+        settings: intensitySettings[intensity]
+    };
+    
+    if (backupModel) {
+        showTrainingNotification('Создание резервной копии модели...', 'info');
+    }
+    
+    updateTrainingUI();
+    updateTrainingButtons();
+    
+    trainingState.trainingInterval = setInterval(updateTrainingProgress, trainingState.settings.updateInterval);
+    showTrainingNotification(`Начато обучение: ${trainingState.currentTask}`, 'success');
+}
+
+function pauseTraining() {
+    if (!trainingState.isTraining) return;
+    trainingState.isPaused = true;
+    if (trainingState.trainingInterval) {
+        clearInterval(trainingState.trainingInterval);
+        trainingState.trainingInterval = null;
+    }
+    updateTrainingButtons();
+    showTrainingNotification('Обучение приостановлено', 'warning');
+}
+
+function resumeTraining() {
+    if (!trainingState.isTraining || !trainingState.isPaused) return;
+    trainingState.isPaused = false;
+    trainingState.trainingInterval = setInterval(updateTrainingProgress, trainingState.settings.updateInterval);
+    updateTrainingButtons();
+    showTrainingNotification('Обучение возобновлено', 'success');
+}
+
+function stopTraining() {
+    if (!trainingState.isTraining) return;
+    if (trainingState.trainingInterval) {
+        clearInterval(trainingState.trainingInterval);
+        trainingState.trainingInterval = null;
+    }
+    
+    const wasCompleted = trainingState.progress >= 100;
+    trainingState.isTraining = false;
+    trainingState.isPaused = false;
+    
+    if (wasCompleted) {
+        showTrainingNotification('Обучение завершено успешно!', 'success');
+        updateModelMetrics();
+    } else {
+        showTrainingNotification('Обучение остановлено', 'warning');
+    }
+    
+    resetTrainingUI();
+    updateTrainingButtons();
+}
+
+function updateTrainingProgress() {
+    if (!trainingState.isTraining || trainingState.isPaused) return;
+    
+    const elapsed = new Date() - trainingState.startTime;
+    trainingState.progress = Math.min((elapsed / trainingState.settings.duration) * 100, 100);
+    trainingState.epochs.current = Math.floor((trainingState.progress / 100) * trainingState.epochs.total);
+    
+    if (trainingState.progress > 10) {
+        trainingState.accuracy = Math.min(trainingState.accuracy + (Math.random() * 0.1), 98.5);
+    }
+    
+    updateTrainingUI();
+    if (trainingState.progress >= 100) stopTraining();
+}
+
+function updateTrainingUI() {
+    const elements = {
+        taskName: document.getElementById('training-task-name'),
+        progressPercent: document.getElementById('training-progress-percent'),
+        progressBar: document.getElementById('training-progress-bar'),
+        time: document.getElementById('training-time'),
+        epochs: document.getElementById('training-epochs'),
+        accuracy: document.getElementById('training-accuracy')
+    };
+    
+    if (elements.taskName) {
+        elements.taskName.textContent = trainingState.isTraining ? trainingState.currentTask : 'Готов к обучению';
+    }
+    
+    if (elements.progressPercent) {
+        elements.progressPercent.textContent = `${Math.round(trainingState.progress)}%`;
+    }
+    
+    if (elements.progressBar) {
+        elements.progressBar.style.width = `${trainingState.progress}%`;
+    }
+    
+    if (elements.time && trainingState.startTime) {
+        const elapsed = new Date() - trainingState.startTime;
+        const hours = Math.floor(elapsed / 3600000);
+        const minutes = Math.floor((elapsed % 3600000) / 60000);
+        const seconds = Math.floor((elapsed % 60000) / 1000);
+        elements.time.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    if (elements.epochs) {
+        elements.epochs.textContent = `${trainingState.epochs.current}/${trainingState.epochs.total}`;
+    }
+    
+    if (elements.accuracy && trainingState.progress > 0) {
+        elements.accuracy.textContent = `${trainingState.accuracy.toFixed(1)}%`;
+    }
+}
+
+function resetTrainingUI() {
+    trainingState.progress = 0;
+    trainingState.epochs.current = 0;
+    trainingState.startTime = null;
+    updateTrainingUI();
+}
+
+function updateTrainingButtons() {
+    const startBtn = document.getElementById('start-training-btn');
+    const pauseBtn = document.getElementById('pause-training-btn');
+    const stopBtn = document.getElementById('stop-training-btn');
+    
+    if (startBtn) {
+        startBtn.disabled = trainingState.isTraining && !trainingState.isPaused;
+        startBtn.textContent = (trainingState.isTraining && trainingState.isPaused) ? '▶️ Продолжить' : 'Начать обучение';
+    }
+    
+    if (pauseBtn) pauseBtn.disabled = !trainingState.isTraining || trainingState.isPaused;
+    if (stopBtn) stopBtn.disabled = !trainingState.isTraining;
+}
+
+function updateModelMetrics() {
+    const improvements = [0.5, 1.2, 0.8, -0.1];
+    document.querySelectorAll('.metric-trend').forEach((el, index) => {
+        const improvement = improvements[index] || 0;
+        el.textContent = improvement > 0 ? `+${improvement.toFixed(1)}%` : `${improvement.toFixed(1)}%`;
+        el.className = `metric-trend ${improvement > 0 ? 'positive' : improvement < 0 ? 'negative' : 'neutral'}`;
+    });
+}
+
+function refreshTrainingHistory() {
+    showTrainingNotification('История обновлена', 'info');
+}
+
+function showTrainingNotification(message, type = 'info', duration = 4000) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px;
+        color: white; font-weight: 500; z-index: 10000; transform: translateX(100%);
+        transition: transform 0.3s ease; max-width: 350px; backdrop-filter: blur(10px);
+    `;
+    
+    const backgrounds = {
+        success: 'rgba(76, 175, 80, 0.9)',
+        warning: 'rgba(255, 152, 0, 0.9)',
+        error: 'rgba(244, 67, 54, 0.9)',
+        info: 'rgba(33, 150, 243, 0.9)'
+    };
+    
+    const icons = { success: '✅', warning: '⚠️', error: '❌', info: '🎓' };
+    
+    notification.style.background = backgrounds[type] || backgrounds.info;
+    notification.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><span>${icons[type] || '🎓'}</span><span>${message}</span></div>`;
+    
+    document.body.appendChild(notification);
+    setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    }, duration);
+}
+
+// === SLA & KPI FUNCTIONALITY ===
+
+let slaData = {
+    metrics: {
+        firstResponse: { value: 12.3, target: 30, unit: 'сек' },
+        resolution: { value: 2.8, target: 4, unit: 'ч' },
+        escalation: { value: 18.5, target: 24, unit: 'ч' },
+        satisfaction: { value: 4.2, target: 4.5, unit: '★' }
+    },
+    alerts: [],
+    thresholds: {
+        response: 30,
+        resolution: 4,
+        escalation: 24
+    }
+};
+
+function setupSLAActions() {
+    // Основные действия
+    document.getElementById('refresh-sla')?.addEventListener('click', refreshSLAData);
+    document.getElementById('export-sla')?.addEventListener('click', exportSLAReport);
+    document.getElementById('configure-sla')?.addEventListener('click', configureSLA);
+    
+    // Быстрые действия
+    document.getElementById('create-sla-alert')?.addEventListener('click', createSLAAlert);
+    document.getElementById('schedule-review')?.addEventListener('click', scheduleReview);
+    document.getElementById('generate-report')?.addEventListener('click', generateSLAReport);
+    
+    // Управление порогами
+    document.getElementById('update-thresholds')?.addEventListener('click', updateThresholds);
+    
+    // График
+    document.getElementById('update-chart')?.addEventListener('click', updateSLAChart);
+    document.getElementById('chart-period')?.addEventListener('change', updateSLAChart);
+    
+    // Управление алертами
+    document.getElementById('clear-alerts')?.addEventListener('click', clearAllAlerts);
+    
+    // Обработчики для карточек метрик
+    setupMetricCards();
+    
+    // Инициализация
+    initializeSLAInterface();
+}
+
+function refreshSLAData() {
+    showSLANotification('Обновление данных SLA...', 'info');
+    
+    // Симуляция обновления данных
+    setTimeout(() => {
+        // Обновляем метрики с небольшими изменениями
+        slaData.metrics.firstResponse.value += (Math.random() - 0.5) * 2;
+        slaData.metrics.resolution.value += (Math.random() - 0.5) * 0.5;
+        slaData.metrics.escalation.value += (Math.random() - 0.5) * 3;
+        slaData.metrics.satisfaction.value += (Math.random() - 0.5) * 0.2;
+        
+        updateSLAMetrics();
+        updateSLAChart();
+        showSLANotification('Данные успешно обновлены', 'success');
+    }, 1500);
+}
+
+function exportSLAReport() {
+    showSLANotification('Подготовка отчёта...', 'info');
+    
+    setTimeout(() => {
+        // Создаём blob с данными отчёта
+        const reportData = {
+            timestamp: new Date().toISOString(),
+            metrics: slaData.metrics,
+            period: document.getElementById('chart-period')?.value || 'week'
+        };
+        
+        const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `sla-report-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showSLANotification('Отчёт экспортирован', 'success');
+    }, 1000);
+}
+
+function configureSLA() {
+    const currentThresholds = {
+        response: document.getElementById('threshold-response')?.value || 30,
+        resolution: document.getElementById('threshold-resolution')?.value || 4,
+        escalation: document.getElementById('threshold-escalation')?.value || 24
+    };
+    
+    showSLANotification(`Текущие настройки: Ответ ${currentThresholds.response}с, Решение ${currentThresholds.resolution}ч, Эскалация ${currentThresholds.escalation}ч`, 'info', 6000);
+}
+
+function createSLAAlert() {
+    const alertTypes = ['critical', 'warning'];
+    const alertMessages = [
+        'Превышено время первого ответа',
+        'Критическое нарушение SLA',
+        'Требуется немедленное вмешательство',
+        'Неудовлетворённость клиентов растёт'
+    ];
+    
+    const newAlert = {
+        id: Date.now(),
+        type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
+        title: alertMessages[Math.floor(Math.random() * alertMessages.length)],
+        desc: `Тикет #${1000 + Math.floor(Math.random() * 100)} требует внимания`,
+        time: 'Только что'
+    };
+    
+    addAlertToList(newAlert);
+    showSLANotification('Уведомление создано', 'warning');
+}
+
+function scheduleReview() {
+    const reviewTime = new Date(Date.now() + 24 * 60 * 60 * 1000); // Завтра
+    showSLANotification(`Проверка SLA запланирована на ${reviewTime.toLocaleDateString('ru')}`, 'success');
+}
+
+function generateSLAReport() {
+    showSLANotification('Генерация подробного отчёта...', 'info');
+    
+    setTimeout(() => {
+        const report = `
+📊 ОТЧЁТ SLA & KPI\n
+Дата: ${new Date().toLocaleDateString('ru')}\n\n📈 МЕТРИКИ:\n• Первый ответ: ${slaData.metrics.firstResponse.value.toFixed(1)}с (цель: <${slaData.metrics.firstResponse.target}с)\n• Время решения: ${slaData.metrics.resolution.value.toFixed(1)}ч (цель: <${slaData.metrics.resolution.target}ч)\n• Эскалация: ${slaData.metrics.escalation.value.toFixed(1)}ч (цель: <${slaData.metrics.escalation.target}ч)\n• Удовлетворённость: ${slaData.metrics.satisfaction.value.toFixed(1)}★ (цель: >${slaData.metrics.satisfaction.target}★)\n\n✅ Выполнение SLA: ${calculateSLACompliance().toFixed(1)}%
+        `;
+        
+        console.log(report);
+        showSLANotification('Отчёт сгенерирован (см. консоль)', 'success');
+    }, 2000);
+}
+
+function updateThresholds() {
+    const newThresholds = {
+        response: parseInt(document.getElementById('threshold-response')?.value) || 30,
+        resolution: parseInt(document.getElementById('threshold-resolution')?.value) || 4,
+        escalation: parseInt(document.getElementById('threshold-escalation')?.value) || 24
+    };
+    
+    slaData.thresholds = newThresholds;
+    slaData.metrics.firstResponse.target = newThresholds.response;
+    slaData.metrics.resolution.target = newThresholds.resolution;
+    slaData.metrics.escalation.target = newThresholds.escalation;
+    
+    updateSLAMetrics();
+    showSLANotification('Пороговые значения обновлены', 'success');
+}
+
+function updateSLAChart() {
+    const period = document.getElementById('chart-period')?.value || 'week';
+    const bars = document.querySelectorAll('.chart-bar');
+    
+    bars.forEach(bar => {
+        const newHeight = Math.random() * 80 + 20; // 20-100%
+        const color = newHeight > 80 ? 'var(--success-color)' : 
+                     newHeight > 60 ? 'var(--warning-color)' : 'var(--error-color)';
+        
+        bar.style.height = `${newHeight}%`;
+        bar.style.background = color;
+        bar.title = `${newHeight.toFixed(0)}%`;
+    });
+    
+    showSLANotification(`График обновлён для периода: ${period}`, 'info');
+}
+
+function clearAllAlerts() {
+    const alertsList = document.getElementById('sla-alerts-list');
+    const alerts = alertsList?.querySelectorAll('.alert-item');
+    
+    alerts?.forEach(alert => {
+        alert.style.opacity = '0';
+        alert.style.transform = 'translateX(-100%)';
+        setTimeout(() => alert.remove(), 300);
+    });
+    
+    showSLANotification('Все уведомления очищены', 'success');
+}
+
+function setupMetricCards() {
+    const cards = document.querySelectorAll('.sla-card');
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            const title = card.querySelector('.sla-title')?.textContent;
+            showSLANotification(`Детализация: ${title}`, 'info');
+        });
+    });
+}
+
+function initializeSLAInterface() {
+    updateSLAMetrics();
+    setupAlertDismissal();
+}
+
+function updateSLAMetrics() {
+    // Обновляем карточки метрик
+    updateMetricCard('first-response-card', slaData.metrics.firstResponse);
+    updateMetricCard('resolution-card', slaData.metrics.resolution);
+    updateMetricCard('escalation-card', slaData.metrics.escalation);
+    updateMetricCard('satisfaction-card', slaData.metrics.satisfaction);
+}
+
+function updateMetricCard(cardId, metric) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    
+    const valueEl = card.querySelector('.sla-value');
+    const statusEl = card.querySelector('.sla-status');
+    const trendEl = card.querySelector('.sla-trend');
+    
+    if (valueEl) valueEl.textContent = `${metric.value.toFixed(1)}${metric.unit}`;
+    
+    // Обновляем статус на основе достижения цели
+    let status, statusClass;
+    if (metric.unit === '★') {
+        // Для удовлетворённости: больше = лучше
+        if (metric.value >= metric.target) {
+            status = '✅ Цель достигнута';
+            statusClass = 'status-excellent';
+        } else if (metric.value >= metric.target * 0.9) {
+            status = '⚠️ Близко к цели';
+            statusClass = 'status-warning';
+        } else {
+            status = '❌ Ниже цели';
+            statusClass = 'status-critical';
+        }
+    } else {
+        // Для времени: меньше = лучше
+        if (metric.value <= metric.target * 0.7) {
+            status = '✅ Превышено';
+            statusClass = 'status-excellent';
+        } else if (metric.value <= metric.target) {
+            status = '✅ Цель достигнута';
+            statusClass = 'status-good';
+        } else if (metric.value <= metric.target * 1.2) {
+            status = '⚠️ Близко к лимиту';
+            statusClass = 'status-warning';
+        } else {
+            status = '❌ Превышен лимит';
+            statusClass = 'status-critical';
+        }
+    }
+    
+    if (statusEl) {
+        statusEl.textContent = status;
+        statusEl.className = `sla-status ${statusClass}`;
+    }
+}
+
+function addAlertToList(alert) {
+    const alertsList = document.getElementById('sla-alerts-list');
+    if (!alertsList) return;
+    
+    const alertElement = document.createElement('div');
+    alertElement.className = `alert-item ${alert.type}`;
+    alertElement.innerHTML = `
+        <div class="alert-icon">${alert.type === 'critical' ? '🔴' : '🟡'}</div>
+        <div class="alert-content">
+            <div class="alert-title">${alert.title}</div>
+            <div class="alert-desc">${alert.desc}</div>
+            <div class="alert-time">${alert.time}</div>
+        </div>
+        <button class="alert-dismiss">✕</button>
+    `;
+    
+    alertsList.insertBefore(alertElement, alertsList.firstChild);
+    
+    // Добавляем обработчик для кнопки закрытия
+    const dismissBtn = alertElement.querySelector('.alert-dismiss');
+    dismissBtn?.addEventListener('click', () => {
+        alertElement.style.opacity = '0';
+        alertElement.style.transform = 'translateX(-100%)';
+        setTimeout(() => alertElement.remove(), 300);
+    });
+}
+
+function setupAlertDismissal() {
+    document.querySelectorAll('.alert-dismiss').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const alertItem = e.target.closest('.alert-item');
+            alertItem.style.opacity = '0';
+            alertItem.style.transform = 'translateX(-100%)';
+            setTimeout(() => alertItem.remove(), 300);
+        });
+    });
+}
+
+function calculateSLACompliance() {
+    const metrics = slaData.metrics;
+    let compliance = 0;
+    let count = 0;
+    
+    Object.values(metrics).forEach(metric => {
+        if (metric.unit === '★') {
+            compliance += metric.value >= metric.target ? 100 : (metric.value / metric.target) * 100;
+        } else {
+            compliance += metric.value <= metric.target ? 100 : (metric.target / metric.value) * 100;
+        }
+        count++;
+    });
+    
+    return compliance / count;
+}
+
+function showSLANotification(message, type = 'info', duration = 4000) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px;
+        color: white; font-weight: 500; z-index: 10000; transform: translateX(100%);
+        transition: transform 0.3s ease; max-width: 350px; backdrop-filter: blur(10px);
+    `;
+    
+    const backgrounds = {
+        success: 'rgba(76, 175, 80, 0.9)',
+        warning: 'rgba(255, 152, 0, 0.9)',
+        error: 'rgba(244, 67, 54, 0.9)',
+        info: 'rgba(33, 150, 243, 0.9)'
+    };
+    
+    const icons = { success: '✅', warning: '⚠️', error: '❌', info: '📊' };
+    
+    notification.style.background = backgrounds[type] || backgrounds.info;
+    notification.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><span>${icons[type] || '📊'}</span><span>${message}</span></div>`;
+    
+    document.body.appendChild(notification);
+    setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    }, duration);
 }

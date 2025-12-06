@@ -97,7 +97,7 @@
             </header>
 
             <!-- Раздел Обзор -->
-            <div class="section-content" id="overview" style="display: block;">
+            <div class="section-content" id="overview" style="display: none;">
             <div class="control-grid">
 
                 <div class="panel flow-panel">
@@ -837,18 +837,151 @@
             <!-- Раздел Обучение Модели -->
             <div class="section-content" id="model-training" style="display: none;">
                 <div class="training-grid">
+                    <!-- Основная панель обучения -->
                     <div class="panel training-panel">
                         <div class="panel-header">
                             <h3>🎓 Обучение AI Модели</h3>
-                            <button class="action-btn-primary">Начать обучение</button>
+                            <div class="training-actions">
+                                <button class="action-btn-primary" id="start-training-btn">Начать обучение</button>
+                                <button class="action-btn-secondary" id="pause-training-btn" disabled>⏸️ Пауза</button>
+                                <button class="action-btn-warning" id="stop-training-btn" disabled>⏹️ Остановить</button>
+                            </div>
                         </div>
                         <div class="training-progress">
                             <div class="progress-header">
-                                <span>Текущее обучение: Улучшение ответов на казахском языке</span>
-                                <span class="progress-percent">73%</span>
+                                <span id="training-task-name">Готов к обучению</span>
+                                <span class="progress-percent" id="training-progress-percent">0%</span>
                             </div>
                             <div class="progress-bar-large">
-                                <div class="progress-fill" style="width: 73%;"></div>
+                                <div class="progress-fill" id="training-progress-bar" style="width: 0%;"></div>
+                            </div>
+                            <div class="training-details">
+                                <div class="training-stat">
+                                    <span class="stat-label">Время обучения:</span>
+                                    <span class="stat-value" id="training-time">00:00:00</span>
+                                </div>
+                                <div class="training-stat">
+                                    <span class="stat-label">Эпох выполнено:</span>
+                                    <span class="stat-value" id="training-epochs">0/100</span>
+                                </div>
+                                <div class="training-stat">
+                                    <span class="stat-label">Точность модели:</span>
+                                    <span class="stat-value" id="training-accuracy">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Панель выбора типа обучения -->
+                    <div class="panel training-config">
+                        <div class="panel-header">
+                            <h3>⚙️ Конфигурация обучения</h3>
+                        </div>
+                        <div class="config-content">
+                            <div class="config-group">
+                                <label for="training-type">Тип обучения:</label>
+                                <select id="training-type" class="config-select">
+                                    <option value="language">Улучшение языковых навыков</option>
+                                    <option value="classification">Улучшение классификации</option>
+                                    <option value="response">Улучшение качества ответов</option>
+                                    <option value="multilingual">Многоязычное обучение</option>
+                                </select>
+                            </div>
+                            
+                            <div class="config-group">
+                                <label for="training-dataset">Набор данных:</label>
+                                <select id="training-dataset" class="config-select">
+                                    <option value="recent">Последние 1000 запросов</option>
+                                    <option value="all">Все исторические данные</option>
+                                    <option value="custom">Пользовательский набор</option>
+                                </select>
+                            </div>
+                            
+                            <div class="config-group">
+                                <label for="training-intensity">Интенсивность:</label>
+                                <select id="training-intensity" class="config-select">
+                                    <option value="low">Низкая (безопасная)</option>
+                                    <option value="medium" selected>Средняя</option>
+                                    <option value="high">Высокая (быстрая)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="config-group">
+                                <label>
+                                    <input type="checkbox" id="backup-model" checked>
+                                    Создать резервную копию модели
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Панель истории обучения -->
+                    <div class="panel training-history">
+                        <div class="panel-header">
+                            <h3>📈 История обучения</h3>
+                            <button class="refresh-btn" id="refresh-history">🔄</button>
+                        </div>
+                        <div class="history-content">
+                            <div class="history-item completed">
+                                <div class="history-header">
+                                    <span class="history-type">Многоязычное обучение</span>
+                                    <span class="history-date">Вчера, 14:30</span>
+                                </div>
+                                <div class="history-details">
+                                    <span class="history-result success">✅ Завершено успешно</span>
+                                    <span class="history-improvement">Точность: 94.2% (+2.1%)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="history-item completed">
+                                <div class="history-header">
+                                    <span class="history-type">Улучшение классификации</span>
+                                    <span class="history-date">2 дня назад</span>
+                                </div>
+                                <div class="history-details">
+                                    <span class="history-result success">✅ Завершено успешно</span>
+                                    <span class="history-improvement">Точность: 92.1% (+1.8%)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="history-item failed">
+                                <div class="history-header">
+                                    <span class="history-type">Улучшение ответов</span>
+                                    <span class="history-date">3 дня назад</span>
+                                </div>
+                                <div class="history-details">
+                                    <span class="history-result error">❌ Прервано</span>
+                                    <span class="history-improvement">Ошибка данных</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Панель метрик модели -->
+                    <div class="panel model-metrics">
+                        <div class="panel-header">
+                            <h3>📊 Метрики модели</h3>
+                        </div>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-value">94.2%</div>
+                                <div class="metric-label">Общая точность</div>
+                                <div class="metric-trend positive">+2.1%</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">91.7%</div>
+                                <div class="metric-label">Казахский язык</div>
+                                <div class="metric-trend positive">+3.4%</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">96.8%</div>
+                                <div class="metric-label">Русский язык</div>
+                                <div class="metric-trend neutral">+0.2%</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">1.2s</div>
+                                <div class="metric-label">Время отклика</div>
+                                <div class="metric-trend positive">-0.3s</div>
                             </div>
                         </div>
                     </div>
@@ -857,19 +990,164 @@
             
             <!-- Раздел SLA & KPI -->
             <div class="section-content" id="sla-kpi" style="display: none;">
-                <div class="sla-grid">
-                    <div class="panel sla-overview">
+                <div class="sla-container">
+                    <!-- Основные метрики SLA -->
+                    <div class="sla-main-panel">
                         <div class="panel-header">
                             <h3>📊 SLA & KPI Дашборд</h3>
+                            <div class="sla-actions">
+                                <button id="refresh-sla" class="btn-icon" title="Обновить данные">
+                                    🔄
+                                </button>
+                                <button id="export-sla" class="btn-icon" title="Экспорт отчёта">
+                                    📥
+                                </button>
+                                <button id="configure-sla" class="btn-icon" title="Настройки SLA">
+                                    ⚙️
+                                </button>
+                            </div>
                         </div>
-                        <div class="sla-metrics">
-                            <div class="sla-card excellent">
+                        
+                        <div class="sla-metrics-grid">
+                            <div class="sla-card excellent" id="first-response-card">
                                 <div class="sla-header">
                                     <span class="sla-title">Время первого ответа</span>
-                                    <span class="sla-target">Цель: &lt;30с</span>
+                                    <span class="sla-target">Цель: <30с</span>
                                 </div>
                                 <div class="sla-value">12.3с</div>
-                                <div class="sla-status">✅ Превышено на 58.9%</div>
+                                <div class="sla-status status-excellent">✅ Превышено на 58.9%</div>
+                                <div class="sla-trend">📈 Улучшение на 2.1с за неделю</div>
+                            </div>
+                            
+                            <div class="sla-card good" id="resolution-card">
+                                <div class="sla-header">
+                                    <span class="sla-title">Время решения</span>
+                                    <span class="sla-target">Цель: <4ч</span>
+                                </div>
+                                <div class="sla-value">2.8ч</div>
+                                <div class="sla-status status-good">✅ Цель достигнута</div>
+                                <div class="sla-trend">📉 Улучшение на 15мин за неделю</div>
+                            </div>
+                            
+                            <div class="sla-card warning" id="escalation-card">
+                                <div class="sla-header">
+                                    <span class="sla-title">Время эскалации</span>
+                                    <span class="sla-target">Цель: <24ч</span>
+                                </div>
+                                <div class="sla-value">18.5ч</div>
+                                <div class="sla-status status-warning">⚠️ Близко к лимиту</div>
+                                <div class="sla-trend">📊 Стабильно</div>
+                            </div>
+                            
+                            <div class="sla-card critical" id="satisfaction-card">
+                                <div class="sla-header">
+                                    <span class="sla-title">Удовлетворённость</span>
+                                    <span class="sla-target">Цель: >4.5</span>
+                                </div>
+                                <div class="sla-value">4.2★</div>
+                                <div class="sla-status status-critical">❌ Ниже цели</div>
+                                <div class="sla-trend">📉 Снижение на 0.3★ за неделю</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Панель управления SLA -->
+                    <div class="sla-controls-panel">
+                        <div class="panel-header">
+                            <h4>⚡ Быстрые действия</h4>
+                        </div>
+                        
+                        <div class="sla-quick-actions">
+                            <button id="create-sla-alert" class="sla-action-btn primary">
+                                🚨 Создать уведомление
+                            </button>
+                            <button id="schedule-review" class="sla-action-btn secondary">
+                                📅 Запланировать проверку
+                            </button>
+                            <button id="generate-report" class="sla-action-btn secondary">
+                                📋 Сгенерировать отчёт
+                            </button>
+                        </div>
+                        
+                        <div class="sla-thresholds">
+                            <h5>🎯 Пороговые значения</h5>
+                            <div class="threshold-item">
+                                <label>Первый ответ:</label>
+                                <input type="number" id="threshold-response" value="30" min="1" max="300">
+                                <span>секунд</span>
+                            </div>
+                            <div class="threshold-item">
+                                <label>Решение:</label>
+                                <input type="number" id="threshold-resolution" value="4" min="1" max="72">
+                                <span>часов</span>
+                            </div>
+                            <div class="threshold-item">
+                                <label>Эскалация:</label>
+                                <input type="number" id="threshold-escalation" value="24" min="1" max="168">
+                                <span>часов</span>
+                            </div>
+                            <button id="update-thresholds" class="sla-action-btn small">💾 Сохранить</button>
+                        </div>
+                    </div>
+                    
+                    <!-- График производительности -->
+                    <div class="sla-chart-panel">
+                        <div class="panel-header">
+                            <h4>📈 Производительность за период</h4>
+                            <div class="chart-controls">
+                                <select id="chart-period">
+                                    <option value="day">День</option>
+                                    <option value="week" selected>Неделя</option>
+                                    <option value="month">Месяц</option>
+                                </select>
+                                <button id="update-chart" class="btn-small">Обновить</button>
+                            </div>
+                        </div>
+                        
+                        <div class="sla-chart">
+                            <div class="chart-placeholder">
+                                <div class="chart-bars">
+                                    <div class="chart-bar" style="height: 85%; background: var(--success-color);" title="Пн: 85%"></div>
+                                    <div class="chart-bar" style="height: 92%; background: var(--success-color);" title="Вт: 92%"></div>
+                                    <div class="chart-bar" style="height: 78%; background: var(--warning-color);" title="Ср: 78%"></div>
+                                    <div class="chart-bar" style="height: 95%; background: var(--success-color);" title="Чт: 95%"></div>
+                                    <div class="chart-bar" style="height: 89%; background: var(--success-color);" title="Пт: 89%"></div>
+                                    <div class="chart-bar" style="height: 65%; background: var(--error-color);" title="Сб: 65%"></div>
+                                    <div class="chart-bar" style="height: 71%; background: var(--warning-color);" title="Вс: 71%"></div>
+                                </div>
+                                <div class="chart-labels">
+                                    <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Уведомления и алерты -->
+                    <div class="sla-alerts-panel">
+                        <div class="panel-header">
+                            <h4>🔔 Активные уведомления</h4>
+                            <button id="clear-alerts" class="btn-small danger">Очистить</button>
+                        </div>
+                        
+                        <div class="sla-alerts-list" id="sla-alerts-list">
+                            <div class="alert-item critical">
+                                <div class="alert-icon">🔴</div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Критическое нарушение SLA</div>
+                                    <div class="alert-desc">Тикет #1047 без ответа 45 минут</div>
+                                    <div class="alert-time">2 минуты назад</div>
+                                </div>
+                                <button class="alert-dismiss">✕</button>
+                            </div>
+                            
+                            <div class="alert-item warning">
+                                <div class="alert-icon">🟡</div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Предупреждение</div>
+                                    <div class="alert-desc">Среднее время ответа превышено</div>
+                                    <div class="alert-time">15 минут назад</div>
+                                </div>
+                                <button class="alert-dismiss">✕</button>
                             </div>
                         </div>
                     </div>
