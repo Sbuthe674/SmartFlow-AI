@@ -604,6 +604,487 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
     
+    // === ФУНКЦИОНАЛЬНОСТЬ БАЗЫ ЗНАНИЙ ===
+    
+    // Настройка обработчиков для базы знаний
+    function setupKnowledgeBaseActions() {
+        console.log('🧠 Настраиваю обработчики базы знаний...');
+        
+        // Кнопка добавления документа
+        const addDocBtn = document.querySelector('.knowledge-actions .action-btn-primary');
+        if (addDocBtn) {
+            addDocBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showAddDocumentModal();
+            });
+        }
+        
+        // Кнопки редактирования документов
+        document.querySelectorAll('.doc-btn.edit').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const docItem = e.target.closest('.knowledge-item');
+                const docName = docItem.querySelector('.doc-name').textContent;
+                editDocument(docName, docItem);
+            });
+        });
+        
+        // Кнопки удаления документов
+        document.querySelectorAll('.doc-btn.delete').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const docItem = e.target.closest('.knowledge-item');
+                const docName = docItem.querySelector('.doc-name').textContent;
+                deleteDocument(docName, docItem);
+            });
+        });
+        
+        // Кнопка поиска
+        const searchBtn = document.querySelector('.search-btn');
+        if (searchBtn) {
+            searchBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                performSearch();
+            });
+        }
+        
+        // Поиск по Enter
+        const searchInput = document.querySelector('.search-input');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    performSearch();
+                }
+            });
+        }
+        
+        console.log('✅ Обработчики базы знаний установлены');
+    }
+    
+    // Функция показа модального окна добавления документа
+    function showAddDocumentModal() {
+        console.log('📄 Открываю модальное окно добавления документа');
+        
+        const modal = document.createElement('div');
+        modal.className = 'knowledge-modal';
+        modal.innerHTML = `
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>📄 Добавить документ в базу знаний</h3>
+                    <button class="modal-close">✕</button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-document-form" class="document-form">
+                        <div class="form-group">
+                            <label for="doc-name">Название документа:</label>
+                            <input type="text" id="doc-name" placeholder="Введите название документа" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="doc-type">Тип документа:</label>
+                            <select id="doc-type">
+                                <option value="pdf">📄 PDF</option>
+                                <option value="docx">📝 Word Document</option>
+                                <option value="xlsx">📊 Excel</option>
+                                <option value="txt">📋 Текстовый файл</option>
+                                <option value="md">📝 Markdown</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="doc-file">Файл:</label>
+                            <div class="file-upload">
+                                <input type="file" id="doc-file" accept=".pdf,.docx,.xlsx,.txt,.md">
+                                <label for="doc-file" class="file-label">
+                                    📎 Выберите файл или перетащите сюда
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="doc-description">Описание (опционально):</label>
+                            <textarea id="doc-description" placeholder="Краткое описание содержимого документа"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="doc-auto-index" checked>
+                                Автоматически индексировать для поиска
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary modal-close">Отмена</button>
+                    <button class="btn-primary" onclick="addDocument()">Добавить документ</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Обработчики закрытия
+        modal.querySelectorAll('.modal-close, .modal-backdrop').forEach(el => {
+            el.addEventListener('click', () => modal.remove());
+        });
+        
+        // Обработка drag & drop
+        const fileUpload = modal.querySelector('.file-upload');
+        const fileInput = modal.querySelector('#doc-file');
+        
+        fileUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUpload.classList.add('dragover');
+        });
+        
+        fileUpload.addEventListener('dragleave', () => {
+            fileUpload.classList.remove('dragover');
+        });
+        
+        fileUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUpload.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateFileLabel(files[0].name);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                updateFileLabel(e.target.files[0].name);
+            }
+        });
+        
+        function updateFileLabel(filename) {
+            const label = modal.querySelector('.file-label');
+            label.textContent = `📎 ${filename}`;
+            label.style.color = 'var(--accent-green)';
+        }
+    }
+    
+    // Функция добавления документа
+    function addDocument() {
+        console.log('📝 Добавляю новый документ');
+        
+        const form = document.getElementById('add-document-form');
+        const formData = new FormData(form);
+        
+        const docName = document.getElementById('doc-name').value;
+        const docType = document.getElementById('doc-type').value;
+        const docFile = document.getElementById('doc-file').files[0];
+        const docDescription = document.getElementById('doc-description').value;
+        const autoIndex = document.getElementById('doc-auto-index').checked;
+        
+        if (!docName) {
+            showKnowledgeNotification('Введите название документа', 'error');
+            return;
+        }
+        
+        if (!docFile) {
+            showKnowledgeNotification('Выберите файл для загрузки', 'error');
+            return;
+        }
+        
+        // Эмуляция загрузки
+        const modal = document.querySelector('.knowledge-modal');
+        const addBtn = modal.querySelector('.btn-primary');
+        const originalText = addBtn.textContent;
+        
+        addBtn.textContent = '⏳ Загрузка...';
+        addBtn.disabled = true;
+        
+        setTimeout(() => {
+            // Добавляем документ в список
+            addDocumentToList({
+                name: docName,
+                type: docType,
+                file: docFile,
+                description: docDescription,
+                size: formatFileSize(docFile.size),
+                status: 'active'
+            });
+            
+            // Обновляем статистику
+            updateKnowledgeStats(1, docFile.size);
+            
+            modal.remove();
+            showKnowledgeNotification(`Документ "${docName}" успешно добавлен в базу знаний`, 'success');
+            
+            if (autoIndex) {
+                setTimeout(() => {
+                    showKnowledgeNotification('Индексация документа завершена', 'info');
+                }, 2000);
+            }
+        }, 1500);
+    }
+    
+    // Функция добавления документа в список
+    function addDocumentToList(doc) {
+        const knowledgeList = document.querySelector('.knowledge-list');
+        const docItem = document.createElement('div');
+        docItem.className = 'knowledge-item';
+        docItem.innerHTML = `
+            <div class="doc-icon">${getDocIcon(doc.type)}</div>
+            <div class="doc-info">
+                <div class="doc-name">${doc.name}</div>
+                <div class="doc-meta">${doc.type.toUpperCase()} • ${doc.size} • Только что добавлен</div>
+            </div>
+            <div class="doc-status active">Активен</div>
+            <div class="doc-actions">
+                <button class="doc-btn edit" onclick="editDocumentByElement(this)">✏️</button>
+                <button class="doc-btn delete" onclick="deleteDocumentByElement(this)">🗑️</button>
+            </div>
+        `;
+        
+        knowledgeList.appendChild(docItem);
+        
+        // Анимация появления
+        docItem.style.transform = 'translateY(-10px)';
+        docItem.style.opacity = '0';
+        setTimeout(() => {
+            docItem.style.transition = 'all 0.3s ease';
+            docItem.style.transform = 'translateY(0)';
+            docItem.style.opacity = '1';
+        }, 100);
+    }
+    
+    // Функция получения иконки документа
+    function getDocIcon(type) {
+        const icons = {
+            'pdf': '📄',
+            'docx': '📝',
+            'xlsx': '📊',
+            'txt': '📋',
+            'md': '📝'
+        };
+        return icons[type] || '📄';
+    }
+    
+    // Функция форматирования размера файла
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+    
+    // Функция редактирования документа
+    function editDocument(docName, docElement) {
+        console.log('✏️ Редактирование документа:', docName);
+        
+        const modal = document.createElement('div');
+        modal.className = 'knowledge-modal';
+        modal.innerHTML = `
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>✏️ Редактировать документ</h3>
+                    <button class="modal-close">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Название:</label>
+                        <input type="text" id="edit-doc-name" value="${docName}">
+                    </div>
+                    <div class="form-group">
+                        <label>Статус:</label>
+                        <select id="edit-doc-status">
+                            <option value="active">✅ Активен</option>
+                            <option value="inactive">❌ Неактивен</option>
+                            <option value="updating">🔄 Обновляется</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Описание:</label>
+                        <textarea id="edit-doc-description" placeholder="Обновить описание..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn-secondary" onclick="reindexDocument('${docName}')">🔄 Переиндексировать</button>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary modal-close">Отмена</button>
+                    <button class="btn-primary" onclick="saveDocumentChanges('${docName}')">Сохранить</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Обработчики закрытия
+        modal.querySelectorAll('.modal-close, .modal-backdrop').forEach(el => {
+            el.addEventListener('click', () => modal.remove());
+        });
+    }
+    
+    // Функция удаления документа
+    function deleteDocument(docName, docElement) {
+        console.log('🗑️ Удаление документа:', docName);
+        
+        if (confirm(`Вы уверены, что хотите удалить документ "${docName}"?`)) {
+            // Анимация удаления
+            docElement.style.transition = 'all 0.3s ease';
+            docElement.style.transform = 'scale(0.95)';
+            docElement.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                const docMeta = docElement.querySelector('.doc-meta').textContent;
+                const sizeMatch = docMeta.match(/(\d+\.?\d*)\s*(KB|MB|GB)/);
+                let fileSize = 0;
+                
+                if (sizeMatch) {
+                    const size = parseFloat(sizeMatch[1]);
+                    const unit = sizeMatch[2];
+                    fileSize = unit === 'MB' ? size * 1024 * 1024 : 
+                              unit === 'KB' ? size * 1024 : size;
+                }
+                
+                docElement.remove();
+                updateKnowledgeStats(-1, -fileSize);
+                showKnowledgeNotification(`Документ "${docName}" удален из базы знаний`, 'success');
+            }, 300);
+        }
+    }
+    
+    // Функция выполнения поиска
+    function performSearch() {
+        const searchInput = document.querySelector('.search-input');
+        const query = searchInput.value.trim();
+        
+        if (!query) {
+            showKnowledgeNotification('Введите запрос для поиска', 'error');
+            return;
+        }
+        
+        console.log('🔍 Выполняю поиск:', query);
+        
+        const searchBtn = document.querySelector('.search-btn');
+        const originalText = searchBtn.textContent;
+        
+        searchBtn.textContent = '⏳ Поиск...';
+        searchBtn.disabled = true;
+        
+        // Эмуляция поиска
+        setTimeout(() => {
+            const resultsContainer = document.querySelector('.search-results');
+            
+            // Генерируем случайные результаты поиска
+            const mockResults = generateMockSearchResults(query);
+            
+            resultsContainer.innerHTML = '';
+            
+            mockResults.forEach((result, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.style.opacity = '0';
+                resultItem.innerHTML = `
+                    <div class="result-score">${result.score}%</div>
+                    <div class="result-text">"${result.text}"</div>
+                    <div class="result-source">Источник: ${result.source}</div>
+                `;
+                
+                resultsContainer.appendChild(resultItem);
+                
+                // Анимированное появление результатов
+                setTimeout(() => {
+                    resultItem.style.transition = 'all 0.3s ease';
+                    resultItem.style.opacity = '1';
+                }, index * 100);
+            });
+            
+            searchBtn.textContent = originalText;
+            searchBtn.disabled = false;
+            
+            showKnowledgeNotification(`Найдено ${mockResults.length} результатов для "${query}"`, 'success');
+        }, 1500);
+    }
+    
+    // Функция генерации результатов поиска
+    function generateMockSearchResults(query) {
+        const mockData = [
+            {
+                text: `Для ${query} обратитесь к разделу документации или к администратору системы`,
+                source: 'Инструкция по работе с CRM',
+                score: Math.floor(Math.random() * 20) + 80
+            },
+            {
+                text: `Информация о ${query} содержится в актуальной версии тарифных планов`,
+                source: 'Тарифные планы компании',
+                score: Math.floor(Math.random() * 25) + 75
+            },
+            {
+                text: `По вопросам ${query} рекомендуем ознакомиться с политикой безопасности`,
+                source: 'Политика безопасности',
+                score: Math.floor(Math.random() * 30) + 70
+            }
+        ];
+        
+        return mockData.slice(0, Math.floor(Math.random() * 3) + 1);
+    }
+    
+    // Функция обновления статистики базы знаний
+    function updateKnowledgeStats(docCountChange, sizeChange) {
+        // Обновляем количество документов
+        const docCountElement = document.querySelector('.knowledge-stats .stat-item:first-child .stat-number');
+        if (docCountElement) {
+            const currentCount = parseInt(docCountElement.textContent.replace(',', ''));
+            const newCount = currentCount + docCountChange;
+            docCountElement.textContent = newCount.toLocaleString();
+        }
+        
+        // Обновляем размер базы (приблизительно)
+        const sizeElement = document.querySelector('.knowledge-stats .stat-item:nth-child(2) .stat-number');
+        if (sizeElement && sizeChange !== 0) {
+            const currentSize = parseFloat(sizeElement.textContent);
+            const sizeChangeInMB = Math.abs(sizeChange) / (1024 * 1024);
+            const newSize = sizeChange > 0 ? currentSize + sizeChangeInMB : currentSize - sizeChangeInMB;
+            sizeElement.textContent = Math.max(0, newSize).toFixed(1) + 'MB';
+        }
+    }
+    
+    // Функция показа уведомлений для базы знаний
+    function showKnowledgeNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `knowledge-notification notification-${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#F44336' : '#2196F3'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 10001;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+        `;
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : '🧠'}</span>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => notification.remove(), 300);
+        }, 4000);
+    }
+    
+    // Инициализация функциональности базы знаний
+    setupKnowledgeBaseActions();
+    
     // Инициализация функциональности инцидентов
     setupIncidentActions();
 
@@ -732,6 +1213,314 @@ window.showModalNotification = function(message, type = 'info') {
     notification.innerHTML = `
         <div style="display: flex; align-items: center; gap: 10px;">
             <span>${type === 'success' ? '✅' : type === 'warning' ? '⚠️' : type === 'error' ? '❌' : 'ℹ️'}</span>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
+};
+
+// === ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ БАЗЫ ЗНАНИЙ ===
+
+// Глобальная функция добавления документа (для вызова из модального окна)
+window.addDocument = function() {
+    console.log('📝 Добавляю новый документ');
+    
+    const form = document.getElementById('add-document-form');
+    
+    const docName = document.getElementById('doc-name').value;
+    const docType = document.getElementById('doc-type').value;
+    const docFile = document.getElementById('doc-file').files[0];
+    const docDescription = document.getElementById('doc-description').value;
+    const autoIndex = document.getElementById('doc-auto-index').checked;
+    
+    if (!docName) {
+        showKnowledgeNotification('Введите название документа', 'error');
+        return;
+    }
+    
+    if (!docFile) {
+        showKnowledgeNotification('Выберите файл для загрузки', 'error');
+        return;
+    }
+    
+    // Эмуляция загрузки
+    const modal = document.querySelector('.knowledge-modal');
+    const addBtn = modal.querySelector('.btn-primary');
+    const originalText = addBtn.textContent;
+    
+    addBtn.textContent = '⏳ Загрузка...';
+    addBtn.disabled = true;
+    
+    setTimeout(() => {
+        // Добавляем документ в список
+        addDocumentToList({
+            name: docName,
+            type: docType,
+            file: docFile,
+            description: docDescription,
+            size: formatFileSize(docFile.size),
+            status: 'active'
+        });
+        
+        // Обновляем статистику
+        updateKnowledgeStatsGlobal(1, docFile.size);
+        
+        modal.remove();
+        showKnowledgeNotification(`Документ "${docName}" успешно добавлен в базу знаний`, 'success');
+        
+        if (autoIndex) {
+            setTimeout(() => {
+                showKnowledgeNotification('Индексация документа завершена', 'info');
+            }, 2000);
+        }
+    }, 1500);
+};
+
+// Функция редактирования документа по элементу
+window.editDocumentByElement = function(buttonElement) {
+    const docItem = buttonElement.closest('.knowledge-item');
+    const docName = docItem.querySelector('.doc-name').textContent;
+    editDocumentGlobal(docName, docItem);
+};
+
+// Функция удаления документа по элементу
+window.deleteDocumentByElement = function(buttonElement) {
+    const docItem = buttonElement.closest('.knowledge-item');
+    const docName = docItem.querySelector('.doc-name').textContent;
+    deleteDocumentGlobal(docName, docItem);
+};
+
+// Глобальная функция редактирования документа
+window.editDocumentGlobal = function(docName, docElement) {
+    console.log('✏️ Редактирование документа:', docName);
+    
+    const modal = document.createElement('div');
+    modal.className = 'knowledge-modal';
+    modal.innerHTML = `
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Редактировать документ</h3>
+                <button class="modal-close">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Название:</label>
+                    <input type="text" id="edit-doc-name" value="${docName}">
+                </div>
+                <div class="form-group">
+                    <label>Статус:</label>
+                    <select id="edit-doc-status">
+                        <option value="active">✅ Активен</option>
+                        <option value="inactive">❌ Неактивен</option>
+                        <option value="updating">🔄 Обновляется</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Описание:</label>
+                    <textarea id="edit-doc-description" placeholder="Обновить описание..."></textarea>
+                </div>
+                <div class="form-group">
+                    <button class="btn-secondary" onclick="reindexDocument('${docName}')">🔄 Переиндексировать</button>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary modal-close">Отмена</button>
+                <button class="btn-primary" onclick="saveDocumentChanges('${docName}')">Сохранить</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Обработчики закрытия
+    modal.querySelectorAll('.modal-close, .modal-backdrop').forEach(el => {
+        el.addEventListener('click', () => modal.remove());
+    });
+};
+
+// Глобальная функция удаления документа
+window.deleteDocumentGlobal = function(docName, docElement) {
+    console.log('🗑️ Удаление документа:', docName);
+    
+    if (confirm(`Вы уверены, что хотите удалить документ "${docName}"?`)) {
+        // Анимация удаления
+        docElement.style.transition = 'all 0.3s ease';
+        docElement.style.transform = 'scale(0.95)';
+        docElement.style.opacity = '0.5';
+        
+        setTimeout(() => {
+            const docMeta = docElement.querySelector('.doc-meta').textContent;
+            const sizeMatch = docMeta.match(/(\d+\.?\d*)\s*(KB|MB|GB)/);
+            let fileSize = 0;
+            
+            if (sizeMatch) {
+                const size = parseFloat(sizeMatch[1]);
+                const unit = sizeMatch[2];
+                fileSize = unit === 'MB' ? size * 1024 * 1024 : 
+                          unit === 'KB' ? size * 1024 : size;
+            }
+            
+            docElement.remove();
+            updateKnowledgeStatsGlobal(-1, -fileSize);
+            showKnowledgeNotification(`Документ "${docName}" удален из базы знаний`, 'success');
+        }, 300);
+    }
+};
+
+// Функция сохранения изменений документа
+window.saveDocumentChanges = function(originalName) {
+    const newName = document.getElementById('edit-doc-name').value;
+    const newStatus = document.getElementById('edit-doc-status').value;
+    const newDescription = document.getElementById('edit-doc-description').value;
+    
+    console.log('💾 Сохраняю изменения для документа:', originalName);
+    
+    // Находим элемент документа в списке
+    const docItems = document.querySelectorAll('.knowledge-item');
+    let targetDoc = null;
+    
+    docItems.forEach(item => {
+        if (item.querySelector('.doc-name').textContent === originalName) {
+            targetDoc = item;
+        }
+    });
+    
+    if (targetDoc) {
+        // Обновляем название
+        targetDoc.querySelector('.doc-name').textContent = newName;
+        
+        // Обновляем статус
+        const statusElement = targetDoc.querySelector('.doc-status');
+        statusElement.className = `doc-status ${newStatus}`;
+        statusElement.textContent = newStatus === 'active' ? 'Активен' : 
+                                   newStatus === 'inactive' ? 'Неактивен' : 'Обновляется';
+    }
+    
+    // Закрываем модальное окно
+    const modal = document.querySelector('.knowledge-modal');
+    if (modal) modal.remove();
+    
+    showKnowledgeNotification(`Документ "${newName}" обновлен`, 'success');
+};
+
+// Функция переиндексации документа
+window.reindexDocument = function(docName) {
+    console.log('🔄 Переиндексация документа:', docName);
+    
+    const btn = event.target;
+    const originalText = btn.textContent;
+    
+    btn.textContent = '⏳ Индексация...';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        showKnowledgeNotification(`Документ "${docName}" переиндексирован`, 'success');
+    }, 2000);
+};
+
+// Глобальные вспомогательные функции
+window.addDocumentToList = function(doc) {
+    const knowledgeList = document.querySelector('.knowledge-list');
+    const docItem = document.createElement('div');
+    docItem.className = 'knowledge-item';
+    docItem.innerHTML = `
+        <div class="doc-icon">${getDocIconGlobal(doc.type)}</div>
+        <div class="doc-info">
+            <div class="doc-name">${doc.name}</div>
+            <div class="doc-meta">${doc.type.toUpperCase()} • ${doc.size} • Только что добавлен</div>
+        </div>
+        <div class="doc-status active">Активен</div>
+        <div class="doc-actions">
+            <button class="doc-btn edit" onclick="editDocumentByElement(this)">✏️</button>
+            <button class="doc-btn delete" onclick="deleteDocumentByElement(this)">🗑️</button>
+        </div>
+    `;
+    
+    knowledgeList.appendChild(docItem);
+    
+    // Анимация появления
+    docItem.style.transform = 'translateY(-10px)';
+    docItem.style.opacity = '0';
+    setTimeout(() => {
+        docItem.style.transition = 'all 0.3s ease';
+        docItem.style.transform = 'translateY(0)';
+        docItem.style.opacity = '1';
+    }, 100);
+};
+
+window.getDocIconGlobal = function(type) {
+    const icons = {
+        'pdf': '📄',
+        'docx': '📝',
+        'xlsx': '📊',
+        'txt': '📋',
+        'md': '📝'
+    };
+    return icons[type] || '📄';
+};
+
+window.formatFileSize = function(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+};
+
+window.updateKnowledgeStatsGlobal = function(docCountChange, sizeChange) {
+    // Обновляем количество документов
+    const docCountElement = document.querySelector('.knowledge-stats .stat-item:first-child .stat-number');
+    if (docCountElement) {
+        const currentCount = parseInt(docCountElement.textContent.replace(',', ''));
+        const newCount = currentCount + docCountChange;
+        docCountElement.textContent = newCount.toLocaleString();
+    }
+    
+    // Обновляем размер базы (приблизительно)
+    const sizeElement = document.querySelector('.knowledge-stats .stat-item:nth-child(2) .stat-number');
+    if (sizeElement && sizeChange !== 0) {
+        const currentSize = parseFloat(sizeElement.textContent);
+        const sizeChangeInMB = Math.abs(sizeChange) / (1024 * 1024);
+        const newSize = sizeChange > 0 ? currentSize + sizeChangeInMB : currentSize - sizeChangeInMB;
+        sizeElement.textContent = Math.max(0, newSize).toFixed(1) + 'MB';
+    }
+};
+
+window.showKnowledgeNotification = function(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `knowledge-notification notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#F44336' : '#2196F3'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        z-index: 10001;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        max-width: 400px;
+    `;
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : '🧠'}</span>
             <span>${message}</span>
         </div>
     `;
