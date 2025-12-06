@@ -1201,6 +1201,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Инициализация функциональности инцидентов
     setupIncidentActions();
+    
+    // Инициализация функциональности правил маршрутизации
+    setupRoutingRulesActions();
 
 });
 
@@ -1713,3 +1716,375 @@ function initializeDashboard() {
         loadDashboardData();
     }
 }
+
+// === ROUTING RULES MANAGEMENT === 
+
+let currentEditingRule = null;
+let nextRuleId = 4;
+
+// Mock data для правил маршрутизации
+let routingRules = [
+    {
+        id: 1,
+        name: 'Критические системные ошибки',
+        conditions: 'Содержит: "ошибка", "не работает", "сбой"',
+        actions: 'Немедленная эскалация на L2',
+        priority: 10,
+        active: true
+    },
+    {
+        id: 2,
+        name: 'Запросы на смену пароля',
+        conditions: 'Содержит: "пароль", "забыл", "сменить"',
+        actions: 'Автоответ с инструкцией + направить в IT',
+        priority: 7,
+        active: true
+    },
+    {
+        id: 3,
+        name: 'Общие вопросы',
+        conditions: 'Не соответствует другим правилам',
+        actions: 'Базовый AI ответ',
+        priority: 1,
+        active: false
+    }
+];
+
+// Функция инициализации обработчиков правил маршрутизации
+function setupRoutingRulesActions() {
+    // Кнопка создания нового правила
+    const createBtn = document.getElementById('create-rule-btn');
+    if (createBtn) {
+        createBtn.addEventListener('click', () => {
+            openRuleModal();
+        });
+    }
+
+    // Обработчики для существующих правил
+    setupRuleEventHandlers();
+}
+
+// Настройка обработчиков событий для правил
+function setupRuleEventHandlers() {
+    // Кнопки редактирования
+    document.querySelectorAll('.edit-rule').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const ruleItem = e.target.closest('.rule-item');
+            const ruleId = parseInt(ruleItem.dataset.ruleId);
+            editRule(ruleId);
+        });
+    });
+
+    // Кнопки удаления
+    document.querySelectorAll('.delete-rule').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const ruleItem = e.target.closest('.rule-item');
+            const ruleId = parseInt(ruleItem.dataset.ruleId);
+            deleteRule(ruleId);
+        });
+    });
+
+    // Переключатели активности
+    document.querySelectorAll('.rule-toggle').forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const ruleItem = e.target.closest('.rule-item');
+            const ruleId = parseInt(ruleItem.dataset.ruleId);
+            toggleRule(ruleId);
+        });
+    });
+}
+
+// Создание нового правила
+function createNewRule() {
+    currentEditingRule = null;
+    document.getElementById('rule-modal-title').textContent = 'Создать новое правило';
+    
+    // Очистить форму
+    document.getElementById('rule-name-input').value = '';
+    document.getElementById('rule-conditions-input').value = '';
+    document.getElementById('rule-actions-input').value = '';
+    document.getElementById('rule-priority-input').value = '5';
+    document.getElementById('rule-active-input').checked = true;
+    
+    document.getElementById('rule-modal').style.display = 'flex';
+}
+
+// Редактирование существующего правила
+function editRule(ruleId) {
+    const rule = routingRules.find(r => r.id === ruleId);
+    if (!rule) return;
+
+    currentEditingRule = rule;
+    document.getElementById('rule-modal-title').textContent = 'Редактировать правило';
+    
+    // Заполнить форму данными правила
+    document.getElementById('rule-name-input').value = rule.name;
+    document.getElementById('rule-conditions-input').value = rule.conditions;
+    document.getElementById('rule-actions-input').value = rule.actions;
+    document.getElementById('rule-priority-input').value = rule.priority;
+    document.getElementById('rule-active-input').checked = rule.active;
+    
+    document.getElementById('rule-modal').style.display = 'flex';
+}
+
+// Удаление правила
+function deleteRule(ruleId) {
+    const rule = routingRules.find(r => r.id === ruleId);
+    if (!rule) return;
+
+    if (confirm(`Вы уверены, что хотите удалить правило "${rule.name}"?`)) {
+        // Удалить из массива
+        routingRules = routingRules.filter(r => r.id !== ruleId);
+        
+        // Удалить из DOM с анимацией
+        const ruleElement = document.querySelector(`[data-rule-id="${ruleId}"]`);
+        if (ruleElement) {
+            ruleElement.style.transform = 'translateX(-100%)';
+            ruleElement.style.opacity = '0';
+            setTimeout(() => {
+                ruleElement.remove();
+                updateRulesStats();
+                showRoutingNotification('Правило удалено', 'success');
+            }, 300);
+        }
+    }
+}
+
+// Переключение активности правила
+function toggleRule(ruleId) {
+    const rule = routingRules.find(r => r.id === ruleId);
+    if (!rule) return;
+
+    rule.active = !rule.active;
+    
+    // Обновить в DOM
+    const ruleElement = document.querySelector(`[data-rule-id="${ruleId}"]`);
+    if (ruleElement) {
+        const toggle = ruleElement.querySelector('.rule-toggle');
+        
+        if (rule.active) {
+            ruleElement.classList.remove('inactive');
+            ruleElement.classList.add('active');
+            toggle.classList.remove('inactive');
+            toggle.classList.add('active');
+            toggle.textContent = '●';
+            toggle.dataset.active = 'true';
+        } else {
+            ruleElement.classList.remove('active');
+            ruleElement.classList.add('inactive');
+            toggle.classList.remove('active');
+            toggle.classList.add('inactive');
+            toggle.textContent = '○';
+            toggle.dataset.active = 'false';
+        }
+        
+        updateRulesStats();
+        showRoutingNotification(
+            rule.active ? 'Правило активировано' : 'Правило деактивировано',
+            'success'
+        );
+    }
+}
+
+// Открытие модального окна
+function openRuleModal(rule = null) {
+    if (rule) {
+        editRule(rule.id);
+    } else {
+        createNewRule();
+    }
+}
+
+// Закрытие модального окна
+function closeRuleModal() {
+    document.getElementById('rule-modal').style.display = 'none';
+    currentEditingRule = null;
+}
+
+// Сохранение правила
+function saveRule() {
+    const name = document.getElementById('rule-name-input').value.trim();
+    const conditions = document.getElementById('rule-conditions-input').value.trim();
+    const actions = document.getElementById('rule-actions-input').value.trim();
+    const priority = parseInt(document.getElementById('rule-priority-input').value);
+    const active = document.getElementById('rule-active-input').checked;
+
+    // Валидация
+    if (!name || !conditions || !actions) {
+        alert('Пожалуйста, заполните все обязательные поля');
+        return;
+    }
+
+    if (priority < 1 || priority > 10) {
+        alert('Приоритет должен быть от 1 до 10');
+        return;
+    }
+
+    if (currentEditingRule) {
+        // Обновление существующего правила
+        currentEditingRule.name = name;
+        currentEditingRule.conditions = conditions;
+        currentEditingRule.actions = actions;
+        currentEditingRule.priority = priority;
+        currentEditingRule.active = active;
+        
+        // Обновить в DOM
+        updateRuleInDOM(currentEditingRule);
+        showRoutingNotification('Правило обновлено', 'success');
+    } else {
+        // Создание нового правила
+        const newRule = {
+            id: nextRuleId++,
+            name,
+            conditions,
+            actions,
+            priority,
+            active
+        };
+        
+        routingRules.push(newRule);
+        addRuleToDOM(newRule);
+        showRoutingNotification('Правило создано', 'success');
+    }
+
+    updateRulesStats();
+    closeRuleModal();
+}
+
+// Обновление правила в DOM
+function updateRuleInDOM(rule) {
+    const ruleElement = document.querySelector(`[data-rule-id="${rule.id}"]`);
+    if (!ruleElement) return;
+
+    // Обновить содержимое
+    ruleElement.querySelector('.rule-name').textContent = rule.name;
+    ruleElement.querySelector('.condition').textContent = rule.conditions;
+    ruleElement.querySelector('.action').textContent = rule.actions;
+    ruleElement.querySelector('.priority-value').textContent = rule.priority;
+
+    // Обновить класс приоритета
+    ruleElement.classList.remove('priority-high', 'priority-medium', 'priority-low');
+    if (rule.priority >= 8) {
+        ruleElement.classList.add('priority-high');
+    } else if (rule.priority >= 5) {
+        ruleElement.classList.add('priority-medium');
+    } else {
+        ruleElement.classList.add('priority-low');
+    }
+
+    // Обновить статус активности
+    const toggle = ruleElement.querySelector('.rule-toggle');
+    if (rule.active) {
+        ruleElement.classList.remove('inactive');
+        ruleElement.classList.add('active');
+        toggle.classList.remove('inactive');
+        toggle.classList.add('active');
+        toggle.textContent = '●';
+    } else {
+        ruleElement.classList.remove('active');
+        ruleElement.classList.add('inactive');
+        toggle.classList.remove('active');
+        toggle.classList.add('inactive');
+        toggle.textContent = '○';
+    }
+}
+
+// Добавление нового правила в DOM
+function addRuleToDOM(rule) {
+    const rulesList = document.querySelector('.rules-list');
+    const priorityClass = rule.priority >= 8 ? 'priority-high' : 
+                         rule.priority >= 5 ? 'priority-medium' : 'priority-low';
+    const activeClass = rule.active ? 'active' : 'inactive';
+    const toggleClass = rule.active ? 'active' : 'inactive';
+    const toggleText = rule.active ? '●' : '○';
+
+    const ruleHTML = `
+        <div class="rule-item ${priorityClass} ${activeClass}" data-rule-id="${rule.id}">
+            <div class="rule-header">
+                <div class="rule-name">${rule.name}</div>
+                <div class="rule-controls">
+                    <button class="rule-btn edit-rule" title="Редактировать">✏️</button>
+                    <button class="rule-btn delete-rule" title="Удалить">🗑️</button>
+                    <div class="rule-toggle ${toggleClass}" data-active="${rule.active}">${toggleText}</div>
+                </div>
+            </div>
+            <div class="rule-details">
+                <div class="rule-conditions">
+                    <span class="condition-label">Условия:</span>
+                    <span class="condition">${rule.conditions}</span>
+                </div>
+                <div class="rule-actions">
+                    <span class="action-label">Действие:</span>
+                    <span class="action">${rule.actions}</span>
+                </div>
+                <div class="rule-priority">
+                    <span class="priority-label">Приоритет:</span>
+                    <span class="priority-value">${rule.priority}</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    rulesList.insertAdjacentHTML('beforeend', ruleHTML);
+    
+    // Настроить обработчики для нового элемента
+    setupRuleEventHandlers();
+}
+
+// Обновление статистики правил
+function updateRulesStats() {
+    const totalRules = routingRules.length;
+    const activeRules = routingRules.filter(r => r.active).length;
+    const avgPriority = totalRules > 0 ? 
+        (routingRules.reduce((sum, r) => sum + r.priority, 0) / totalRules).toFixed(1) : '0';
+
+    document.getElementById('total-rules').textContent = totalRules;
+    document.getElementById('active-rules').textContent = activeRules;
+    document.getElementById('avg-priority').textContent = avgPriority;
+}
+
+// Показать уведомление для правил маршрутизации
+function showRoutingNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `routing-notification notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#F44336' : '#2196F3'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        z-index: 10001;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        max-width: 400px;
+    `;
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : '🔀'}</span>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
+}
+
+// Глобальные функции для модального окна
+window.closeRuleModal = closeRuleModal;
+window.saveRule = saveRule;

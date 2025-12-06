@@ -469,22 +469,142 @@
                     <div class="panel rules-panel">
                         <div class="panel-header">
                             <h3>🔀 Правила Маршрутизации</h3>
-                            <button class="action-btn-primary">+ Новое правило</button>
+                            <button class="action-btn-primary" id="create-rule-btn">+ Новое правило</button>
+                        </div>
+                        <div class="rules-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Всего правил:</span>
+                                <span class="stat-value" id="total-rules">3</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Активных:</span>
+                                <span class="stat-value" id="active-rules">2</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Средний приоритет:</span>
+                                <span class="stat-value" id="avg-priority">7.3</span>
+                            </div>
                         </div>
                         <div class="rules-list">
-                            <div class="rule-item priority-high">
+                            <div class="rule-item priority-high active" data-rule-id="1">
                                 <div class="rule-header">
                                     <div class="rule-name">Критические системные ошибки</div>
-                                    <div class="rule-toggle active">●</div>
+                                    <div class="rule-controls">
+                                        <button class="rule-btn edit-rule" title="Редактировать">✏️</button>
+                                        <button class="rule-btn delete-rule" title="Удалить">🗑️</button>
+                                        <div class="rule-toggle active" data-active="true">●</div>
+                                    </div>
                                 </div>
-                                <div class="rule-conditions">
-                                    <span class="condition">Содержит: "ошибка", "не работает", "сбой"</span>
+                                <div class="rule-details">
+                                    <div class="rule-conditions">
+                                        <span class="condition-label">Условия:</span>
+                                        <span class="condition">Содержит: "ошибка", "не работает", "сбой"</span>
+                                    </div>
+                                    <div class="rule-actions">
+                                        <span class="action-label">Действие:</span>
+                                        <span class="action">→ Немедленная эскалация на L2</span>
+                                    </div>
+                                    <div class="rule-priority">
+                                        <span class="priority-label">Приоритет:</span>
+                                        <span class="priority-value">10</span>
+                                    </div>
                                 </div>
-                                <div class="rule-actions">
-                                    <span class="action">→ Немедленная эскалация на L2</span>
+                            </div>
+                            
+                            <div class="rule-item priority-medium active" data-rule-id="2">
+                                <div class="rule-header">
+                                    <div class="rule-name">Запросы на смену пароля</div>
+                                    <div class="rule-controls">
+                                        <button class="rule-btn edit-rule" title="Редактировать">✏️</button>
+                                        <button class="rule-btn delete-rule" title="Удалить">🗑️</button>
+                                        <div class="rule-toggle active" data-active="true">●</div>
+                                    </div>
+                                </div>
+                                <div class="rule-details">
+                                    <div class="rule-conditions">
+                                        <span class="condition-label">Условия:</span>
+                                        <span class="condition">Содержит: "пароль", "забыл", "сменить"</span>
+                                    </div>
+                                    <div class="rule-actions">
+                                        <span class="action-label">Действие:</span>
+                                        <span class="action">→ Автоответ с инструкцией + направить в IT</span>
+                                    </div>
+                                    <div class="rule-priority">
+                                        <span class="priority-label">Приоритет:</span>
+                                        <span class="priority-value">7</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="rule-item priority-low inactive" data-rule-id="3">
+                                <div class="rule-header">
+                                    <div class="rule-name">Общие вопросы</div>
+                                    <div class="rule-controls">
+                                        <button class="rule-btn edit-rule" title="Редактировать">✏️</button>
+                                        <button class="rule-btn delete-rule" title="Удалить">🗑️</button>
+                                        <div class="rule-toggle inactive" data-active="false">○</div>
+                                    </div>
+                                </div>
+                                <div class="rule-details">
+                                    <div class="rule-conditions">
+                                        <span class="condition-label">Условия:</span>
+                                        <span class="condition">Не соответствует другим правилам</span>
+                                    </div>
+                                    <div class="rule-actions">
+                                        <span class="action-label">Действие:</span>
+                                        <span class="action">→ Базовый AI ответ</span>
+                                    </div>
+                                    <div class="rule-priority">
+                                        <span class="priority-label">Приоритет:</span>
+                                        <span class="priority-value">1</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Модальное окно для создания/редактирования правила -->
+            <div id="rule-modal" class="modal-overlay" style="display: none;">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h3 id="rule-modal-title">Создать новое правило</h3>
+                        <button class="modal-close" onclick="closeRuleModal()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="rule-form">
+                            <div class="form-group">
+                                <label for="rule-name-input">Название правила:</label>
+                                <input type="text" id="rule-name-input" placeholder="Введите название правила" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rule-conditions-input">Условия срабатывания:</label>
+                                <textarea id="rule-conditions-input" placeholder="Например: содержит 'ошибка', 'проблема'" rows="3" required></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rule-actions-input">Действия:</label>
+                                <textarea id="rule-actions-input" placeholder="Например: направить в отдел IT, автоответ" rows="3" required></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rule-priority-input">Приоритет (1-10):</label>
+                                <input type="number" id="rule-priority-input" min="1" max="10" value="5" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="rule-active-input" checked>
+                                    <span>Правило активно</span>
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="closeRuleModal()">Отмена</button>
+                        <button type="submit" class="btn-primary" onclick="saveRule()">Сохранить</button>
                     </div>
                 </div>
             </div>
