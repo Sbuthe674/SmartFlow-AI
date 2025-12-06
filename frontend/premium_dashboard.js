@@ -9,6 +9,143 @@ const API_CONFIG = {
     }
 };
 
+// Визуализация маршрутизации в реальном времени
+class FlowVisualization {
+    constructor() {
+        this.isActive = true;
+        this.counters = {
+            processed: 1847,
+            automation: 52.4,
+            avgResponse: 1.2
+        };
+        this.updateInterval = null;
+        this.init();
+    }
+
+    init() {
+        this.setupControls();
+        this.startRealTimeUpdates();
+    }
+
+    setupControls() {
+        const startBtn = document.getElementById('start-viz');
+        const pauseBtn = document.getElementById('pause-viz');
+        const resetBtn = document.getElementById('reset-viz');
+
+        if (startBtn) {
+            startBtn.addEventListener('click', () => this.startVisualization());
+        }
+        if (pauseBtn) {
+            pauseBtn.addEventListener('click', () => this.pauseVisualization());
+        }
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => this.resetVisualization());
+        }
+    }
+
+    startVisualization() {
+        this.isActive = true;
+        this.toggleAnimations(true);
+        this.updateButtonStates('start');
+        this.startRealTimeUpdates();
+    }
+
+    pauseVisualization() {
+        this.isActive = false;
+        this.toggleAnimations(false);
+        this.updateButtonStates('pause');
+        this.stopRealTimeUpdates();
+    }
+
+    resetVisualization() {
+        this.counters = { processed: 0, automation: 52.4, avgResponse: 1.2 };
+        this.updateCounters();
+        this.isActive = true;
+        this.toggleAnimations(true);
+        this.updateButtonStates('start');
+    }
+
+    toggleAnimations(active) {
+        const svg = document.querySelector('.flow-svg');
+        if (!svg) return;
+
+        const animations = svg.querySelectorAll('animateMotion, animate, animateTransform');
+        animations.forEach(anim => {
+            if (active) {
+                anim.beginElement();
+            } else {
+                anim.endElement();
+            }
+        });
+    }
+
+    updateButtonStates(activeState) {
+        const buttons = {
+            start: document.getElementById('start-viz'),
+            pause: document.getElementById('pause-viz'),
+            reset: document.getElementById('reset-viz')
+        };
+
+        // Remove active class from all buttons
+        Object.values(buttons).forEach(btn => {
+            if (btn) btn.classList.remove('active');
+        });
+
+        // Add active class to current button
+        if (buttons[activeState]) {
+            buttons[activeState].classList.add('active');
+        }
+    }
+
+    startRealTimeUpdates() {
+        if (this.updateInterval) return;
+        
+        this.updateInterval = setInterval(() => {
+            if (this.isActive) {
+                this.updateCounters();
+            }
+        }, 2000);
+    }
+
+    stopRealTimeUpdates() {
+        if (this.updateInterval) {
+            clearInterval(this.updateInterval);
+            this.updateInterval = null;
+        }
+    }
+
+    updateCounters() {
+        // Simulate real-time data changes
+        this.counters.processed += Math.floor(Math.random() * 5) + 1;
+        this.counters.automation += (Math.random() - 0.5) * 0.2;
+        this.counters.avgResponse += (Math.random() - 0.5) * 0.1;
+
+        // Ensure realistic ranges
+        this.counters.automation = Math.max(45, Math.min(60, this.counters.automation));
+        this.counters.avgResponse = Math.max(0.8, Math.min(2.5, this.counters.avgResponse));
+
+        // Update DOM
+        this.updateCounterDisplay('processed-count', this.counters.processed.toLocaleString());
+        this.updateCounterDisplay('automation-rate', `${this.counters.automation.toFixed(1)}%`);
+        this.updateCounterDisplay('avg-response', `${this.counters.avgResponse.toFixed(1)}s`);
+    }
+
+    updateCounterDisplay(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+            // Add pulse effect
+            element.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+            }, 200);
+        }
+    }
+}
+
+// Initialize flow visualization when DOM is loaded
+let flowViz = null;
+
 // Utility function for API calls
 async function apiCall(endpoint, options = {}) {
     const url = `${API_CONFIG.BASE_URL}${endpoint}`;
@@ -229,6 +366,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Инициализация языка
     updateContent(currentLang);
+    
+    // Инициализация визуализации потоков
+    try {
+        flowViz = new FlowVisualization();
+        console.log('✅ Визуализация маршрутизации инициализирована');
+    } catch (error) {
+        console.error('❌ Ошибка инициализации визуализации:', error);
+    }
     
     // Обработчики переключения языка
     document.querySelectorAll('.lang-btn').forEach(button => {
@@ -1204,6 +1349,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Инициализация функциональности правил маршрутизации
     setupRoutingRulesActions();
+    
+    // Инициализация визуализации маршрутизации
+    setupVisualizationControls();
 
 });
 
@@ -2088,3 +2236,320 @@ function showRoutingNotification(message, type = 'info') {
 // Глобальные функции для модального окна
 window.closeRuleModal = closeRuleModal;
 window.saveRule = saveRule;
+
+// === ROUTING VISUALIZATION (REAL-TIME) ===
+
+let visualizationState = {
+    isRunning: false,
+    isPaused: false,
+    intervalId: null,
+    counters: {
+        input: 0,
+        critical: 0,
+        medium: 0,
+        low: 0,
+        l2: 0,
+        it: 0,
+        ai: 0
+    },
+    totalRequests: 0,
+    startTime: null
+};
+
+// Инициализация визуализации
+function setupVisualizationControls() {
+    const startBtn = document.getElementById('start-simulation');
+    const stopBtn = document.getElementById('stop-simulation');
+    const resetBtn = document.getElementById('reset-simulation');
+
+    if (startBtn) {
+        startBtn.addEventListener('click', startVisualization);
+    }
+    
+    if (stopBtn) {
+        stopBtn.addEventListener('click', pauseVisualization);
+    }
+    
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetVisualization);
+    }
+
+    // Добавить hover эффекты для узлов
+    setupNodeInteractions();
+    
+    // Автозапуск визуализации
+    setTimeout(startVisualization, 1000);
+}
+
+// Настройка интерактивности узлов
+function setupNodeInteractions() {
+    const nodes = document.querySelectorAll('.flow-node');
+    nodes.forEach(node => {
+        node.addEventListener('mouseenter', () => {
+            showNodeTooltip(node);
+        });
+        
+        node.addEventListener('mouseleave', () => {
+            hideNodeTooltip();
+        });
+    });
+}
+
+// Показать подсказку для узла
+function showNodeTooltip(node) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'flow-tooltip';
+    tooltip.style.cssText = `
+        position: absolute;
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        z-index: 10000;
+        pointer-events: none;
+        white-space: nowrap;
+    `;
+    
+    const rect = node.getBoundingClientRect();
+    const nodeType = node.classList.contains('input-node') ? 'input' :
+                    node.classList.contains('rule-node') ? 'rule' : 'output';
+    
+    let tooltipText = '';
+    switch(nodeType) {
+        case 'input':
+            tooltipText = `Входящие запросы: ${visualizationState.counters.input}`;
+            break;
+        case 'rule':
+            if (node.classList.contains('priority-high')) {
+                tooltipText = `Критические: ${visualizationState.counters.critical} (${((visualizationState.counters.critical / visualizationState.totalRequests) * 100 || 0).toFixed(1)}%)`;
+            } else if (node.classList.contains('priority-medium')) {
+                tooltipText = `Средние: ${visualizationState.counters.medium} (${((visualizationState.counters.medium / visualizationState.totalRequests) * 100 || 0).toFixed(1)}%)`;
+            } else {
+                tooltipText = `Низкие: ${visualizationState.counters.low} (${((visualizationState.counters.low / visualizationState.totalRequests) * 100 || 0).toFixed(1)}%)`;
+            }
+            break;
+        case 'output':
+            if (node.classList.contains('l2-escalation')) {
+                tooltipText = `L2 Эскалация: ${visualizationState.counters.l2}`;
+            } else if (node.classList.contains('it-department')) {
+                tooltipText = `IT Отдел: ${visualizationState.counters.it}`;
+            } else {
+                tooltipText = `AI Ответы: ${visualizationState.counters.ai}`;
+            }
+            break;
+    }
+    
+    tooltip.textContent = tooltipText;
+    tooltip.style.left = rect.right + 10 + 'px';
+    tooltip.style.top = rect.top + (rect.height / 2) - 12 + 'px';
+    
+    document.body.appendChild(tooltip);
+}
+
+// Скрыть подсказку
+function hideNodeTooltip() {
+    const tooltip = document.querySelector('.flow-tooltip');
+    if (tooltip) {
+        tooltip.remove();
+    }
+}
+
+// Запуск визуализации
+function startVisualization() {
+    if (visualizationState.isRunning && !visualizationState.isPaused) return;
+    
+    visualizationState.isRunning = true;
+    visualizationState.isPaused = false;
+    visualizationState.startTime = visualizationState.startTime || Date.now();
+    
+    const svg = document.querySelector('.routing-flow-svg');
+    if (svg) {
+        svg.classList.remove('paused', 'stopped');
+        
+        // Показать анимированные потоки
+        const particles = svg.querySelectorAll('.flow-particle');
+        particles.forEach(particle => {
+            particle.style.display = 'block';
+        });
+    }
+    
+    // Запустить симуляцию данных
+    visualizationState.intervalId = setInterval(simulateDataFlow, 2000);
+    
+    showRoutingNotification('Визуализация запущена', 'success');
+    updateVisualizationButtons();
+}
+
+// Пауза визуализации
+function pauseVisualization() {
+    if (!visualizationState.isRunning) return;
+    
+    visualizationState.isPaused = true;
+    
+    const svg = document.querySelector('.routing-flow-svg');
+    if (svg) {
+        svg.classList.add('paused');
+    }
+    
+    if (visualizationState.intervalId) {
+        clearInterval(visualizationState.intervalId);
+    }
+    
+    showRoutingNotification('Визуализация приостановлена', 'info');
+    updateVisualizationButtons();
+}
+
+// Сброс визуализации
+function resetVisualization() {
+    visualizationState.isRunning = false;
+    visualizationState.isPaused = false;
+    visualizationState.startTime = null;
+    
+    // Сброс счетчиков
+    Object.keys(visualizationState.counters).forEach(key => {
+        visualizationState.counters[key] = 0;
+    });
+    visualizationState.totalRequests = 0;
+    
+    // Остановить анимации
+    const svg = document.querySelector('.routing-flow-svg');
+    if (svg) {
+        svg.classList.add('stopped');
+        svg.classList.remove('paused');
+        
+        const particles = svg.querySelectorAll('.flow-particle');
+        particles.forEach(particle => {
+            particle.style.display = 'none';
+        });
+    }
+    
+    if (visualizationState.intervalId) {
+        clearInterval(visualizationState.intervalId);
+    }
+    
+    updateCounterDisplays();
+    updateRealTimeMetrics();
+    
+    showRoutingNotification('Визуализация сброшена', 'info');
+    updateVisualizationButtons();
+}
+
+// Симуляция потока данных
+function simulateDataFlow() {
+    if (!visualizationState.isRunning || visualizationState.isPaused) return;
+    
+    // Генерация случайных запросов
+    const newRequests = Math.floor(Math.random() * 5) + 1;
+    visualizationState.totalRequests += newRequests;
+    visualizationState.counters.input += newRequests;
+    
+    // Распределение по правилам (согласно приоритетам)
+    for (let i = 0; i < newRequests; i++) {
+        const rand = Math.random();
+        
+        if (rand < 0.15) { // 15% критические
+            visualizationState.counters.critical++;
+            visualizationState.counters.l2++;
+        } else if (rand < 0.45) { // 30% средние
+            visualizationState.counters.medium++;
+            visualizationState.counters.it++;
+        } else { // 55% низкие
+            visualizationState.counters.low++;
+            visualizationState.counters.ai++;
+        }
+    }
+    
+    updateCounterDisplays();
+    updateRealTimeMetrics();
+    
+    // Добавить эффект пульсации к активным узлам
+    pulseActiveNodes();
+}
+
+// Обновление отображения счетчиков
+function updateCounterDisplays() {
+    const counterElements = {
+        'input-counter': visualizationState.counters.input,
+        'critical-counter': visualizationState.counters.critical,
+        'medium-counter': visualizationState.counters.medium,
+        'low-counter': visualizationState.counters.low,
+        'l2-counter': visualizationState.counters.l2,
+        'it-counter': visualizationState.counters.it,
+        'ai-counter': visualizationState.counters.ai
+    };
+    
+    Object.entries(counterElements).forEach(([id, value]) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    });
+}
+
+// Обновление метрик в реальном времени
+function updateRealTimeMetrics() {
+    const elapsedMinutes = visualizationState.startTime ? 
+        (Date.now() - visualizationState.startTime) / (1000 * 60) : 0;
+    
+    const requestsPerMinute = elapsedMinutes > 0 ? 
+        Math.round(visualizationState.totalRequests / elapsedMinutes) : 0;
+    
+    const criticalPercentage = visualizationState.totalRequests > 0 ? 
+        ((visualizationState.counters.critical / visualizationState.totalRequests) * 100).toFixed(1) : 0;
+    
+    const automationRate = visualizationState.totalRequests > 0 ? 
+        (((visualizationState.counters.ai + visualizationState.counters.it) / visualizationState.totalRequests) * 100).toFixed(1) : 87;
+    
+    // Симуляция среднего SLA
+    const avgSLA = (2.0 + (Math.random() * 0.8)).toFixed(1);
+    
+    // Обновить отображение
+    const elements = {
+        'total-flow': `${requestsPerMinute} запр/мин`,
+        'critical-flow': `${criticalPercentage}%`,
+        'automation-rate': `${automationRate}%`,
+        'avg-sla': `${avgSLA} мин`
+    };
+    
+    Object.entries(elements).forEach(([id, value]) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    });
+}
+
+// Эффект пульсации активных узлов
+function pulseActiveNodes() {
+    const nodes = document.querySelectorAll('.flow-node');
+    nodes.forEach(node => {
+        node.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+            node.style.transform = 'scale(1)';
+        }, 200);
+    });
+}
+
+// Обновление состояния кнопок
+function updateVisualizationButtons() {
+    const startBtn = document.getElementById('start-simulation');
+    const stopBtn = document.getElementById('stop-simulation');
+    const resetBtn = document.getElementById('reset-simulation');
+    
+    if (startBtn && stopBtn && resetBtn) {
+        if (visualizationState.isRunning && !visualizationState.isPaused) {
+            startBtn.style.opacity = '0.5';
+            stopBtn.style.opacity = '1';
+            resetBtn.style.opacity = '1';
+        } else if (visualizationState.isPaused) {
+            startBtn.style.opacity = '1';
+            stopBtn.style.opacity = '0.5';
+            resetBtn.style.opacity = '1';
+        } else {
+            startBtn.style.opacity = '1';
+            stopBtn.style.opacity = '0.5';
+            resetBtn.style.opacity = '1';
+        }
+    }
+}

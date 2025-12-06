@@ -106,64 +106,165 @@
                         <div class="flow-legend">
                             <span class="legend-item"><i class="dot blue"></i>Вход</span>
                             <span class="legend-item"><i class="dot red"></i>Классификация</span>
+                            <span class="legend-item"><i class="dot yellow"></i>Эскалация</span>
                             <span class="legend-item"><i class="dot green"></i>Решение</span>
                         </div>
                     </div>
                     
                     <div class="flow-container">
-                        <div class="flow-col inputs">
-                            <div class="channel-node email">
-                                <span class="node-icon">✉️</span> Email
-                                <span class="node-val">45/ч</span>
-                            </div>
-                            <div class="channel-node chat">
-                                <span class="node-icon">💬</span> Chat
-                                <span class="node-val">120/ч</span>
-                            </div>
-                            <div class="channel-node portal">
-                                <span class="node-icon">🌐</span> Portal
-                                <span class="node-val">15/ч</span>
-                            </div>
-                        </div>
-
-                        <div class="flow-lines-in">
-                            <svg width="100%" height="100%">
-                                <path class="connection-line" d="M0,50 C50,50 50,150 100,150" />
-                                <path class="connection-line" d="M0,150 C50,150 50,150 100,150" />
-                                <path class="connection-line" d="M0,250 C50,250 50,150 100,150" />
-                            </svg>
-                        </div>
-
-                        <div class="flow-col core">
-                            <div class="ai-brain-node">
-                                <div class="brain-pulse"></div>
-                                <span class="brain-label">A.R.E.S. CORE</span>
-                                <div class="processing-stats">
-                                    <span>RU: 65%</span>
-                                    <span>KZ: 35%</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flow-lines-out">
-                            <svg width="100%" height="100%">
-                                <path class="connection-line" d="M0,150 C50,150 50,50 100,50" />
-                                <path class="connection-line" d="M0,150 C50,150 50,250 100,250" />
-                            </svg>
-                        </div>
-
-                        <div class="flow-col outputs">
-                            <div class="output-node auto-solve">
-                                <span class="node-title">АВТО-РЕШЕНИЕ</span>
-                                <span class="node-perc highlight-green">52%</span>
-                                <span class="node-desc">Без участия человека</span>
-                            </div>
-                            <div class="output-node escalation">
-                                <span class="node-title">ЭСКАЛАЦИЯ (L2/L3)</span>
-                                <span class="node-perc highlight-orange">48%</span>
-                                <span class="node-desc">Сложные кейсы</span>
-                            </div>
-                        </div>
+                        <svg class="flow-svg" width="100%" height="350" viewBox="0 0 800 350">
+                            <!-- Определения для градиентов и анимации -->
+                            <defs>
+                                <linearGradient id="lineGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#1e40af;stop-opacity:0.8" />
+                                </linearGradient>
+                                <linearGradient id="lineGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#dc2626;stop-opacity:0.8" />
+                                </linearGradient>
+                                <linearGradient id="lineGradient3" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#059669;stop-opacity:0.8" />
+                                </linearGradient>
+                                
+                                <!-- Фильтры для свечения -->
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                    <feMerge> 
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            
+                            <!-- Входные узлы -->
+                            <g class="input-nodes">
+                                <rect x="20" y="40" width="120" height="50" rx="10" class="flow-node input-node" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="2"/>
+                                <text x="80" y="65" text-anchor="middle" class="node-text" fill="#3b82f6">Email (45/ч)</text>
+                                
+                                <rect x="20" y="140" width="120" height="50" rx="10" class="flow-node input-node" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="2"/>
+                                <text x="80" y="165" text-anchor="middle" class="node-text" fill="#3b82f6">Chat (120/ч)</text>
+                                
+                                <rect x="20" y="240" width="120" height="50" rx="10" class="flow-node input-node" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="2"/>
+                                <text x="80" y="265" text-anchor="middle" class="node-text" fill="#3b82f6">Portal (15/ч)</text>
+                            </g>
+                            
+                            <!-- Центральный AI узел -->
+                            <g class="ai-core-node">
+                                <circle cx="400" cy="175" r="60" class="ai-node-bg" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-width="3"/>
+                                <circle cx="400" cy="175" r="45" class="ai-node-inner" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="5,5">
+                                    <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 400 175" to="360 400 175" dur="4s" repeatCount="indefinite"/>
+                                </circle>
+                                <text x="400" y="170" text-anchor="middle" class="ai-text" fill="#ef4444" font-weight="bold">A.R.E.S.</text>
+                                <text x="400" y="185" text-anchor="middle" class="ai-subtext" fill="#ef4444" font-size="12">AI CORE</text>
+                            </g>
+                            
+                            <!-- Выходные узлы -->
+                            <g class="output-nodes">
+                                <rect x="660" y="80" width="120" height="60" rx="10" class="flow-node output-node" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="2"/>
+                                <text x="720" y="105" text-anchor="middle" class="node-text" fill="#10b981">АВТО-РЕШЕНИЕ</text>
+                                <text x="720" y="120" text-anchor="middle" class="node-subtext" fill="#10b981">52%</text>
+                                
+                                <rect x="660" y="210" width="120" height="60" rx="10" class="flow-node output-node" fill="#f59e0b" fill-opacity="0.2" stroke="#f59e0b" stroke-width="2"/>
+                                <text x="720" y="235" text-anchor="middle" class="node-text" fill="#f59e0b">ЭСКАЛАЦИЯ</text>
+                                <text x="720" y="250" text-anchor="middle" class="node-subtext" fill="#f59e0b">48%</text>
+                            </g>
+                            
+                            <!-- Плавные кривые линии -->
+                            <g class="connection-paths">
+                                <!-- Email к AI -->
+                                <path id="path1" d="M140,65 Q270,65 360,175" class="flow-path" stroke="url(#lineGradient1)" stroke-width="3" fill="none" filter="url(#glow)"/>
+                                <!-- Chat к AI -->
+                                <path id="path2" d="M140,165 Q270,165 360,175" class="flow-path" stroke="url(#lineGradient1)" stroke-width="4" fill="none" filter="url(#glow)"/>
+                                <!-- Portal к AI -->
+                                <path id="path3" d="M140,265 Q270,265 360,175" class="flow-path" stroke="url(#lineGradient1)" stroke-width="2" fill="none" filter="url(#glow)"/>
+                                
+                                <!-- AI к Auto-решению -->
+                                <path id="path4" d="M440,175 Q550,175 660,110" class="flow-path" stroke="url(#lineGradient3)" stroke-width="4" fill="none" filter="url(#glow)"/>
+                                <!-- AI к Эскалации -->
+                                <path id="path5" d="M440,175 Q550,175 660,240" class="flow-path" stroke="url(#lineGradient2)" stroke-width="3" fill="none" filter="url(#glow)"/>
+                            </g>
+                            
+                            <!-- Анимированные частицы потока данных -->
+                            <g class="flow-particles">
+                                <!-- Частицы от Email -->
+                                <circle r="4" class="particle email-particle" fill="#3b82f6">
+                                    <animateMotion dur="3s" repeatCount="indefinite" begin="0s">
+                                        <mpath href="#path1"/>
+                                    </animateMotion>
+                                    <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite"/>
+                                </circle>
+                                
+                                <!-- Частицы от Chat (более активные) -->
+                                <circle r="5" class="particle chat-particle" fill="#3b82f6">
+                                    <animateMotion dur="2s" repeatCount="indefinite" begin="0s">
+                                        <mpath href="#path2"/>
+                                    </animateMotion>
+                                    <animate attributeName="opacity" values="0;1;1;0" dur="2s" repeatCount="indefinite"/>
+                                </circle>
+                                <circle r="4" class="particle chat-particle" fill="#3b82f6">
+                                    <animateMotion dur="2s" repeatCount="indefinite" begin="0.7s">
+                                        <mpath href="#path2"/>
+                                    </animateMotion>
+                                    <animate attributeName="opacity" values="0;1;1;0" dur="2s" repeatCount="indefinite" begin="0.7s"/>
+                                </circle>
+                                
+                                <!-- Частицы от Portal -->
+                                <circle r="3" class="particle portal-particle" fill="#3b82f6">
+                                    <animateMotion dur="4s" repeatCount="indefinite" begin="0s">
+                                        <mpath href="#path3"/>
+                                    </animateMotion>
+                                    <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite"/>
+                                </circle>
+                                
+                                <!-- Частицы к Auto-решению -->
+                                <circle r="4" class="particle auto-particle" fill="#10b981">
+                                    <animateMotion dur="2.5s" repeatCount="indefinite" begin="1.5s">
+                                        <mpath href="#path4"/>
+                                    </animateMotion>
+                                    <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" repeatCount="indefinite" begin="1.5s"/>
+                                </circle>
+                                <circle r="4" class="particle auto-particle" fill="#10b981">
+                                    <animateMotion dur="2.5s" repeatCount="indefinite" begin="2.2s">
+                                        <mpath href="#path4"/>
+                                    </animateMotion>
+                                    <animate attributeName="opacity" values="0;1;1;0" dur="2.5s" repeatCount="indefinite" begin="2.2s"/>
+                                </circle>
+                                
+                                <!-- Частицы к Эскалации -->
+                                <circle r="4" class="particle escalation-particle" fill="#f59e0b">
+                                    <animateMotion dur="3s" repeatCount="indefinite" begin="1.5s">
+                                        <mpath href="#path5"/>
+                                    </animateMotion>
+                                    <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+                                </circle>
+                            </g>
+                            
+                            <!-- Пульсирующие индикаторы активности -->
+                            <g class="activity-indicators">
+                                <circle cx="80" cy="65" r="8" class="activity-pulse email-pulse" fill="#3b82f6" fill-opacity="0.6">
+                                    <animate attributeName="r" values="5;12;5" dur="2s" repeatCount="indefinite"/>
+                                    <animate attributeName="fill-opacity" values="0.8;0.2;0.8" dur="2s" repeatCount="indefinite"/>
+                                </circle>
+                                <circle cx="80" cy="165" r="8" class="activity-pulse chat-pulse" fill="#3b82f6" fill-opacity="0.6">
+                                    <animate attributeName="r" values="5;15;5" dur="1.5s" repeatCount="indefinite"/>
+                                    <animate attributeName="fill-opacity" values="0.8;0.1;0.8" dur="1.5s" repeatCount="indefinite"/>
+                                </circle>
+                                <circle cx="80" cy="265" r="8" class="activity-pulse portal-pulse" fill="#3b82f6" fill-opacity="0.6">
+                                    <animate attributeName="r" values="5;10;5" dur="3s" repeatCount="indefinite"/>
+                                    <animate attributeName="fill-opacity" values="0.8;0.3;0.8" dur="3s" repeatCount="indefinite"/>
+                                </circle>
+                            </g>
+                            
+                            <!-- Счетчики в реальном времени -->
+                            <g class="real-time-counters">
+                                <text x="400" y="315" text-anchor="middle" class="counter-label" fill="#64748b">Обработано сегодня:</text>
+                                <text x="300" y="335" text-anchor="middle" class="counter-value" id="processed-count" fill="#3b82f6">1,847</text>
+                                <text x="400" y="335" text-anchor="middle" class="counter-value" id="automation-rate" fill="#10b981">52.4%</text>
+                                <text x="500" y="335" text-anchor="middle" class="counter-value" id="avg-response" fill="#f59e0b">1.2s</text>
+                            </g>
+                        </svg>
                     </div>
                 </div>
 
@@ -466,6 +567,130 @@
             <!-- Раздел Правила Маршрутизации -->
             <div class="section-content" id="routing-rules" style="display: none;">
                 <div class="routing-grid">
+                    <!-- Визуализация маршрутизации -->
+                    <div class="panel routing-visualization">
+                        <div class="panel-header">
+                            <h3>🔄 Визуализация маршрутизации (Real-Time)</h3>
+                            <div class="visualization-controls">
+                                <button class="viz-btn" id="start-simulation">▶️ Запустить</button>
+                                <button class="viz-btn" id="stop-simulation">⏸️ Пауза</button>
+                                <button class="viz-btn" id="reset-simulation">🔄 Сброс</button>
+                            </div>
+                        </div>
+                        <div class="routing-flow-container">
+                            <svg class="routing-flow-svg" width="100%" height="300">
+                                <!-- Входящие запросы -->
+                                <g class="input-zone">
+                                    <rect x="20" y="20" width="120" height="60" rx="10" class="flow-node input-node"/>
+                                    <text x="80" y="45" text-anchor="middle" class="node-label">Входящие</text>
+                                    <text x="80" y="60" text-anchor="middle" class="node-label">Запросы</text>
+                                </g>
+                                
+                                <!-- Правила маршрутизации -->
+                                <g class="rules-zone">
+                                    <rect x="220" y="10" width="100" height="50" rx="8" class="flow-node rule-node priority-high"/>
+                                    <text x="270" y="30" text-anchor="middle" class="node-label-small">Критические</text>
+                                    <text x="270" y="45" text-anchor="middle" class="node-label-small">Ошибки</text>
+                                    
+                                    <rect x="220" y="80" width="100" height="50" rx="8" class="flow-node rule-node priority-medium"/>
+                                    <text x="270" y="100" text-anchor="middle" class="node-label-small">Смена</text>
+                                    <text x="270" y="115" text-anchor="middle" class="node-label-small">Пароля</text>
+                                    
+                                    <rect x="220" y="150" width="100" height="50" rx="8" class="flow-node rule-node priority-low"/>
+                                    <text x="270" y="170" text-anchor="middle" class="node-label-small">Общие</text>
+                                    <text x="270" y="185" text-anchor="middle" class="node-label-small">Вопросы</text>
+                                </g>
+                                
+                                <!-- Исходящие действия -->
+                                <g class="output-zone">
+                                    <rect x="420" y="10" width="100" height="50" rx="8" class="flow-node output-node l2-escalation"/>
+                                    <text x="470" y="30" text-anchor="middle" class="node-label-small">L2</text>
+                                    <text x="470" y="45" text-anchor="middle" class="node-label-small">Эскалация</text>
+                                    
+                                    <rect x="420" y="80" width="100" height="50" rx="8" class="flow-node output-node it-department"/>
+                                    <text x="470" y="100" text-anchor="middle" class="node-label-small">IT</text>
+                                    <text x="470" y="115" text-anchor="middle" class="node-label-small">Отдел</text>
+                                    
+                                    <rect x="420" y="150" width="100" height="50" rx="8" class="flow-node output-node ai-response"/>
+                                    <text x="470" y="170" text-anchor="middle" class="node-label-small">AI</text>
+                                    <text x="470" y="185" text-anchor="middle" class="node-label-small">Ответ</text>
+                                </g>
+                                
+                                <!-- Статические соединительные линии -->
+                                <g class="static-connections">
+                                    <!-- От входа к правилам -->
+                                    <path d="M140,50 Q180,50 220,35" class="connection-line static"/>
+                                    <path d="M140,50 Q180,50 220,105" class="connection-line static"/>
+                                    <path d="M140,50 Q180,50 220,175" class="connection-line static"/>
+                                    
+                                    <!-- От правил к выходам -->
+                                    <path d="M320,35 Q370,35 420,35" class="connection-line static"/>
+                                    <path d="M320,105 Q370,105 420,105" class="connection-line static"/>
+                                    <path d="M320,175 Q370,175 420,175" class="connection-line static"/>
+                                </g>
+                                
+                                <!-- Анимированные потоки данных -->
+                                <g class="animated-flows">
+                                    <!-- Путь 1: Вход -> Критические -> L2 -->
+                                    <path id="flow-path-1" d="M140,50 Q180,50 220,35 Q370,35 420,35" class="flow-path" style="display: none;"/>
+                                    <circle r="4" class="flow-particle critical">
+                                        <animateMotion dur="3s" repeatCount="indefinite" begin="0s">
+                                            <mpath href="#flow-path-1"/>
+                                        </animateMotion>
+                                    </circle>
+                                    
+                                    <!-- Путь 2: Вход -> Пароль -> IT -->
+                                    <path id="flow-path-2" d="M140,50 Q180,50 220,105 Q370,105 420,105" class="flow-path" style="display: none;"/>
+                                    <circle r="4" class="flow-particle medium">
+                                        <animateMotion dur="4s" repeatCount="indefinite" begin="1s">
+                                            <mpath href="#flow-path-2"/>
+                                        </animateMotion>
+                                    </circle>
+                                    
+                                    <!-- Путь 3: Вход -> Общие -> AI -->
+                                    <path id="flow-path-3" d="M140,50 Q180,50 220,175 Q370,175 420,175" class="flow-path" style="display: none;"/>
+                                    <circle r="4" class="flow-particle low">
+                                        <animateMotion dur="5s" repeatCount="indefinite" begin="2s">
+                                            <mpath href="#flow-path-3"/>
+                                        </animateMotion>
+                                    </circle>
+                                </g>
+                                
+                                <!-- Счетчики потоков -->
+                                <g class="flow-counters">
+                                    <text x="160" y="40" class="flow-counter" id="input-counter">0</text>
+                                    <text x="350" y="25" class="flow-counter critical" id="critical-counter">0</text>
+                                    <text x="350" y="95" class="flow-counter medium" id="medium-counter">0</text>
+                                    <text x="350" y="165" class="flow-counter low" id="low-counter">0</text>
+                                    <text x="540" y="35" class="flow-counter" id="l2-counter">0</text>
+                                    <text x="540" y="105" class="flow-counter" id="it-counter">0</text>
+                                    <text x="540" y="175" class="flow-counter" id="ai-counter">0</text>
+                                </g>
+                            </svg>
+                            
+                            <!-- Метрики в реальном времени -->
+                            <div class="real-time-metrics">
+                                <div class="metric-item">
+                                    <span class="metric-label">Общий поток:</span>
+                                    <span class="metric-value" id="total-flow">0 запр/мин</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Критические:</span>
+                                    <span class="metric-value critical" id="critical-flow">0%</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Автоматизация:</span>
+                                    <span class="metric-value success" id="automation-rate">87%</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Средний SLA:</span>
+                                    <span class="metric-value" id="avg-sla">2.3 мин</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Панель управления правилами -->
                     <div class="panel rules-panel">
                         <div class="panel-header">
                             <h3>🔀 Правила Маршрутизации</h3>

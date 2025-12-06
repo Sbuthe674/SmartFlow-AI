@@ -279,9 +279,10 @@ body {
 }
 
 .flow-legend { display: flex; gap: 15px; font-size: 11px; color: var(--text-secondary); }
-.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 1px; }
 .dot.blue { background: var(--accent-blue); }
 .dot.red { background: var(--accent-red); }
+.dot.yellow { background: var(--accent-orange); }
 .dot.green { background: var(--accent-green); }
 
 .flow-container {
@@ -1396,7 +1397,177 @@ body {
     border-color: var(--accent-green);
 }
 
-/* === УЛУЧШЕННЫЕ СТИЛИ ДЛЯ REFRESH КНОПКИ === */
+/* === СТИЛИ ДЛЯ НОВОЙ ВИЗУАЛИЗАЦИИ МАРШРУТИЗАЦИИ === */
+.flow-svg {
+    background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05), transparent 50%);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: visible;
+}
+
+.flow-node {
+    transition: all 0.3s ease;
+}
+
+.flow-node:hover {
+    filter: brightness(1.2);
+    stroke-width: 3;
+}
+
+.node-text {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.node-subtext {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.ai-text {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 14px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.ai-subtext {
+    font-family: 'Exo 2', sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.flow-path {
+    stroke-dasharray: 8, 4;
+    animation: flow-dash 2s linear infinite;
+}
+
+@keyframes flow-dash {
+    0% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: 24; }
+}
+
+.particle {
+    filter: drop-shadow(0 0 4px currentColor);
+}
+
+.email-particle, .chat-particle, .portal-particle {
+    filter: drop-shadow(0 0 6px #3b82f6);
+}
+
+.auto-particle {
+    filter: drop-shadow(0 0 6px #10b981);
+}
+
+.escalation-particle {
+    filter: drop-shadow(0 0 6px #f59e0b);
+}
+
+.activity-pulse {
+    filter: drop-shadow(0 0 8px currentColor);
+}
+
+.counter-label {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 12px;
+    fill: #64748b;
+}
+
+.counter-value {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.visualization-controls {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.viz-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 12px;
+}
+
+.viz-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+.viz-btn.active {
+    background: var(--accent-green);
+    color: white;
+    border-color: var(--accent-green);
+}
+
+.flow-container {
+    position: relative;
+    height: 370px;
+    overflow: hidden;
+}
+
+/* === АНИМАЦИИ ДЛЯ ПОТОКОВ === */
+@keyframes particle-glow {
+    0%, 100% { 
+        filter: drop-shadow(0 0 4px currentColor); 
+        transform: scale(1);
+    }
+    50% { 
+        filter: drop-shadow(0 0 12px currentColor); 
+        transform: scale(1.2);
+    }
+}
+
+.particle:hover {
+    animation: particle-glow 1s ease-in-out infinite;
+}
+
+/* === АДАПТИВНОСТЬ === */
+@media (max-width: 1024px) {
+    .flow-svg {
+        height: 280px;
+    }
+    
+    .node-text {
+        font-size: 10px;
+    }
+    
+    .ai-text {
+        font-size: 12px;
+    }
+    
+    .counter-value {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .flow-svg {
+        height: 240px;
+    }
+    
+    .visualization-controls {
+        flex-wrap: wrap;
+    }
+    
+    .viz-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+}
+
+/* === REFRESH КНОПКИ И ОСТАЛЬНОЕ === */
 .refresh-btn {
     transition: all 0.3s ease;
 }
@@ -2107,4 +2278,340 @@ body {
 
 .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.2);
+}
+
+/* === ROUTING VISUALIZATION STYLES === */
+
+/* Routing Grid Layout */
+.routing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    height: 100%;
+}
+
+.routing-visualization {
+    grid-column: span 2;
+    margin-bottom: 20px;
+}
+
+/* Visualization Controls */
+.visualization-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.viz-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.viz-btn:hover {
+    background: var(--accent-blue);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.viz-btn:active {
+    transform: translateY(0);
+}
+
+/* SVG Flow Visualization */
+.routing-flow-container {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 15px;
+}
+
+.routing-flow-svg {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    overflow: visible;
+}
+
+/* Flow Nodes */
+.flow-node {
+    stroke: rgba(255, 255, 255, 0.3);
+    stroke-width: 2;
+    transition: all 0.3s ease;
+    transform-origin: center;
+    cursor: pointer;
+}
+
+.input-node {
+    fill: var(--accent-blue);
+    filter: drop-shadow(0 0 10px rgba(41, 121, 255, 0.5));
+}
+
+.rule-node {
+    stroke-width: 1;
+}
+
+.rule-node.priority-high {
+    fill: var(--accent-red);
+    filter: drop-shadow(0 0 8px rgba(255, 59, 59, 0.4));
+}
+
+.rule-node.priority-medium {
+    fill: var(--accent-orange);
+    filter: drop-shadow(0 0 8px rgba(255, 145, 0, 0.4));
+}
+
+.rule-node.priority-low {
+    fill: var(--accent-blue);
+    filter: drop-shadow(0 0 8px rgba(41, 121, 255, 0.4));
+}
+
+.output-node {
+    stroke-width: 1;
+}
+
+.l2-escalation {
+    fill: var(--accent-red);
+    filter: drop-shadow(0 0 8px rgba(255, 59, 59, 0.3));
+}
+
+.it-department {
+    fill: var(--accent-orange);
+    filter: drop-shadow(0 0 8px rgba(255, 145, 0, 0.3));
+}
+
+.ai-response {
+    fill: var(--accent-green);
+    filter: drop-shadow(0 0 8px rgba(0, 230, 118, 0.3));
+}
+
+/* Node Labels */
+.node-label {
+    fill: white;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font-main);
+}
+
+.node-label-small {
+    fill: white;
+    font-size: 10px;
+    font-weight: 500;
+    font-family: var(--font-main);
+}
+
+/* Connection Lines */
+.connection-line {
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 2;
+    fill: none;
+}
+
+.connection-line.static {
+    stroke-dasharray: 5,5;
+    animation: dash-flow 2s linear infinite;
+}
+
+@keyframes dash-flow {
+    0% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: 20; }
+}
+
+/* Flow Paths (invisible, only for animation) */
+.flow-path {
+    stroke: none;
+    fill: none;
+}
+
+/* Animated Particles */
+.flow-particle {
+    filter: drop-shadow(0 0 6px currentColor);
+    opacity: 0.9;
+}
+
+.flow-particle.critical {
+    fill: var(--accent-red);
+    animation: pulse-critical 1s ease-in-out infinite alternate;
+}
+
+.flow-particle.medium {
+    fill: var(--accent-orange);
+    animation: pulse-medium 1.2s ease-in-out infinite alternate;
+}
+
+.flow-particle.low {
+    fill: var(--accent-blue);
+    animation: pulse-low 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-critical {
+    0% { r: 4; opacity: 1; }
+    100% { r: 6; opacity: 0.6; }
+}
+
+@keyframes pulse-medium {
+    0% { r: 4; opacity: 1; }
+    100% { r: 5; opacity: 0.7; }
+}
+
+@keyframes pulse-low {
+    0% { r: 4; opacity: 1; }
+    100% { r: 5; opacity: 0.8; }
+}
+
+/* Flow Counters */
+.flow-counter {
+    fill: var(--text-primary);
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--font-main);
+    opacity: 0.8;
+}
+
+.flow-counter.critical {
+    fill: var(--accent-red);
+}
+
+.flow-counter.medium {
+    fill: var(--accent-orange);
+}
+
+.flow-counter.low {
+    fill: var(--accent-blue);
+}
+
+/* Real-time Metrics */
+.real-time-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.metric-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+}
+
+.metric-label {
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-align: center;
+}
+
+.metric-value {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    animation: metric-pulse 2s ease-in-out infinite;
+}
+
+.metric-value.critical {
+    color: var(--accent-red);
+}
+
+.metric-value.success {
+    color: var(--accent-green);
+}
+
+@keyframes metric-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Node Hover Effects */
+.flow-node:hover {
+    stroke: rgba(255, 255, 255, 0.6);
+    stroke-width: 3;
+    cursor: pointer;
+}
+
+.input-node:hover {
+    filter: drop-shadow(0 0 15px rgba(41, 121, 255, 0.8));
+}
+
+.rule-node.priority-high:hover {
+    filter: drop-shadow(0 0 12px rgba(255, 59, 59, 0.6));
+}
+
+.rule-node.priority-medium:hover {
+    filter: drop-shadow(0 0 12px rgba(255, 145, 0, 0.6));
+}
+
+.rule-node.priority-low:hover {
+    filter: drop-shadow(0 0 12px rgba(41, 121, 255, 0.6));
+}
+
+.l2-escalation:hover {
+    filter: drop-shadow(0 0 12px rgba(255, 59, 59, 0.5));
+}
+
+.it-department:hover {
+    filter: drop-shadow(0 0 12px rgba(255, 145, 0, 0.5));
+}
+
+.ai-response:hover {
+    filter: drop-shadow(0 0 12px rgba(0, 230, 118, 0.5));
+}
+
+/* Animation States */
+.routing-flow-svg.paused .flow-particle {
+    animation-play-state: paused;
+}
+
+.routing-flow-svg.paused .connection-line.static {
+    animation-play-state: paused;
+}
+
+.routing-flow-svg.stopped .flow-particle {
+    display: none;
+}
+
+.routing-flow-svg.stopped .connection-line.static {
+    animation: none;
+    stroke-dasharray: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .routing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .routing-visualization {
+        grid-column: span 1;
+    }
+    
+    .real-time-metrics {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .real-time-metrics {
+        grid-template-columns: 1fr;
+    }
+    
+    .routing-flow-svg {
+        height: 250px;
+    }
 }
