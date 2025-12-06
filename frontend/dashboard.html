@@ -33,7 +33,7 @@
                         <button class="lang-btn" data-lang="en" data-key="lang_en">EN</button>
                     </div>
                 </div>
-                <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> <span data-key="btn_logout">Выход</span></a>
+                <a href="#" class="logout-btn" id="logout-btn"><i class="fas fa-sign-out-alt"></i> <span data-key="btn_logout">Выход</span></a>
             </nav>
         </header>
 
@@ -500,14 +500,26 @@
             });
             
             // Обработчик кнопки Выход
-            document.querySelector('.logout-btn').addEventListener('click', (e) => {
+            document.querySelector('#logout-btn').addEventListener('click', (e) => {
                 e.preventDefault();
-                // Очищаем localStorage
+                // Очищаем все данные аутентификации
                 localStorage.removeItem('user');
                 localStorage.removeItem('user_type');
                 localStorage.removeItem('access_token');
-                // Перенаправляем на главную страницу
-                window.location.href = 'http://localhost:3000/';
+                localStorage.removeItem('userType');
+                sessionStorage.clear();
+                
+                // Показываем уведомление об успешном выходе (если функция доступна)
+                if (typeof showNotification === 'function') {
+                    showNotification('Вы успешно вышли из системы', 'success');
+                    // Небольшая задержка перед перенаправлением для показа уведомления
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                } else {
+                    // Если функция уведомлений недоступна, перенаправляем сразу
+                    window.location.href = 'index.html';
+                }
             });
 
             // --- ЛОГИКА ЦЕНТРА ПОДДЕРЖКИ ---
