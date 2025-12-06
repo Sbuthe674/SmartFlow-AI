@@ -582,11 +582,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 4. ЛОГИКА МОДАЛЬНЫХ ОКОН
     function openModal(targetModalId) {
+        console.log('Открываем модальное окно:', targetModalId);
         const modal = document.getElementById(targetModalId);
         if (modal) {
+            console.log('Найдено модальное окно:', modal);
             // Закрываем все модальные окна перед открытием нового
             closeAllModals(); 
             modal.classList.add('is-visible');
+        } else {
+            console.error('Модальное окно не найдено:', targetModalId);
         }
     }
 
@@ -599,8 +603,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Обработчики открытия
     document.querySelectorAll('.js-open-modal').forEach(button => {
+        console.log('Привязываем обработчик к кнопке:', button);
         button.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('Нажата кнопка открытия модального окна:', this);
             
             // Для кнопки "Войти" сначала проверяем, не авторизован ли уже пользователь
             if (this.classList.contains('sign-in-button')) {
@@ -957,6 +963,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     localStorage.setItem('user', JSON.stringify({...data.data.user, user_type: 'company'}));
                     localStorage.setItem('user_type', 'company');
                     
+                    console.log('Company login successful, redirecting to premium dashboard...');
                     closeAllModals();
                     showCompanyDashboard(data.data.user);
                 } else {
@@ -979,7 +986,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('access_token', user.access_token || '');
         
         // Перенаправляем на dashboard.html
-        window.location.href = 'http://localhost:3000/dashboard.html';
+        window.location.href = 'dashboard.html';
     }
 
     // Показать панель управления компании
@@ -990,7 +997,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('access_token', user.access_token || '');
         
         // Перенаправляем на premium_dashboard.html для компаний
-        window.location.href = 'http://localhost:3000/premium_dashboard.html';
+        window.location.href = 'premium_dashboard.html';
     }
 
     // Загрузить запросы клиента

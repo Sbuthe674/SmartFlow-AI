@@ -426,11 +426,21 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     
     // Logout button handler
-    document.querySelector('.logout-btn').addEventListener('click', function() {
+    document.querySelector('#logout-btn').addEventListener('click', function() {
+        // Очистить все данные аутентификации
         localStorage.removeItem('user');
         localStorage.removeItem('user_type');
         localStorage.removeItem('access_token');
-        window.location.href = 'http://localhost:8081/';
+        localStorage.removeItem('userType');
+        sessionStorage.clear();
+        
+        // Показать уведомление о выходе
+        showNotification('Вы успешно вышли из системы', 'success');
+        
+        // Небольшая задержка перед перенаправлением для показа уведомления
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
     });
     
     // Navigation between sections
@@ -1382,6 +1392,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Инициализация SLA & KPI функциональности
     setupSLAActions();
+    
+    // Инициализация языковой статистики
+    setupLanguageStatsActions();
     
     // Инициализация визуализации маршрутизации
     setupVisualizationControls();
@@ -3231,6 +3244,355 @@ function showSLANotification(message, type = 'info', duration = 4000) {
     
     notification.style.background = backgrounds[type] || backgrounds.info;
     notification.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><span>${icons[type] || '📊'}</span><span>${message}</span></div>`;
+    
+    document.body.appendChild(notification);
+    setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    }, duration);
+}
+
+// === LANGUAGE STATISTICS FUNCTIONALITY ===
+
+let languageData = {
+    stats: {
+        ru: { requests: 1908, percentage: 67, trend: 5.2 },
+        kz: { requests: 797, percentage: 28, trend: 18.7 },
+        en: { requests: 142, percentage: 5, trend: -2.1 }
+    },
+    total: 2847,
+    translators: 8,
+    balanceScore: 0.72,
+    settings: {
+        autoDetect: true,
+        confidence: 85,
+        notifications: 'important'
+    }
+};
+
+function setupLanguageStatsActions() {
+    // Основные действия
+    document.getElementById('export-lang-data')?.addEventListener('click', exportLanguageData);
+    document.getElementById('refresh-lang-stats')?.addEventListener('click', refreshLanguageStats);
+    document.getElementById('lang-settings')?.addEventListener('click', showLanguageSettings);
+    
+    // Быстрые действия
+    document.getElementById('analyze-patterns')?.addEventListener('click', analyzeLanguagePatterns);
+    document.getElementById('optimize-distribution')?.addEventListener('click', optimizeDistribution);
+    document.getElementById('generate-lang-report')?.addEventListener('click', generateLanguageReport);
+    
+    // Настройки
+    document.getElementById('save-lang-settings')?.addEventListener('click', saveLanguageSettings);
+    document.getElementById('confidence-threshold')?.addEventListener('input', updateConfidenceValue);
+    
+    // График и периоды
+    document.getElementById('update-lang-chart')?.addEventListener('click', updateLanguageChart);
+    document.getElementById('lang-period')?.addEventListener('change', updateLanguageChart);
+    
+    // Тренды
+    document.querySelectorAll('.trend-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => switchTrendPeriod(e.target));
+    });
+    
+    // Алерты
+    document.getElementById('clear-lang-alerts')?.addEventListener('click', clearLanguageAlerts);
+    
+    // Инициализация
+    initializeLanguageInterface();
+}
+
+function exportLanguageData() {
+    showLanguageNotification('Подготовка экспорта данных...', 'info');
+    
+    setTimeout(() => {
+        const exportData = {
+            timestamp: new Date().toISOString(),
+            statistics: languageData.stats,
+            summary: {
+                totalRequests: languageData.total,
+                activeTranslators: languageData.translators,
+                balanceIndex: languageData.balanceScore
+            },
+            period: document.getElementById('lang-period')?.value || 'week'
+        };
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `language-stats-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showLanguageNotification('Данные экспортированы', 'success');
+    }, 1000);
+}
+
+function refreshLanguageStats() {
+    showLanguageNotification('Обновление статистики...', 'info');
+    
+    setTimeout(() => {
+        // Симуляция обновления данных
+        const variations = [-50, -20, 10, 30, 50];
+        
+        Object.keys(languageData.stats).forEach(lang => {
+            const variation = variations[Math.floor(Math.random() * variations.length)];
+            languageData.stats[lang].requests += variation;
+            languageData.stats[lang].trend = (Math.random() - 0.5) * 30;
+        });
+        
+        languageData.total = Object.values(languageData.stats).reduce((sum, stat) => sum + stat.requests, 0);
+        languageData.balanceScore += (Math.random() - 0.5) * 0.1;
+        
+        // Пересчет процентов
+        Object.keys(languageData.stats).forEach(lang => {
+            languageData.stats[lang].percentage = Math.round((languageData.stats[lang].requests / languageData.total) * 100);
+        });
+        
+        updateLanguageMetrics();
+        updateLanguageChart();
+        showLanguageNotification('Статистика обновлена', 'success');
+    }, 1500);
+}
+
+function showLanguageSettings() {
+    const settings = {
+        autoDetect: languageData.settings.autoDetect,
+        confidence: languageData.settings.confidence,
+        notifications: languageData.settings.notifications
+    };
+    
+    showLanguageNotification(`Настройки: Автодетект ${settings.autoDetect ? 'ВКЛ' : 'ВЫКЛ'}, Уверенность ${settings.confidence}%, Уведомления: ${settings.notifications}`, 'info', 6000);
+}
+
+function analyzeLanguagePatterns() {
+    showLanguageNotification('Анализ языковых паттернов...', 'info');
+    
+    setTimeout(() => {
+        const patterns = [
+            'Пик активности русского языка в рабочее время',
+            'Казахский язык растёт в выходные дни',
+            'Английский язык популярен в технических запросах',
+            'Обнаружены сезонные колебания'
+        ];
+        
+        const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+        showLanguageNotification(`Паттерн: ${pattern}`, 'success', 5000);
+        
+        // Добавление уведомления в панель
+        addLanguageAlert({
+            type: 'info',
+            title: 'Новый паттерн',
+            desc: pattern,
+            time: 'Только что'
+        });
+    }, 2000);
+}
+
+function optimizeDistribution() {
+    showLanguageNotification('Оптимизация распределения...', 'info');
+    
+    setTimeout(() => {
+        const recommendations = [
+            'Увеличить количество переводчиков казахского языка',
+            'Перераспределить нагрузку в часы пик',
+            'Настроить автоматическое переключение языков',
+            'Улучшить качество автодетекции'
+        ];
+        
+        const recommendation = recommendations[Math.floor(Math.random() * recommendations.length)];
+        showLanguageNotification(`Рекомендация: ${recommendation}`, 'warning', 6000);
+        
+        // Небольшое улучшение баланса
+        languageData.balanceScore = Math.min(languageData.balanceScore + 0.05, 1.0);
+        updateLanguageMetrics();
+    }, 2500);
+}
+
+function generateLanguageReport() {
+    showLanguageNotification('Генерация отчёта...', 'info');
+    
+    setTimeout(() => {
+        const report = `
+📊 ОТЧЁТ ЯЗЫКОВОЙ СТАТИСТИКИ
+
+Дата: ${new Date().toLocaleDateString('ru')}
+
+📈 ОСНОВНЫЕ ПОКАЗАТЕЛИ:
+• Всего запросов: ${languageData.total}
+• Активных переводчиков: ${languageData.translators}
+• Индекс баланса: ${languageData.balanceScore.toFixed(2)}
+
+🌍 РАСПРЕДЕЛЕНИЕ ПО ЯЗЫКАМ:
+• 🇷🇺 Русский: ${languageData.stats.ru.requests} (${languageData.stats.ru.percentage}%) ${languageData.stats.ru.trend > 0 ? '📈' : '📉'} ${Math.abs(languageData.stats.ru.trend).toFixed(1)}%
+• 🇰🇿 Қазақша: ${languageData.stats.kz.requests} (${languageData.stats.kz.percentage}%) ${languageData.stats.kz.trend > 0 ? '📈' : '📉'} ${Math.abs(languageData.stats.kz.trend).toFixed(1)}%
+• 🇺🇸 English: ${languageData.stats.en.requests} (${languageData.stats.en.percentage}%) ${languageData.stats.en.trend > 0 ? '📈' : '📉'} ${Math.abs(languageData.stats.en.trend).toFixed(1)}%
+
+✅ Система работает стабильно
+        `;
+        
+        console.log(report);
+        showLanguageNotification('Отчёт сгенерирован (см. консоль)', 'success');
+    }, 2000);
+}
+
+function saveLanguageSettings() {
+    const autoDetect = document.getElementById('auto-detect')?.checked || false;
+    const confidence = parseInt(document.getElementById('confidence-threshold')?.value) || 85;
+    const notifications = document.getElementById('notification-level')?.value || 'important';
+    
+    languageData.settings = { autoDetect, confidence, notifications };
+    
+    showLanguageNotification('Настройки сохранены', 'success');
+}
+
+function updateConfidenceValue() {
+    const slider = document.getElementById('confidence-threshold');
+    const valueDisplay = document.getElementById('confidence-value');
+    
+    if (slider && valueDisplay) {
+        valueDisplay.textContent = slider.value + '%';
+    }
+}
+
+function updateLanguageChart() {
+    const period = document.getElementById('lang-period')?.value || 'week';
+    
+    // Симуляция изменения данных
+    const variations = { day: 0.8, week: 1.0, month: 1.2, quarter: 1.5 };
+    const multiplier = variations[period] || 1.0;
+    
+    Object.keys(languageData.stats).forEach(lang => {
+        languageData.stats[lang].requests = Math.floor(languageData.stats[lang].requests * (0.9 + Math.random() * 0.2));
+    });
+    
+    updateLanguageMetrics();
+    showLanguageNotification(`График обновлён для периода: ${period}`, 'info');
+}
+
+function switchTrendPeriod(button) {
+    document.querySelectorAll('.trend-btn').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    
+    const period = button.id.replace('trend-', '');
+    showLanguageNotification(`Тренды за ${period}`, 'info');
+    
+    // Обновление трендов
+    updateTrendChart(period);
+}
+
+function updateTrendChart(period) {
+    const points = document.querySelectorAll('.trend-point');
+    
+    points.forEach(point => {
+        const newHeight = Math.random() * 80 + 10;
+        const newLeft = Math.random() * 80 + 10;
+        
+        point.style.height = `${newHeight}%`;
+        point.style.left = `${newLeft}%`;
+    });
+}
+
+function clearLanguageAlerts() {
+    const alertsList = document.getElementById('lang-alerts-list');
+    const alerts = alertsList?.querySelectorAll('.alert-item');
+    
+    alerts?.forEach(alert => {
+        alert.style.opacity = '0';
+        alert.style.transform = 'translateX(-100%)';
+        setTimeout(() => alert.remove(), 300);
+    });
+    
+    showLanguageNotification('Все уведомления очищены', 'success');
+}
+
+function addLanguageAlert(alert) {
+    const alertsList = document.getElementById('lang-alerts-list');
+    if (!alertsList) return;
+    
+    const alertElement = document.createElement('div');
+    alertElement.className = `alert-item ${alert.type}`;
+    alertElement.innerHTML = `
+        <div class="alert-icon">${alert.type === 'critical' ? '🔴' : alert.type === 'warning' ? '🟡' : '🟦'}</div>
+        <div class="alert-content">
+            <div class="alert-title">${alert.title}</div>
+            <div class="alert-desc">${alert.desc}</div>
+            <div class="alert-time">${alert.time}</div>
+        </div>
+        <button class="alert-dismiss">✕</button>
+    `;
+    
+    alertsList.insertBefore(alertElement, alertsList.firstChild);
+    
+    // Обработчик закрытия
+    const dismissBtn = alertElement.querySelector('.alert-dismiss');
+    dismissBtn?.addEventListener('click', () => {
+        alertElement.style.opacity = '0';
+        alertElement.style.transform = 'translateX(-100%)';
+        setTimeout(() => alertElement.remove(), 300);
+    });
+}
+
+function updateLanguageMetrics() {
+    // Обновление основных метрик
+    const totalEl = document.getElementById('total-requests');
+    const translatorsEl = document.getElementById('active-translators');
+    const balanceEl = document.getElementById('balance-score');
+    
+    if (totalEl) totalEl.textContent = languageData.total.toLocaleString();
+    if (translatorsEl) translatorsEl.textContent = languageData.translators;
+    if (balanceEl) balanceEl.textContent = languageData.balanceScore.toFixed(2);
+    
+    // Обновление статистики по языкам
+    Object.keys(languageData.stats).forEach(lang => {
+        const statsEl = document.getElementById(`${lang}-stats`);
+        if (statsEl) {
+            const stat = languageData.stats[lang];
+            statsEl.textContent = `${stat.requests} запросов (${stat.percentage}%)`;
+        }
+    });
+}
+
+function initializeLanguageInterface() {
+    updateLanguageMetrics();
+    setupLanguageAlertDismissal();
+    updateConfidenceValue();
+}
+
+function setupLanguageAlertDismissal() {
+    document.querySelectorAll('.alert-dismiss').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const alertItem = e.target.closest('.alert-item');
+            alertItem.style.opacity = '0';
+            alertItem.style.transform = 'translateX(-100%)';
+            setTimeout(() => alertItem.remove(), 300);
+        });
+    });
+}
+
+function showLanguageNotification(message, type = 'info', duration = 4000) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px; padding: 12px 20px; border-radius: 8px;
+        color: white; font-weight: 500; z-index: 10000; transform: translateX(100%);
+        transition: transform 0.3s ease; max-width: 350px; backdrop-filter: blur(10px);
+    `;
+    
+    const backgrounds = {
+        success: 'rgba(76, 175, 80, 0.9)',
+        warning: 'rgba(255, 152, 0, 0.9)',
+        error: 'rgba(244, 67, 54, 0.9)',
+        info: 'rgba(33, 150, 243, 0.9)'
+    };
+    
+    const icons = { success: '✅', warning: '⚠️', error: '❌', info: '🌍' };
+    
+    notification.style.background = backgrounds[type] || backgrounds.info;
+    notification.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><span>${icons[type] || '🌍'}</span><span>${message}</span></div>`;
     
     document.body.appendChild(notification);
     setTimeout(() => notification.style.transform = 'translateX(0)', 100);

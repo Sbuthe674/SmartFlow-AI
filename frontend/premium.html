@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.R.E.S. Premium - Перенаправление</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0b0c15, #16172a);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .redirect-container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2979ff;
+            margin-bottom: 20px;
+        }
+        .message {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #2979ff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="redirect-container">
+        <div class="logo">A.R.E.S.</div>
+        <div class="message">Перенаправление в панель управления...</div>
+        <div class="spinner"></div>
+        <p>Если переадресация не происходит автоматически, <a href="premium_dashboard.html" style="color: #2979ff;">нажмите здесь</a></p>
+    </div>
+
+    <script>
+        // Автоматическое перенаправление
+        setTimeout(() => {
+            window.location.href = 'premium_dashboard.html';
+        }, 1500);
+    </script>
+</body>
+</html>
