@@ -319,15 +319,15 @@
     <div id="auth-type-modal" class="modal-backdrop">
         <div class="modal-content">
             <button class="modal-close js-close-modal">&times;</button>
-            <h3 class="modal-title">Выберите тип входа</h3>
+            <h3 class="modal-title" data-key="auth_type_title">Выберите тип входа</h3>
             <div class="auth-type-buttons">
                 <button class="auth-type-btn js-open-modal" data-target-modal="login-client-modal">
                     <span class="auth-type-icon">👤</span>
-                    <span class="auth-type-text">Войти как клиент</span>
+                    <span class="auth-type-text" data-key="auth_client_text">Войти как клиент</span>
                 </button>
                 <button class="auth-type-btn js-open-modal" data-target-modal="login-company-modal">
                     <span class="auth-type-icon">🏢</span>
-                    <span class="auth-type-text">Войти как компания</span>
+                    <span class="auth-type-text" data-key="auth_company_text">Войти как компания</span>
                 </button>
             </div>
         </div>
@@ -337,15 +337,15 @@
     <div id="signup-type-modal" class="modal-backdrop">
         <div class="modal-content">
             <button class="modal-close js-close-modal">&times;</button>
-            <h3 class="modal-title">Выберите тип регистрации</h3>
+            <h3 class="modal-title" data-key="signup_type_title">Выберите тип регистрации</h3>
             <div class="auth-type-buttons">
                 <button class="auth-type-btn js-open-modal" data-target-modal="signup-client-modal">
                     <span class="auth-type-icon">👤</span>
-                    <span class="auth-type-text">Зарегистрироваться как клиент</span>
+                    <span class="auth-type-text" data-key="signup_client_text">Зарегистрироваться как клиент</span>
                 </button>
                 <button class="auth-type-btn js-open-modal" data-target-modal="signup-company-modal">
                     <span class="auth-type-icon">🏢</span>
-                    <span class="auth-type-text">Зарегистрироваться как компания</span>
+                    <span class="auth-type-text" data-key="signup_company_text">Зарегистрироваться как компания</span>
                 </button>
             </div>
         </div>
@@ -355,17 +355,17 @@
     <div id="login-client-modal" class="modal-backdrop">
         <div class="modal-content">
             <button class="modal-close js-close-modal">&times;</button>
-            <h3 class="modal-title">👤 Вход как клиент</h3>
+            <h3 class="modal-title" data-key="login_client_title">👤 Вход как клиент</h3>
             <div class="error-message" id="client-login-error" style="display:none;"></div>
             <form class="modal-form" id="client-login-form">
                 <div class="form-group">
-                    <input type="email" class="client-login-email" placeholder="Email" required>
+                    <input type="email" class="client-login-email" data-key="placeholder_email" placeholder="Email" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="client-login-password" placeholder="Пароль" required>
+                    <input type="password" class="client-login-password" data-key="placeholder_password" placeholder="Пароль" required>
                 </div>
-                <button type="submit" class="cta-primary">Войти</button>
-                <p class="modal-text">Нет аккаунта? <a href="#" class="js-open-modal" data-target-modal="signup-client-modal">Зарегистрироваться</a></p>
+                <button type="submit" class="cta-primary" data-key="btn_login">Войти</button>
+                <p class="modal-text"><span data-key="no_account_signup">Нет аккаунта?</span> <a href="#" class="js-open-modal" data-target-modal="signup-client-modal" data-key="btn_signup">Зарегистрироваться</a></p>
             </form>
         </div>
     </div>
@@ -374,17 +374,17 @@
     <div id="login-company-modal" class="modal-backdrop">
         <div class="modal-content">
             <button class="modal-close js-close-modal">&times;</button>
-            <h3 class="modal-title">🏢 Вход как компания</h3>
+            <h3 class="modal-title" data-key="login_company_title">🏢 Вход как компания</h3>
             <div class="error-message" id="company-login-error" style="display:none;"></div>
             <form class="modal-form" id="company-login-form">
                 <div class="form-group">
-                    <input type="email" class="company-login-email" placeholder="Email компании" required>
+                    <input type="email" class="company-login-email" data-key="placeholder_company_email" placeholder="Email компании" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="company-login-password" placeholder="Пароль" required>
+                    <input type="password" class="company-login-password" data-key="placeholder_password" placeholder="Пароль" required>
                 </div>
-                <button type="submit" class="cta-primary">Войти</button>
-                <p class="modal-text">Нет аккаунта? <a href="#" class="js-open-modal" data-target-modal="signup-company-modal">Зарегистрироваться</a></p>
+                <button type="submit" class="cta-primary" data-key="btn_login">Войти</button>
+                <p class="modal-text"><span data-key="no_account_signup">Нет аккаунта?</span> <a href="#" class="js-open-modal" data-target-modal="signup-company-modal" data-key="btn_signup">Зарегистрироваться</a></p>
             </form>
         </div>
     </div>
@@ -393,23 +393,23 @@
     <div id="signup-client-modal" class="modal-backdrop">
         <div class="modal-content">
             <button class="modal-close js-close-modal">&times;</button>
-            <h3 class="modal-title">👤 Регистрация как клиент</h3>
+            <h3 class="modal-title" data-key="signup_client_title">👤 Регистрация как клиент</h3>
             <div class="error-message" id="client-signup-error" style="display:none;"></div>
             <form class="modal-form" id="client-signup-form">
                 <div class="form-group">
-                    <input type="text" class="client-signup-name" placeholder="Ваше имя" required>
+                    <input type="text" class="client-signup-name" data-key="placeholder_name" placeholder="Ваше имя" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" class="client-signup-email" placeholder="Email" required>
+                    <input type="email" class="client-signup-email" data-key="placeholder_email" placeholder="Email" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="client-signup-password" placeholder="Пароль" required>
+                    <input type="password" class="client-signup-password" data-key="placeholder_password" placeholder="Пароль" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="client-signup-password-confirm" placeholder="Повторите пароль" required>
+                    <input type="password" class="client-signup-password-confirm" data-key="placeholder_confirm_password" placeholder="Повторите пароль" required>
                 </div>
-                <button type="submit" class="cta-primary">Зарегистрироваться</button>
-                <p class="modal-text">Уже есть аккаунт? <a href="#" class="js-open-modal" data-target-modal="login-client-modal">Войти</a></p>
+                <button type="submit" class="cta-primary" data-key="btn_signup">Зарегистрироваться</button>
+                <p class="modal-text"><span data-key="have_account_login">Уже есть аккаунт?</span> <a href="#" class="js-open-modal" data-target-modal="login-client-modal" data-key="btn_login">Войти</a></p>
             </form>
         </div>
     </div>
@@ -418,29 +418,29 @@
     <div id="signup-company-modal" class="modal-backdrop">
         <div class="modal-content">
             <button class="modal-close js-close-modal">&times;</button>
-            <h3 class="modal-title">🏢 Регистрация как компания</h3>
+            <h3 class="modal-title" data-key="signup_company_title">🏢 Регистрация как компания</h3>
             <div class="error-message" id="company-signup-error" style="display:none;"></div>
             <form class="modal-form" id="company-signup-form">
                 <div class="form-group">
-                    <input type="text" class="company-signup-name" placeholder="Имя компании" required>
+                    <input type="text" class="company-signup-name" data-key="placeholder_company_name" placeholder="Имя компании" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" class="company-signup-email" placeholder="Email компании" required>
+                    <input type="email" class="company-signup-email" data-key="placeholder_company_email" placeholder="Email компании" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="company-signup-contact" placeholder="Контактное лицо" required>
+                    <input type="text" class="company-signup-contact" data-key="placeholder_contact_person" placeholder="Контактное лицо" required>
                 </div>
                 <div class="form-group">
-                    <input type="tel" class="company-signup-phone" placeholder="Телефон" required>
+                    <input type="tel" class="company-signup-phone" data-key="placeholder_phone" placeholder="Телефон" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="company-signup-password" placeholder="Пароль" required>
+                    <input type="password" class="company-signup-password" data-key="placeholder_password" placeholder="Пароль" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="company-signup-password-confirm" placeholder="Повторите пароль" required>
+                    <input type="password" class="company-signup-password-confirm" data-key="placeholder_confirm_password" placeholder="Повторите пароль" required>
                 </div>
-                <button type="submit" class="cta-primary">Зарегистрироваться</button>
-                <p class="modal-text">Уже есть аккаунт? <a href="#" class="js-open-modal" data-target-modal="login-company-modal">Войти</a></p>
+                <button type="submit" class="cta-primary" data-key="btn_signup">Зарегистрироваться</button>
+                <p class="modal-text"><span data-key="have_account_login">Уже есть аккаунт?</span> <a href="#" class="js-open-modal" data-target-modal="login-company-modal" data-key="btn_login">Войти</a></p>
             </form>
         </div>
     </div>
@@ -450,13 +450,13 @@
         <div class="modal-content dashboard-content">
             <button class="modal-close js-close-modal">&times;</button>
             <div class="dashboard-header">
-                <h2 class="dashboard-title">👤 Личный кабинет</h2>
-                <button class="logout-btn js-logout">Выход</button>
+                <h2 class="dashboard-title" data-key="client_dashboard_title">👤 Личный кабинет</h2>
+                <button class="logout-btn js-logout" data-key="btn_logout">Выход</button>
             </div>
             <div class="dashboard-body">
                 <div class="dashboard-grid">
                     <div class="dashboard-card profile-card">
-                        <h3>Профиль</h3>
+                        <h3 data-key="profile_section">Профиль</h3>
                         <div class="profile-info">
                             <p><strong>Имя:</strong> <span class="client-name">-</span></p>
                             <p><strong>Email:</strong> <span class="client-email">-</span></p>
@@ -464,19 +464,19 @@
                         </div>
                     </div>
                     <div class="dashboard-card requests-card">
-                        <h3>Мои обращения</h3>
+                        <h3 data-key="my_requests_section">Мои обращения</h3>
                         <div class="requests-list" id="client-requests">
                             <p class="loading">Загрузка обращений...</p>
                         </div>
                     </div>
                     <div class="dashboard-card tickets-card">
-                        <h3>Мои тикеты</h3>
+                        <h3 data-key="my_tickets_section">Мои тикеты</h3>
                         <div class="tickets-list" id="client-tickets">
                             <p class="loading">Загрузка тикетов...</p>
                         </div>
                     </div>
                     <div class="dashboard-card settings-card">
-                        <h3>Быстрые ссылки</h3>
+                        <h3 data-key="quick_links_section">Быстрые ссылки</h3>
                         <ul class="quick-links">
                             <li><a href="#" class="quick-link">📝 Создать обращение</a></li>
                             <li><a href="#" class="quick-link">📊 Статистика</a></li>
@@ -494,8 +494,8 @@
         <div class="modal-content dashboard-content">
             <button class="modal-close js-close-modal">&times;</button>
             <div class="dashboard-header">
-                <h2 class="dashboard-title">🏢 Панель управления компании</h2>
-                <button class="logout-btn js-logout">Выход</button>
+                <h2 class="dashboard-title" data-key="company_dashboard_title">🏢 Панель управления компании</h2>
+                <button class="logout-btn js-logout" data-key="btn_logout">Выход</button>
             </div>
             <div class="dashboard-body">
                 <div class="dashboard-grid">
