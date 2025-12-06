@@ -23,9 +23,17 @@
         <header class="top-bar">
             <div class="logo">A.R.E.S. <span class="subtitle">Dashboard</span></div>
             <nav class="main-tabs">
-                <a href="#" class="tab-link active" data-tab="support"><i class="fas fa-headset"></i> Центр Поддержки</a>
-                <a href="#" class="tab-link" data-tab="profile"><i class="fas fa-user-circle"></i> Личный Кабинет</a>
-                <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Выход</a>
+                <a href="#" class="tab-link active" data-tab="support"><i class="fas fa-headset"></i> <span data-key="tab_support">Центр Поддержки</span></a>
+                <a href="#" class="tab-link" data-tab="profile"><i class="fas fa-user-circle"></i> <span data-key="tab_profile">Личный Кабинет</span></a>
+                <div class="language-switcher">
+                    <span class="current-lang" data-key="lang_current">RU</span>
+                    <div class="lang-dropdown">
+                        <button class="lang-btn" data-lang="ru" data-key="lang_ru">RU</button>
+                        <button class="lang-btn" data-lang="kz" data-key="lang_kz">KZ</button>
+                        <button class="lang-btn" data-lang="en" data-key="lang_en">EN</button>
+                    </div>
+                </div>
+                <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> <span data-key="btn_logout">Выход</span></a>
             </nav>
         </header>
 
@@ -34,33 +42,33 @@
             <div id="support" class="tab-content active" style="display: flex; flex-grow: 1;">
                 
                 <aside class="ticket-sidebar">
-                    <h3><i class="fas fa-clipboard-list"></i> История Тикетов</h3>
+                    <h3><i class="fas fa-clipboard-list"></i> <span data-key="tickets_history">История Тикетов</span></h3>
                     <div class="ticket-list" id="ticket-list">
-                        <div class="ticket-item ticket-list-item active" data-ticket-id="1051" data-title="Не могу зайти в аккаунт" data-status="open">
-                            <div class="ticket-title">Не могу зайти в аккаунт</div>
+                        <div class="ticket-item ticket-list-item active" data-ticket-id="1051" data-title="ticket_1051" data-status="open">
+                            <div class="ticket-title" data-key="ticket_1051">Не могу зайти в аккаунт</div>
                             <div class="ticket-meta">
-                                <span class="ticket-status status-open">Открыт</span>
+                                <span class="ticket-status status-open" data-key="status_open">Открыт</span>
                                 <span class="ticket-id">#1051</span>
                             </div>
                         </div>
-                        <div class="ticket-item ticket-list-item" data-ticket-id="1050" data-title="Вопрос по тарифам" data-status="closed">
-                            <div class="ticket-title">Вопрос по тарифам</div>
+                        <div class="ticket-item ticket-list-item" data-ticket-id="1050" data-title="ticket_1050" data-status="closed">
+                            <div class="ticket-title" data-key="ticket_1050">Вопрос по тарифам</div>
                             <div class="ticket-meta">
-                                <span class="ticket-status status-closed">Решен</span>
+                                <span class="ticket-status status-closed" data-key="status_closed">Решен</span>
                                 <span class="ticket-id">#1050</span>
                             </div>
                         </div>
-                        <div class="ticket-item ticket-list-item" data-ticket-id="1049" data-title="Ошибка при оплате" data-status="awaiting">
-                            <div class="ticket-title">Ошибка при оплате</div>
+                        <div class="ticket-item ticket-list-item" data-ticket-id="1049" data-title="ticket_1049" data-status="awaiting">
+                            <div class="ticket-title" data-key="ticket_1049">Ошибка при оплате</div>
                             <div class="ticket-meta">
-                                <span class="ticket-status status-awaiting">Ждём вас</span>
+                                <span class="ticket-status status-awaiting" data-key="status_awaiting">Ждём вас</span>
                                 <span class="ticket-id">#1049</span>
                             </div>
                         </div>
-                        <div class="ticket-item ticket-list-item" data-ticket-id="1048" data-title="Проблема с API" data-status="closed">
-                            <div class="ticket-title">Проблема с API</div>
+                        <div class="ticket-item ticket-list-item" data-ticket-id="1048" data-title="ticket_1048" data-status="closed">
+                            <div class="ticket-title" data-key="ticket_1048">Проблема с API</div>
                             <div class="ticket-meta">
-                                <span class="ticket-status status-closed">Решен</span>
+                                <span class="ticket-status status-closed" data-key="status_closed">Решен</span>
                                 <span class="ticket-id">#1048</span>
                             </div>
                         </div>
@@ -71,21 +79,21 @@
                     <div class="current-ticket-info">
                         <h2 id="current-ticket-title">Тикет #1051: Не могу зайти в аккаунт</h2>
                         <div class="ticket-status-bar">
-                            <span class="status-label">Статус:</span>
-                            <span class="status-value status-open" id="current-ticket-status-display">Открыт</span>
-                            <button class="close-ticket-btn" id="close-ticket-btn"><i class="fas fa-times-circle"></i> Закрыть Тикет</button>
+                            <span class="status-label" data-key="status_label">Статус:</span>
+                            <span class="status-value status-open" id="current-ticket-status-display" data-key="status_open">Открыт</span>
+                            <button class="close-ticket-btn" id="close-ticket-btn"><i class="fas fa-times-circle"></i> <span data-key="btn_close_ticket">Закрыть Тикет</span></button>
                         </div>
                     </div>
                     <div class="chat-messages" id="chat-messages-container">
                         <div class="message ai-message">
-                            <div class="message-sender"><i class="fas fa-robot"></i> A.R.E.S. Агент</div>
-                            <div class="message-bubble welcome-bubble">
+                            <div class="message-sender"><i class="fas fa-robot"></i> <span data-key="ai_agent">A.R.E.S. Агент</span></div>
+                            <div class="message-bubble welcome-bubble" data-key="welcome_message">
                                 Добро пожаловать! Я готов помочь вам с тикетом #1051.
                             </div>
                             <div class="message-time">06.12.2025 02:20</div>
                         </div>
                         <div class="message user-message">
-                            <div class="message-sender"><i class="fas fa-user-edit"></i> Вы</div>
+                            <div class="message-sender"><i class="fas fa-user-edit"></i> <span data-key="you">Вы</span></div>
                             <div class="message-bubble">
                                 Да, не могу войти.
                             </div>
@@ -94,20 +102,20 @@
                     </div>
                     <div class="chat-input">
                         <div class="quick-actions" id="quick-actions"></div>
-                        <input type="text" placeholder="Введите ваше сообщение..." id="chat-text">
-                        <button class="send-btn" id="send-message-btn"><i class="fas fa-paper-plane"></i> Отправить</button>
+                        <input type="text" placeholder="Введите ваше сообщение..." id="chat-text" data-placeholder="input_placeholder">
+                        <button class="send-btn" id="send-message-btn"><i class="fas fa-paper-plane"></i> <span data-key="btn_send">Отправить</span></button>
                     </div>
                 </main>
             </div>
             
             <div id="profile" class="tab-content" style="display: none;">
                  <div class="profile-container">
-                    <h2 class="profile-header"><i class="fas fa-user-cog"></i> Настройки Аккаунта</h2>
+                    <h2 class="profile-header"><i class="fas fa-user-cog"></i> <span data-key="profile_settings">Настройки Аккаунта</span></h2>
                     <div class="profile-card">
                         <div class="avatar-section">
                             <i class="fas fa-user-circle avatar-icon"></i>
                             <h3 class="user-name-neon">AcmeClient_77</h3>
-                            <p class="status-open user-status">Статус: Активный</p>
+                            <p class="status-open user-status"><span data-key="status_label">Статус</span>: <span data-key="status_active">Активный</span></p>
                         </div>
                         <div class="info-section">
                             <h4>Основная информация</h4>
@@ -140,6 +148,241 @@
     </div>
 
     <script>
+        // Переводы для интерфейса
+        const translations = {
+            ru: {
+                // Общие
+                lang_current: 'RU',
+                lang_ru: 'RU',
+                lang_kz: 'KZ', 
+                lang_en: 'EN',
+                
+                // Вкладки
+                tab_support: 'Центр Поддержки',
+                tab_profile: 'Личный Кабинет',
+                btn_logout: 'Выход',
+                
+                // Тикеты
+                tickets_history: 'История Тикетов',
+                status_label: 'Статус:',
+                status_open: 'Открыт',
+                status_closed: 'Решен',
+                status_awaiting: 'Ждём вас',
+                status_active: 'Активный',
+                btn_close_ticket: 'Закрыть Тикет',
+                btn_open_ticket: 'Открыть Тикет',
+                
+                // Названия тикетов
+                ticket_1051: 'Не могу зайти в аккаунт',
+                ticket_1050: 'Вопрос по тарифам',
+                ticket_1049: 'Ошибка при оплате',
+                ticket_1048: 'Проблема с API',
+                
+                // Чат
+                ai_agent: 'A.R.E.S. Агент',
+                you: 'Вы',
+                welcome_message: 'Добро пожаловать! Я готов помочь вам с тикетом #1051.',
+                input_placeholder: 'Введите ваше сообщение...',
+                btn_send: 'Отправить',
+                
+                // Быстрые ответы
+                quick_solved: 'Спасибо, вопрос решен!',
+                quick_waiting: 'Я жду ответа специалиста.',
+                quick_when_answer: 'Когда будет ответ?',
+                
+                // Системные сообщения
+                ticket_active_msg: 'Тикет #{id} активен. Я готов помочь вам с проблемой.',
+                ticket_closed_msg: 'Этот тикет был успешно решен и закрыт.',
+                ticket_received_msg: 'Я получил ваше сообщение. Тикет #{id} принят в обработку.',
+                
+                // Placeholder'ы для статусов
+                status_open_placeholder: 'Введите ваше сообщение...',
+                status_closed_placeholder: 'Тикет закрыт. Если проблема осталась, откройте новый.',
+                status_awaiting_placeholder: 'Мы ждем вашего ответа для продолжения работы.',
+                
+                // Профиль
+                profile_settings: 'Настройки Аккаунта'
+            },
+            kz: {
+                // Общие
+                lang_current: 'KZ',
+                lang_ru: 'RU',
+                lang_kz: 'KZ',
+                lang_en: 'EN',
+                
+                // Вкладки
+                tab_support: 'Қолдау орталығы',
+                tab_profile: 'Жеке кабинет',
+                btn_logout: 'Шығу',
+                
+                // Тикеты
+                tickets_history: 'Тикеттер тарихы',
+                status_label: 'Мәртебе:',
+                status_open: 'Ашық',
+                status_closed: 'Шешілді',
+                status_awaiting: 'Сізді күтеміз',
+                status_active: 'Белсенді',
+                btn_close_ticket: 'Тикетті жабу',
+                btn_open_ticket: 'Тикетті ашу',
+                
+                // Названия тикетов
+                ticket_1051: 'Аккаунтқа кіре алмаймын',
+                ticket_1050: 'Тарифтар туралы сұрақ',
+                ticket_1049: 'Төлемде қате',
+                ticket_1048: 'API мәселесі',
+                
+                // Чат
+                ai_agent: 'A.R.E.S. Агенті',
+                you: 'Сіз',
+                welcome_message: 'Қош келдіңіз! Мен сізге #1051 тикетімен көмектесуге дайынмын.',
+                input_placeholder: 'Хабарламаңызды енгізіңіз...',
+                btn_send: 'Жіберу',
+                
+                // Быстрые ответы
+                quick_solved: 'Рахмет, мәселе шешілді!',
+                quick_waiting: 'Мен маманның жауабын күтемін.',
+                quick_when_answer: 'Жауап қашан болады?',
+                
+                // Системные сообщения
+                ticket_active_msg: 'Тикет #{id} белсенді. Мен сізге мәселемен көмектесуге дайынмын.',
+                ticket_closed_msg: 'Бұл тикет сәтті шешілді және жабылды.',
+                ticket_received_msg: 'Мен сіздің хабарламаңызды алдым. Тикет #{id} өңдеуге қабылданды.',
+                
+                // Placeholder'ы для статусов
+                status_open_placeholder: 'Хабарламаңызды енгізіңіз...',
+                status_closed_placeholder: 'Тикет жабық. Мәселе қалып қойса, жаңасын ашыңыз.',
+                status_awaiting_placeholder: 'Біз сіздің жауабыңызды жұмысты жалғастыру үшін күтеміз.',
+                
+                // Профиль
+                profile_settings: 'Аккаунт баптаулары'
+            },
+            en: {
+                // Общие
+                lang_current: 'EN',
+                lang_ru: 'RU',
+                lang_kz: 'KZ',
+                lang_en: 'EN',
+                
+                // Вкладки
+                tab_support: 'Support Center',
+                tab_profile: 'Profile',
+                btn_logout: 'Logout',
+                
+                // Тикеты
+                tickets_history: 'Tickets History',
+                status_label: 'Status:',
+                status_open: 'Open',
+                status_closed: 'Resolved',
+                status_awaiting: 'Awaiting',
+                status_active: 'Active',
+                btn_close_ticket: 'Close Ticket',
+                btn_open_ticket: 'Open Ticket',
+                
+                // Названия тикетов
+                ticket_1051: 'Cannot log into account',
+                ticket_1050: 'Question about pricing',
+                ticket_1049: 'Payment error',
+                ticket_1048: 'API issue',
+                
+                // Чат
+                ai_agent: 'A.R.E.S. Agent',
+                you: 'You',
+                welcome_message: 'Welcome! I am ready to help you with ticket #1051.',
+                input_placeholder: 'Enter your message...',
+                btn_send: 'Send',
+                
+                // Быстрые ответы
+                quick_solved: 'Thank you, issue resolved!',
+                quick_waiting: 'I am waiting for a specialist response.',
+                quick_when_answer: 'When will there be an answer?',
+                
+                // Системные сообщения
+                ticket_active_msg: 'Ticket #{id} is active. I am ready to help you with the problem.',
+                ticket_closed_msg: 'This ticket has been successfully resolved and closed.',
+                ticket_received_msg: 'I received your message. Ticket #{id} has been accepted for processing.',
+                
+                // Placeholder'ы для статусов
+                status_open_placeholder: 'Enter your message...',
+                status_closed_placeholder: 'Ticket closed. If the problem persists, please open a new one.',
+                status_awaiting_placeholder: 'We are waiting for your response to continue.',
+                
+                // Профиль
+                profile_settings: 'Account Settings'
+            }
+        };
+
+        let currentLang = 'ru';
+        let activeTicketId = '1051';
+
+        // Функция обновления контента
+        function updateContent(lang) {
+            const langData = translations[lang] || translations['ru'];
+            
+            // Обновляем все элементы с data-key
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (langData[key]) {
+                    element.textContent = langData[key];
+                }
+            });
+            
+            // Обновляем отображаемый язык в переключателе
+            const currentLangElement = document.querySelector('.current-lang');
+            if (currentLangElement) {
+                currentLangElement.textContent = langData.lang_current || lang.toUpperCase();
+            }
+            
+            // Обновляем placeholder для поля ввода
+            const inputElement = document.querySelector('[data-placeholder="input_placeholder"]');
+            if (inputElement && langData.input_placeholder) {
+                inputElement.placeholder = langData.input_placeholder;
+            }
+            
+            // Обновляем заголовки тикетов в current-ticket-title
+            const titleElement = document.getElementById('current-ticket-title');
+            if (titleElement && activeTicketId) {
+                const ticketKey = 'ticket_' + activeTicketId;
+                if (langData[ticketKey]) {
+                    titleElement.textContent = `Тикет #${activeTicketId}: ${langData[ticketKey]}`;
+                }
+            }
+            
+            // Обновляем быстрые ответы
+            updateQuickReplies(langData);
+            
+            // Обновляем язык документа
+            document.documentElement.lang = lang;
+        }
+
+        // Функция обновления быстрых ответов
+        function updateQuickReplies(langData) {
+            const quickReplies = [
+                { text: langData.quick_solved, status: "closed" },
+                { text: langData.quick_waiting, status: "awaiting" },
+                { text: langData.quick_when_answer, status: "open" }
+            ];
+            
+            // Обновляем quick actions если они видны
+            const quickActionsContainer = document.getElementById('quick-actions');
+            if (quickActionsContainer && quickActionsContainer.children.length > 0) {
+                quickActionsContainer.innerHTML = '';
+                quickReplies.forEach(reply => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quick-reply-btn';
+                    btn.textContent = reply.text;
+                    btn.addEventListener('click', () => {
+                        chatInput.value = reply.text;
+                        chatInput.focus();
+                    });
+                    quickActionsContainer.appendChild(btn);
+                });
+            }
+            
+            // Сохраняем переводы для использования в других функциях
+            window.currentQuickReplies = quickReplies;
+            window.currentTranslations = langData;
+        }
+
         // --- ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(content => {
@@ -176,6 +419,20 @@
 
         // --- ЛОГИКА ТАБОВ И ТИКЕТОВ (без изменений, кроме вызова switchTab) ---
         document.addEventListener('DOMContentLoaded', () => {
+            // Инициализация языка
+            updateContent(currentLang);
+            
+            // Обработчики переключения языка
+            document.querySelectorAll('.lang-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const newLang = this.getAttribute('data-lang');
+                    if (newLang !== currentLang) {
+                        currentLang = newLang;
+                        updateContent(currentLang);
+                    }
+                });
+            });
+            
             // Инициализация переключения вкладок
             document.querySelectorAll('.tab-link').forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -205,37 +462,33 @@
             const sendButton = document.getElementById('send-message-btn');
             const closeButton = document.getElementById('close-ticket-btn');
             const quickActionsContainer = document.getElementById('quick-actions');
-            let activeTicketId = '1051';
 
-            const quickReplies = [
-                { text: "Спасибо, вопрос решен!", status: "closed" },
-                { text: "Я жду ответа специалиста.", status: "awaiting" },
-                { text: "Когда будет ответ?", status: "open" }
-            ];
+            // quickReplies теперь обновляются динамически через updateQuickReplies()
             
             function updateStatusDisplay(statusKey, element) {
+                const langData = window.currentTranslations || translations['ru'];
                 let statusText = '';
                 let statusClass = '';
                 let statusIcon = '';
 
                 switch (statusKey) {
                     case 'open':
-                        statusText = 'Открыт';
+                        statusText = langData.status_open || 'Открыт';
                         statusClass = 'status-open';
                         statusIcon = '<i class="fas fa-circle-dot"></i> ';
-                        chatInput.placeholder = "Введите ваше сообщение...";
+                        chatInput.placeholder = langData.status_open_placeholder || "Введите ваше сообщение...";
                         break;
                     case 'closed':
-                        statusText = 'Решен';
+                        statusText = langData.status_closed || 'Решен';
                         statusClass = 'status-closed';
                         statusIcon = '<i class="fas fa-check-circle"></i> ';
-                        chatInput.placeholder = "Тикет закрыт. Если проблема осталась, откройте новый.";
+                        chatInput.placeholder = langData.status_closed_placeholder || "Тикет закрыт. Если проблема осталась, откройте новый.";
                         break;
                     case 'awaiting':
-                        statusText = 'Ждём вас';
+                        statusText = langData.status_awaiting || 'Ждём вас';
                         statusClass = 'status-awaiting';
                         statusIcon = '<i class="fas fa-clock"></i> ';
-                        chatInput.placeholder = "Мы ждем вашего ответа для продолжения работы.";
+                        chatInput.placeholder = langData.status_awaiting_placeholder || "Мы ждем вашего ответа для продолжения работы.";
                         break;
                     default:
                         statusText = 'Неизвестно';
@@ -246,12 +499,12 @@
                 element.innerHTML = statusIcon + statusText;
                 
                 if (statusKey === 'closed') {
-                    closeButton.innerHTML = '<i class="fas fa-folder-open"></i> Открыть Тикет';
+                    closeButton.innerHTML = '<i class="fas fa-folder-open"></i> ' + (langData.btn_open_ticket || 'Открыть Тикет');
                     closeButton.classList.add('status-closed');
                     closeButton.classList.remove('status-open');
                     sendButton.disabled = true;
                 } else {
-                    closeButton.innerHTML = '<i class="fas fa-times-circle"></i> Закрыть Тикет';
+                    closeButton.innerHTML = '<i class="fas fa-times-circle"></i> ' + (langData.btn_close_ticket || 'Закрыть Тикет');
                     closeButton.classList.add('status-open');
                     closeButton.classList.remove('status-closed');
                     sendButton.disabled = false;
@@ -259,13 +512,14 @@
             }
 
             function generateMockChat(id, status) {
+                const langData = window.currentTranslations || translations['ru'];
                 const now = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
                 let chatContent = `
                     <div class="message ai-message">
-                        <div class="message-sender"><i class="fas fa-robot"></i> A.R.E.S. Агент</div>
+                        <div class="message-sender"><i class="fas fa-robot"></i> ${langData.ai_agent || 'A.R.E.S. Агент'}</div>
                         <div class="message-bubble welcome-bubble">
-                            Тикет #${id} активен. Я готов помочь вам с проблемой.
+                            ${(langData.ticket_active_msg || 'Тикет #{id} активен. Я готов помочь вам с проблемой.').replace('{id}', id)}
                         </div>
                         <div class="message-time">${now}</div>
                     </div>`;
@@ -273,9 +527,9 @@
                 if (status === 'closed') {
                     chatContent += `
                         <div class="message ai-message">
-                            <div class="message-sender"><i class="fas fa-robot"></i> A.R.E.S. Агент</div>
+                            <div class="message-sender"><i class="fas fa-robot"></i> ${langData.ai_agent || 'A.R.E.S. Агент'}</div>
                             <div class="message-bubble">
-                                Этот тикет был успешно решен и закрыт.
+                                ${langData.ticket_closed_msg || 'Этот тикет был успешно решен и закрыт.'}
                             </div>
                             <div class="message-time">${now}</div>
                         </div>`;
@@ -287,6 +541,13 @@
                 quickActionsContainer.innerHTML = '';
                 if (statusKey === 'closed') return;
 
+                // Используем текущие переводы
+                const quickReplies = window.currentQuickReplies || [
+                    { text: "Спасибо, вопрос решен!", status: "closed" },
+                    { text: "Я жду ответа специалиста.", status: "awaiting" },
+                    { text: "Когда будет ответ?", status: "open" }
+                ];
+                
                 quickReplies.forEach(reply => {
                     const button = document.createElement('button');
                     button.className = 'quick-reply-btn';
@@ -305,11 +566,14 @@
                     item.classList.add('active');
 
                     const id = item.getAttribute('data-ticket-id');
-                    const title = item.getAttribute('data-title');
+                    const titleKey = item.getAttribute('data-title'); // теперь это ключ перевода
                     const statusKey = item.getAttribute('data-status');
                     
+                    const langData = window.currentTranslations || translations['ru'];
+                    const titleText = langData[titleKey] || titleKey;
+                    
                     activeTicketId = id;
-                    titleElement.textContent = `Тикет #${id}: ${title}`;
+                    titleElement.textContent = `Тикет #${id}: ${titleText}`;
                     
                     updateStatusDisplay(statusKey, statusDisplay);
                     renderQuickActions(statusKey);
@@ -319,7 +583,15 @@
                     
                     const statusSpan = item.querySelector('.ticket-status');
                     statusSpan.className = 'ticket-status status-' + statusKey;
-                    statusSpan.textContent = statusKey === 'open' ? 'Открыт' : (statusKey === 'closed' ? 'Решен' : 'Ждём вас');
+                    
+                    // Обновляем статус с переводом
+                    let statusText = '';
+                    switch (statusKey) {
+                        case 'open': statusText = langData.status_open || 'Открыт'; break;
+                        case 'closed': statusText = langData.status_closed || 'Решен'; break;
+                        case 'awaiting': statusText = langData.status_awaiting || 'Ждём вас'; break;
+                    }
+                    statusSpan.textContent = statusText;
                 });
             });
             
@@ -334,11 +606,12 @@
                 const text = chatInput.value.trim();
                 if (text === '' || sendButton.disabled) return;
 
+                const langData = window.currentTranslations || translations['ru'];
                 const now = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
                 
                 const userMessageHTML = `
                     <div class="message user-message">
-                        <div class="message-sender"><i class="fas fa-user-edit"></i> Вы</div>
+                        <div class="message-sender"><i class="fas fa-user-edit"></i> ${langData.you || 'Вы'}</div>
                         <div class="message-bubble">${text}</div>
                         <div class="message-time">${now}</div>
                     </div>
@@ -350,9 +623,9 @@
                     setTimeout(() => {
                         const aiResponseHTML = `
                             <div class="message ai-message">
-                                <div class="message-sender"><i class="fas fa-robot"></i> A.R.E.S. Агент</div>
+                                <div class="message-sender"><i class="fas fa-robot"></i> ${langData.ai_agent || 'A.R.E.S. Агент'}</div>
                                 <div class="message-bubble">
-                                    Я получил ваше сообщение. Тикет #${activeTicketId} принят в обработку.
+                                    ${(langData.ticket_received_msg || 'Я получил ваше сообщение. Тикет #{id} принят в обработку.').replace('{id}', activeTicketId)}
                                 </div>
                                 <div class="message-time">${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</div>
                             </div>
@@ -368,6 +641,7 @@
                 const activeItem = document.querySelector('.ticket-item.active');
                 if (!activeItem) return;
 
+                const langData = window.currentTranslations || translations['ru'];
                 const currentStatus = activeItem.getAttribute('data-status');
                 let newStatus = currentStatus === 'closed' ? 'open' : 'closed';
                 
@@ -375,7 +649,14 @@
                 
                 const statusSpan = activeItem.querySelector('.ticket-status');
                 statusSpan.className = 'ticket-status status-' + newStatus;
-                statusSpan.textContent = newStatus === 'open' ? 'Открыт' : 'Решен';
+                
+                // Обновляем статус с переводом
+                let statusText = '';
+                switch (newStatus) {
+                    case 'open': statusText = langData.status_open || 'Открыт'; break;
+                    case 'closed': statusText = langData.status_closed || 'Решен'; break;
+                }
+                statusSpan.textContent = statusText;
 
                 updateStatusDisplay(newStatus, statusDisplay);
                 renderQuickActions(newStatus); 

@@ -18,31 +18,31 @@
             </div>
             
             <nav class="menu">
-                <div class="menu-category">МОНИТОРИНГ</div>
+                <div class="menu-category" data-key="menu_monitoring">МОНИТОРИНГ</div>
                 <a href="#" class="menu-item active" data-section="overview">
-                    <span class="icon">◎</span> Обзор (Mission Control)
+                    <span class="icon">◎</span> <span data-key="menu_overview">Обзор (Mission Control)</span>
                 </a>
                 <a href="#" class="menu-item" data-section="incidents">
-                    <span class="icon">⚡</span> Лента Инцидентов
+                    <span class="icon">⚡</span> <span data-key="menu_incidents">Лента Инцидентов</span>
                 </a>
 
-                <div class="menu-category">УПРАВЛЕНИЕ AI</div>
+                <div class="menu-category" data-key="menu_ai_management">УПРАВЛЕНИЕ AI</div>
                 <a href="#" class="menu-item" data-section="knowledge-base">
-                    <span class="icon">🧠</span> База Знаний (RAG)
+                    <span class="icon">🧠</span> <span data-key="menu_knowledge">База Знаний (RAG)</span>
                 </a>
                 <a href="#" class="menu-item" data-section="routing-rules">
-                    <span class="icon">🔀</span> Правила Маршрутизации
+                    <span class="icon">🔀</span> <span data-key="menu_routing">Правила Маршрутизации</span>
                 </a>
                 <a href="#" class="menu-item" data-section="model-training">
-                    <span class="icon">🎓</span> Обучение Модели
+                    <span class="icon">🎓</span> <span data-key="menu_training">Обучение Модели</span>
                 </a>
 
-                <div class="menu-category">ОТЧЕТНОСТЬ</div>
+                <div class="menu-category" data-key="menu_reports">ОТЧЕТНОСТЬ</div>
                 <a href="#" class="menu-item" data-section="sla-kpi">
-                    <span class="icon">📊</span> SLA & KPI
+                    <span class="icon">📊</span> <span data-key="menu_sla">SLA & KPI</span>
                 </a>
                 <a href="#" class="menu-item" data-section="language-stats">
-                    <span class="icon">🌍</span> Языковая Статистика
+                    <span class="icon">🌍</span> <span data-key="menu_lang_stats">Языковая Статистика</span>
                 </a>
             </nav>
 
@@ -60,31 +60,39 @@
             <header class="top-bar">
                 <div class="kpi-group">
                     <div class="kpi-mini">
-                        <span class="label">Автоматизация</span>
+                        <span class="label" data-key="kpi_automation">Автоматизация</span>
                         <span class="value highlight-green">52.4%</span>
-                        <span class="sub">Цель: 50%</span>
+                        <span class="sub" data-key="kpi_goal">Цель: 50%</span>
                     </div>
                     <div class="separator"></div>
                     <div class="kpi-mini">
-                        <span class="label">Точность AI</span>
+                        <span class="label" data-key="kpi_accuracy">Точность AI</span>
                         <span class="value highlight-blue">99.1%</span>
-                        <span class="sub">Ошибки: 0.9%</span>
+                        <span class="sub" data-key="kpi_errors">Ошибки: 0.9%</span>
                     </div>
                     <div class="separator"></div>
                     <div class="kpi-mini">
-                        <span class="label">Сэкономлено FTE</span>
+                        <span class="label" data-key="kpi_fte_saved">Сэкономлено FTE</span>
                         <span class="value highlight-purple">4.5</span>
-                        <span class="sub">1-я линия</span>
+                        <span class="sub" data-key="kpi_first_line">1-я линия</span>
                     </div>
                     <div class="separator"></div>
                     <div class="kpi-mini">
-                        <span class="label">Avg. SLA</span>
+                        <span class="label" data-key="kpi_avg_sla">Avg. SLA</span>
                         <span class="value">1.2s</span>
-                        <span class="sub">Мгновенно</span>
+                        <span class="sub" data-key="kpi_instant">Мгновенно</span>
+                    </div>
+                </div>
+                <div class="language-switcher">
+                    <span class="lang current-lang" data-key="lang_current">RU</span>
+                    <div class="lang-dropdown">
+                        <button class="lang-btn" data-lang="ru" data-key="lang_ru">RU</button>
+                        <button class="lang-btn" data-lang="kz" data-key="lang_kz">KZ</button>
+                        <button class="lang-btn" data-lang="en" data-key="lang_en">EN</button>
                     </div>
                 </div>
                 <div class="system-status">
-                    <span class="status-dot pulse"></span> СИСТЕМА АКТИВНА
+                    <span class="status-dot pulse"></span> <span data-key="system_status">СИСТЕМА АКТИВНА</span>
                 </div>
             </header>
 

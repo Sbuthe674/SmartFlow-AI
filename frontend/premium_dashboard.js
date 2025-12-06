@@ -1,4 +1,143 @@
+// Переводы для интерфейса
+const translations = {
+    ru: {
+        // Общие
+        lang_current: 'RU',
+        lang_ru: 'RU',
+        lang_kz: 'KZ', 
+        lang_en: 'EN',
+        system_status: 'СИСТЕМА АКТИВНА',
+        
+        // Меню
+        menu_monitoring: 'МОНИТОРИНГ',
+        menu_overview: 'Обзор (Mission Control)',
+        menu_incidents: 'Лента Инцидентов',
+        menu_ai_management: 'УПРАВЛЕНИЕ AI',
+        menu_knowledge: 'База Знаний (RAG)',
+        menu_routing: 'Правила Маршрутизации',
+        menu_training: 'Обучение Модели',
+        menu_reports: 'ОТЧЕТНОСТЬ',
+        menu_sla: 'SLA & KPI',
+        menu_lang_stats: 'Языковая Статистика',
+        
+        // KPI
+        kpi_automation: 'Автоматизация',
+        kpi_goal: 'Цель: 50%',
+        kpi_accuracy: 'Точность AI',
+        kpi_errors: 'Ошибки: 0.9%',
+        kpi_fte_saved: 'Сэкономлено FTE',
+        kpi_first_line: '1-я линия',
+        kpi_avg_sla: 'Avg. SLA',
+        kpi_instant: 'Мгновенно'
+    },
+    kz: {
+        // Общие
+        lang_current: 'KZ',
+        lang_ru: 'RU',
+        lang_kz: 'KZ',
+        lang_en: 'EN',
+        system_status: 'ЖҮЙЕ БЕЛСЕНДІ',
+        
+        // Меню
+        menu_monitoring: 'МОНИТОРИНГ',
+        menu_overview: 'Шолу (Mission Control)',
+        menu_incidents: 'Оқиғалар жолағы',
+        menu_ai_management: 'AI БАСҚАРУ',
+        menu_knowledge: 'Білім базасы (RAG)',
+        menu_routing: 'Бағыттау ережелері',
+        menu_training: 'Модельді оқыту',
+        menu_reports: 'ЕСЕПТІЛІК',
+        menu_sla: 'SLA & KPI',
+        menu_lang_stats: 'Тілдік статистика',
+        
+        // KPI
+        kpi_automation: 'Автоматтандыру',
+        kpi_goal: 'Мақсат: 50%',
+        kpi_accuracy: 'AI дәлдігі',
+        kpi_errors: 'Қателер: 0.9%',
+        kpi_fte_saved: 'Үнемделген FTE',
+        kpi_first_line: '1-ші желі',
+        kpi_avg_sla: 'Орташа SLA',
+        kpi_instant: 'Лезде'
+    },
+    en: {
+        // Общие
+        lang_current: 'EN',
+        lang_ru: 'RU',
+        lang_kz: 'KZ',
+        lang_en: 'EN', 
+        system_status: 'SYSTEM ACTIVE',
+        
+        // Меню
+        menu_monitoring: 'MONITORING',
+        menu_overview: 'Overview (Mission Control)',
+        menu_incidents: 'Incidents Feed',
+        menu_ai_management: 'AI MANAGEMENT',
+        menu_knowledge: 'Knowledge Base (RAG)',
+        menu_routing: 'Routing Rules',
+        menu_training: 'Model Training',
+        menu_reports: 'REPORTS',
+        menu_sla: 'SLA & KPI',
+        menu_lang_stats: 'Language Statistics',
+        
+        // KPI
+        kpi_automation: 'Automation',
+        kpi_goal: 'Goal: 50%',
+        kpi_accuracy: 'AI Accuracy',
+        kpi_errors: 'Errors: 0.9%',
+        kpi_fte_saved: 'FTE Saved',
+        kpi_first_line: '1st line',
+        kpi_avg_sla: 'Avg. SLA',
+        kpi_instant: 'Instant'
+    }
+};
+
+let currentLang = 'ru';
+
+// Функция обновления контента
+function updateContent(lang) {
+    const langData = translations[lang] || translations['ru'];
+    
+    // Обновляем все элементы с data-key
+    document.querySelectorAll('[data-key]').forEach(element => {
+        const key = element.getAttribute('data-key');
+        if (langData[key]) {
+            element.textContent = langData[key];
+        }
+    });
+    
+    // Обновляем язык документа и отображаемый язык
+    document.documentElement.lang = lang;
+    const currentLangElement = document.querySelector('.current-lang');
+    if (currentLangElement) {
+        currentLangElement.textContent = langData.lang_current;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // Инициализация языка
+    updateContent(currentLang);
+    
+    // Обработчики переключения языка
+    document.querySelectorAll('.lang-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const newLang = this.getAttribute('data-lang');
+            if (newLang !== currentLang) {
+                currentLang = newLang;
+                updateContent(currentLang);
+            }
+        });
+    });
+    
+    // Закрытие dropdown при клике вне его
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.language-switcher')) {
+            document.querySelectorAll('.lang-dropdown').forEach(dropdown => {
+                dropdown.style.display = 'none';
+            });
+        }
+    });
     
     // Load user data from localStorage
     const userData = localStorage.getItem('user');
