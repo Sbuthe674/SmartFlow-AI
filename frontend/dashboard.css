@@ -287,6 +287,165 @@ body {
 .send-btn:disabled { background-color: var(--color-status-closed); cursor: not-allowed; box-shadow: none; }
 .send-btn:hover:not(:disabled) { opacity: 0.9; box-shadow: 0 0 10px var(--color-shadow-red); }
 
+/* Стили для контейнера кнопок отправки */
+.send-buttons { 
+    display: flex; 
+    gap: 10px; 
+    margin-left: 10px; 
+}
+
+/* Стили для кнопки отправки на email */
+.email-btn { 
+    background: linear-gradient(135deg, #4CAF50, #45a049); 
+    color: white; 
+    border: none; 
+    padding: 15px 20px; 
+    border-radius: var(--border-radius-base); 
+    font-weight: 700; 
+    font-size: 1rem; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    flex-shrink: 0; 
+}
+
+.email-btn:hover { 
+    background: linear-gradient(135deg, #45a049, #4CAF50); 
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.4); 
+    transform: translateY(-1px); 
+}
+
+.email-btn:disabled { 
+    background: var(--color-status-closed); 
+    cursor: not-allowed; 
+    transform: none; 
+    box-shadow: none; 
+}
+
+/* Системные сообщения для уведомлений */
+.system-message { 
+    background: rgba(76, 175, 80, 0.1); 
+    border: 1px solid rgba(76, 175, 80, 0.3); 
+    color: #4CAF50; 
+    padding: 15px; 
+    border-radius: var(--border-radius-base); 
+    margin: 10px 0; 
+    font-size: 0.9rem; 
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.system-message.error { 
+    background: rgba(244, 67, 54, 0.1); 
+    border-color: rgba(244, 67, 54, 0.3); 
+    color: #f44336; 
+}
+
+.notification-text {
+    flex-grow: 1;
+    padding-right: 10px;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    opacity: 0.7;
+    transition: opacity 0.3s, background-color 0.3s;
+}
+
+.notification-close:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Новая система уведомлений */
+#notifications-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    max-width: 400px;
+    pointer-events: none;
+}
+
+.notification {
+    background: rgba(76, 175, 80, 0.95);
+    border: 1px solid rgba(76, 175, 80, 0.8);
+    color: white;
+    border-radius: var(--border-radius-base);
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    pointer-events: all;
+}
+
+.notification-success {
+    background: rgba(76, 175, 80, 0.95);
+    border-color: rgba(76, 175, 80, 0.8);
+}
+
+.notification-error {
+    background: rgba(244, 67, 54, 0.95);
+    border-color: rgba(244, 67, 54, 0.8);
+}
+
+.notification-show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification-hide {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    gap: 15px;
+}
+
+.notification .notification-text {
+    flex-grow: 1;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.notification .notification-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.notification .notification-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
 
 /* --- СТИЛИ ДЛЯ ЛИЧНОГО КАБИНЕТА (PROFILE) --- */
 .profile-container { max-width: 850px; margin: 40px auto; padding: var(--spacing-lg); }

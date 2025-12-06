@@ -1,0 +1,145 @@
+/Users/smvpt/Documents/GitHub/SmartFlow-AI/backend/config.py:15: UserWarning: ⚠️ OPENAI_API_KEY not set! Set it in environment variables on production server.
+  warnings.warn(
+/Users/smvpt/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/smvpt/Documents/GitHub/SmartFlow-AI/backend/main.py:44: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("startup")
+INFO:     Started server process [27615]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:55829 - "GET /api/email/config HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Тест API
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Тестовое сообщение через API...
+INFO:     127.0.0.1:55835 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55859 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55903 - "OPTIONS /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1051
+Время: 06.12.2025, 08:22:41
+
+Сообщение...
+INFO:     127.0.0.1:55903 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1051
+Время: 06.12.2025, 08:22:52
+
+Сообщение...
+INFO:     127.0.0.1:55909 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1051
+Время: 06.12.2025, 08:24:12
+
+Сообщение...
+INFO:     127.0.0.1:55984 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1051
+Время: 06.12.2025, 08:24:40
+
+Сообщение...
+INFO:     127.0.0.1:55994 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1051
+Время: 06.12.2025, 08:26:43
+
+Сообщение...
+INFO:     127.0.0.1:56057 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1051
+Время: 06.12.2025, 08:27:01
+
+Сообщение...
+INFO:     127.0.0.1:56063 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1051
+Время: 06.12.2025, 08:27:04
+
+Сообщение...
+INFO:     127.0.0.1:56063 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1051
+Время: 06.12.2025, 08:27:06
+
+Сообщение...
+INFO:     127.0.0.1:56063 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1051
+Время: 06.12.2025, 08:27:07
+
+Сообщение...
+INFO:     127.0.0.1:56063 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1051
+Время: 06.12.2025, 08:27:08
+
+Сообщение...
+INFO:     127.0.0.1:56063 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "OPTIONS /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1051
+INFO:__main__:  Ticket ID: 1051
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1051
+Время: 06.12.2025, 08:33:49
+
+Сообщение...
+INFO:     127.0.0.1:56209 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:__main__:📧 Email отправлен:
+INFO:__main__:  To: support@company.com
+INFO:__main__:  Subject: Новое обращение от Пользователь - Тикет #1050
+INFO:__main__:  Ticket ID: 1050
+INFO:__main__:  Body: Обращение от: Пользователь (unknown@example.com)
+Тикет: #1050
+Время: 06.12.2025, 08:33:58
+
+Сообщение...
+INFO:     127.0.0.1:56214 - "POST /api/email/send HTTP/1.1" 200 OK

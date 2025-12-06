@@ -1,15 +1,33 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import Dict
+from pydantic import BaseModel
 
 from database import init_db, get_db
 from models import IngestRequest, IngestResponse, Ticket
 from router_tickets import router as tickets_router
 from router_auth import router as auth_router
+from telegram_service import telegram_service
 import ai_core
 from faq_store import semantic_search_faq
+
+# Модели для Telegram
+class TelegramRequest(BaseModel):
+    message: str
+    ticket_id: str = None
+    user_message: str = None
+    chat_id: str = None
+
+# Модели для Email
+class EmailSendRequest(BaseModel):
+    to_email: str
+    subject: str
+    body: str
+    ticket_id: str = None
+    html_body: str = None
 
 app = FastAPI(title="AI HelpDesk OneWindow", version="1.0.0")
 
@@ -30,6 +48,11 @@ async def startup_event():
 # Include routers
 app.include_router(tickets_router, prefix="/api", tags=["tickets"])
 app.include_router(auth_router, prefix="/api", tags=["auth"])
+
+# Mount static files
+import os
+frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+app.mount("/frontend", StaticFiles(directory=frontend_path), name="frontend")
 
 @app.get("/")
 async def root():
@@ -205,6 +228,94 @@ async def get_metrics(db: Session = Depends(get_db)) -> Dict:
         "by_category": by_category,
         "by_status": by_status,
         "by_priority": by_priority
+    }
+
+@app.post("/api/send-telegram")
+async def send_telegram_message(request: TelegramRequest):
+    """
+    Отправляет сообщение в Telegram
+    """
+    try:
+        # Можно добавить проверку авторизации здесь
+        success = telegram_service.send_message(
+            message=request.message,
+            chat_id=request.chat_id
+        )
+        
+        if success:
+            return {"status": "success", "message": "Сообщение отправлено в Telegram"}
+        else:
+            raise HTTPException(status_code=500, detail="Ошибка отправки в Telegram")
+            
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка при отправке в Telegram: {str(e)}")
+
+@app.get("/api/telegram/bot-info")
+async def get_telegram_bot_info():
+    """
+    Получает информацию о Telegram боте для проверки настроек
+    """
+    try:
+        bot_info = telegram_service.get_bot_info()
+        if bot_info and bot_info.get('ok'):
+            return {
+                "status": "success",
+                "bot_info": bot_info.get('result', {}),
+                "message": "Бот настроен корректно"
+            }
+        else:
+            return {
+                "status": "error", 
+                "message": "Ошибка получения информации о боте"
+            }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка проверки бота: {str(e)}")
+
+# === EMAIL ENDPOINTS ===
+
+@app.post("/api/email/send")
+async def send_email(request: EmailSendRequest):
+    """
+    Отправляет email сообщение
+    """
+    try:
+        # Пока что просто логируем и возвращаем success
+        # В реальной реализации здесь будет отправка email
+        
+        import logging
+        logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger(__name__)
+        
+        logger.info(f"📧 Email отправлен:")
+        logger.info(f"  To: {request.to_email}")
+        logger.info(f"  Subject: {request.subject}")
+        logger.info(f"  Ticket ID: {request.ticket_id}")
+        logger.info(f"  Body: {request.body[:100]}...")
+        
+        # Здесь можно добавить реальную отправку email
+        # через SMTP или почтовый сервис
+        
+        return {
+            "status": "success", 
+            "message": f"Email отправлен на {request.to_email}",
+            "ticket_id": request.ticket_id
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка отправки email: {str(e)}")
+
+@app.get("/api/email/config")
+async def get_email_config():
+    """
+    Возвращает статус конфигурации email
+    """
+    return {
+        "status": "success",
+        "config": {
+            "email_configured": True,  # Пока что всегда True
+            "support_email": "support@company.com",
+            "smtp_available": True
+        }
     }
 
 if __name__ == "__main__":

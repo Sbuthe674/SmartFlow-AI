@@ -103,7 +103,10 @@
                     <div class="chat-input">
                         <div class="quick-actions" id="quick-actions"></div>
                         <input type="text" placeholder="Введите ваше сообщение..." id="chat-text" data-placeholder="input_placeholder">
-                        <button class="send-btn" id="send-message-btn"><i class="fas fa-paper-plane"></i> <span data-key="btn_send">Отправить</span></button>
+                        <div class="send-buttons">
+                            <button class="send-btn" id="send-message-btn"><i class="fas fa-paper-plane"></i> <span data-key="btn_send">Отправить</span></button>
+                            <button class="email-btn" id="send-email-btn"><i class="fas fa-envelope"></i> <span data-key="btn_send_email">На Email</span></button>
+                        </div>
                     </div>
                 </main>
             </div>
@@ -147,6 +150,9 @@
             </div>
     </div>
 
+    <!-- Контейнер для уведомлений -->
+    <div id="notifications-container"></div>
+
     <script>
         // Переводы для интерфейса
         const translations = {
@@ -184,6 +190,7 @@
                 welcome_message: 'Добро пожаловать! Я готов помочь вам с тикетом #1051.',
                 input_placeholder: 'Введите ваше сообщение...',
                 btn_send: 'Отправить',
+                btn_send_email: 'На Email компании',
                 
                 // Быстрые ответы
                 quick_solved: 'Спасибо, вопрос решен!',
@@ -212,7 +219,12 @@
                 profile_api_requests: 'Запросы API (45%):',
                 profile_of: 'из',
                 profile_change_password: 'Сменить Пароль',
-                profile_payment_history: 'История Платежей'
+                profile_payment_history: 'История Платежей',
+                
+                // Email уведомления
+                email_sent_success: '✅ Сообщение отправлено на email компании. Ожидайте ответ на почте.',
+                email_response_time: 'Обычно отвечаем в течение 24 часов',
+                email_error: '❌ Ошибка отправки на email. Сообщение сохранено локально.'
             },
             kz: {
                 // Общие
@@ -248,6 +260,7 @@
                 welcome_message: 'Қош келдіңіз! Мен сізге #1051 тикетімен көмектесуге дайынмын.',
                 input_placeholder: 'Хабарламаңызды енгізіңіз...',
                 btn_send: 'Жіберу',
+                btn_send_email: 'Email-ға',
                 
                 // Быстрые ответы
                 quick_solved: 'Рахмет, мәселе шешілді!',
@@ -276,7 +289,12 @@
                 profile_api_requests: 'API сұрауları (45%):',
                 profile_of: 'дан',
                 profile_change_password: 'Құпия сөзді өзгерту',
-                profile_payment_history: 'Төлем тарихы'
+                profile_payment_history: 'Төлем тарихы',
+                
+                // Email хабарландырулар
+                email_sent_success: '✅ Хабарлама компанияның email-іне жіберілді. Почтада жауапты күтіңіз.',
+                email_response_time: 'Әдетте 24 сағат ішінде жауап береміз',
+                email_error: '❌ Email жіберу қатесі. Хабарлама жергілікті түрде сақталды.'
             },
             en: {
                 // Общие
@@ -312,6 +330,7 @@
                 welcome_message: 'Welcome! I am ready to help you with ticket #1051.',
                 input_placeholder: 'Enter your message...',
                 btn_send: 'Send',
+                btn_send_email: 'To Email',
                 
                 // Быстрые ответы
                 quick_solved: 'Thank you, issue resolved!',
@@ -340,7 +359,12 @@
                 profile_api_requests: 'API Requests (45%):',
                 profile_of: 'of',
                 profile_change_password: 'Change Password',
-                profile_payment_history: 'Payment History'
+                profile_payment_history: 'Payment History',
+                
+                // Email notifications
+                email_sent_success: '✅ Message sent to company email. Please wait for reply in your mailbox.',
+                email_response_time: 'We usually respond within 24 hours',
+                email_error: '❌ Email sending error. Message saved locally.'
             }
         };
 
@@ -629,6 +653,11 @@
             });
             
             sendButton.addEventListener('click', () => sendMessage(false));
+            
+            // Обработчик для кнопки отправки на email
+            const emailButton = document.getElementById('send-email-btn');
+            emailButton.addEventListener('click', () => sendToEmail());
+            
             chatInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter' && !sendButton.disabled) {
                     sendMessage(false);
@@ -668,6 +697,161 @@
                     }, 1000);
                 }
                 chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            async function sendToEmail() {
+                const text = chatInput.value.trim();
+                if (text === '') {
+                    showNotification('Введите сообщение для отправки', 'error');
+                    return;
+                }
+
+                const langData = window.currentTranslations || translations['ru'];
+                const emailButton = document.getElementById('send-email-btn');
+                
+                // Блокируем кнопку во время отправки
+                emailButton.disabled = true;
+                emailButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+                
+                try {
+                    // Добавляем сообщение пользователя в чат
+                    const now = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                    const userMessageHTML = `
+                        <div class="message user-message">
+                            <div class="message-sender"><i class="fas fa-user-edit"></i> ${langData.you || 'Вы'}</div>
+                            <div class="message-bubble">${text}</div>
+                            <div class="message-time">${now}</div>
+                        </div>
+                    `;
+                    chatContainer.insertAdjacentHTML('beforeend', userMessageHTML);
+                    chatInput.value = '';
+                    
+                    // Получаем данные пользователя
+                    const userData = localStorage.getItem('user');
+                    let userEmail = 'unknown@example.com';
+                    let userName = 'Пользователь';
+                    
+                    if (userData) {
+                        const user = JSON.parse(userData);
+                        userEmail = user.email || userEmail;
+                        userName = user.username || user.company_name || userName;
+                    }
+                    
+                    console.log('Отправляем запрос на backend...'); // Отладка
+                    
+                    // Отправляем на backend
+                    const response = await fetch('http://localhost:8000/api/email/send', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            to_email: 'support@company.com', // Email компании
+                            subject: `Новое обращение от ${userName} - Тикет #${activeTicketId}`,
+                            body: `Обращение от: ${userName} (${userEmail})
+Тикет: #${activeTicketId}
+Время: ${new Date().toLocaleString('ru-RU')}
+
+Сообщение:
+${text}
+
+---
+Отправлено через SmartFlow AI HelpDesk`,
+                            ticket_id: activeTicketId
+                        })
+                    });
+
+                    const result = await response.json();
+                    console.log('Ответ от сервера:', result); // Отладка
+                    
+                    if (response.ok && result.status === 'success') {
+                        // Показываем уведомление об успешной отправке
+                        const successMsg = langData.email_sent_success || '✅ Сообщение отправлено на email компании';
+                        const timeMsg = langData.email_response_time || 'Обычно отвечаем в течение 24 часов';
+                        showNotification(`${successMsg}<br><small>${timeMsg}</small>`, 'success');
+                        
+                        // Добавляем системное сообщение в чат
+                        const systemMessageHTML = `
+                            <div class="message ai-message">
+                                <div class="message-sender"><i class="fas fa-envelope"></i> Система</div>
+                                <div class="message-bubble">${successMsg}<br><br><small style="opacity: 0.8;"><i class="fas fa-clock"></i> ${timeMsg}</small></div>
+                                <div class="message-time">${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</div>
+                            </div>
+                        `;
+                        chatContainer.insertAdjacentHTML('beforeend', systemMessageHTML);
+                    } else {
+                        throw new Error(result.detail || 'Ошибка отправки на email');
+                    }
+                    
+                } catch (error) {
+                    console.error('Ошибка отправки на email:', error);
+                    console.error('Детали ошибки:', error.message); // Отладка
+                    const errorMsg = langData.email_error || '❌ Ошибка отправки на email. Сообщение сохранено локально.';
+                    showNotification(errorMsg, 'error');
+                    
+                    // Добавляем сообщение об ошибке в чат
+                    const errorMessageHTML = `
+                        <div class="message ai-message">
+                            <div class="message-sender"><i class="fas fa-exclamation-triangle"></i> Система</div>
+                            <div class="message-bubble">${errorMsg}</div>
+                            <div class="message-time">${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</div>
+                        </div>
+                    `;
+                    chatContainer.insertAdjacentHTML('beforeend', errorMessageHTML);
+                    
+                } finally {
+                    // Восстанавливаем кнопку
+                    emailButton.disabled = false;
+                    emailButton.innerHTML = `<i class="fas fa-envelope"></i> <span data-key="btn_send_email">${langData.btn_send_email || 'На Email'}</span>`;
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }
+            }
+
+            function showNotification(message, type = 'info') {
+                // Получаем или создаем контейнер для уведомлений
+                let notificationsContainer = document.getElementById('notifications-container');
+                if (!notificationsContainer) {
+                    notificationsContainer = document.createElement('div');
+                    notificationsContainer.id = 'notifications-container';
+                    document.body.appendChild(notificationsContainer);
+                }
+                
+                // Создаем уведомление
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                
+                // Добавляем контент с кнопкой закрытия
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <span class="notification-text">${message}</span>
+                        <button class="notification-close" onclick="this.parentElement.parentElement.remove()">✕</button>
+                    </div>
+                `;
+                
+                // Добавляем в контейнер
+                notificationsContainer.appendChild(notification);
+                
+                // Анимация появления
+                setTimeout(() => notification.classList.add('notification-show'), 100);
+                
+                // Автоматически убираем через 15 секунд
+                const autoRemove = setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.classList.add('notification-hide');
+                        setTimeout(() => {
+                            if (notification.parentNode) {
+                                notification.parentNode.removeChild(notification);
+                            }
+                        }, 300);
+                    }
+                }, 15000);
+                
+                // Отменяем авто-удаление при наведении
+                notification.addEventListener('mouseenter', () => {
+                    clearTimeout(autoRemove);
+                });
+                
+                console.log('Уведомление создано:', message, type);
             }
 
             closeButton.addEventListener('click', () => {
