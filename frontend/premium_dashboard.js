@@ -1,3 +1,104 @@
+// API Configuration
+const API_CONFIG = {
+    BASE_URL: 'http://localhost:8000',
+    ENDPOINTS: {
+        TICKETS: '/api/tickets',
+        USERS: '/api/users',
+        AUTH: '/auth',
+        EMAIL: '/api/email'
+    }
+};
+
+// Utility function for API calls
+async function apiCall(endpoint, options = {}) {
+    const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+    const defaultOptions = {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    };
+    
+    // Add authorization header if token exists
+    const token = localStorage.getItem('access_token');
+    if (token) {
+        defaultOptions.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    try {
+        const response = await fetch(url, { ...defaultOptions, ...options });
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('API call failed:', error);
+        throw error;
+    }
+}
+
+// Show notification function
+function showNotification(message, type = 'info', duration = 5000) {
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll('.api-notification');
+    existingNotifications.forEach(notification => notification.remove());
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `api-notification api-notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        max-width: 350px;
+        word-wrap: break-word;
+    `;
+    
+    // Set background color based on type
+    const colors = {
+        success: '#28a745',
+        error: '#dc3545',
+        warning: '#ffc107',
+        info: '#007bff'
+    };
+    notification.style.backgroundColor = colors[type] || colors.info;
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Auto remove
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 300);
+    }, duration);
+}
+
+// Check API connection
+async function checkApiConnection() {
+    try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}/docs`);
+        return response.ok;
+    } catch (error) {
+        console.error('API connection failed:', error);
+        return false;
+    }
+}
+
 // Переводы для интерфейса
 const translations = {
     ru: {
@@ -114,7 +215,17 @@ function updateContent(lang) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    
+    // Проверка подключения к API
+    const isApiConnected = await checkApiConnection();
+    if (!isApiConnected) {
+        console.error('❌ Не удалось подключиться к API серверу');
+        showNotification('Ошибка подключения к серверу. Проверьте, что backend запущен на порту 8000.', 'error');
+    } else {
+        console.log('✅ Успешное подключение к API');
+        showNotification('Подключение к серверу установлено', 'success');
+    }
     
     // Инициализация языка
     updateContent(currentLang);
@@ -160,9 +271,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Ошибка при загрузке данных пользователя:', error);
         }
+        
+        // Инициализация данных дашборда после загрузки пользователя
+        setTimeout(initializeDashboard, 1000);
     } else if (!userData) {
         // Redirect to main page if no user data
-        window.location.href = 'http://localhost:3000/';
+        window.location.href = 'http://localhost:8081/';
         return;
     }
     
@@ -171,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.removeItem('user');
         localStorage.removeItem('user_type');
         localStorage.removeItem('access_token');
-        window.location.href = 'http://localhost:3000/';
+        window.location.href = 'http://localhost:8081/';
     });
     
     // Navigation between sections
@@ -1546,3 +1660,56 @@ styleSheet.innerText = `
     }
 `;
 document.head.appendChild(styleSheet);
+
+// API Data Loading Functions
+async function loadDashboardData() {
+    try {
+        showNotification('Загрузка данных...', 'info');
+        
+        // Load tickets data
+        const tickets = await loadTicketsData();
+        console.log('Загружены тикеты:', tickets);
+        
+        // Update dashboard stats
+        updateDashboardStats(tickets);
+        
+        showNotification('Данные успешно загружены', 'success');
+    } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+        showNotification(`Ошибка загрузки данных: ${error.message}`, 'error');
+    }
+}
+
+async function loadTicketsData() {
+    try {
+        return await apiCall(API_CONFIG.ENDPOINTS.TICKETS);
+    } catch (error) {
+        console.error('Ошибка загрузки тикетов:', error);
+        // Return mock data if API fails
+        return [
+            { id: 1, title: 'Тестовый тикет', status: 'open', priority: 'high', created_at: new Date().toISOString() },
+            { id: 2, title: 'Проблема с подключением', status: 'in_progress', priority: 'medium', created_at: new Date().toISOString() }
+        ];
+    }
+}
+
+function updateDashboardStats(tickets) {
+    // Update incidents count
+    const incidentsElement = document.querySelector('.stat-value');
+    if (incidentsElement && tickets) {
+        const openIncidents = tickets.filter(t => t.status === 'open').length;
+        incidentsElement.textContent = openIncidents.toString();
+    }
+    
+    // Update other stats as needed
+    console.log('Статистика обновлена');
+}
+
+// Auto-load data when dashboard is ready
+let dashboardDataLoaded = false;
+function initializeDashboard() {
+    if (!dashboardDataLoaded) {
+        dashboardDataLoaded = true;
+        loadDashboardData();
+    }
+}

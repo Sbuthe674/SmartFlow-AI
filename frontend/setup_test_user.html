@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройка тестового пользователя</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+        .success { color: green; font-weight: bold; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Настройка тестового пользователя для Premium Dashboard</h1>
+    
+    <button onclick="setupTestUser()">Создать тестового пользователя</button>
+    <button onclick="clearUser()">Очистить данные пользователя</button>
+    <button onclick="checkUser()">Проверить текущего пользователя</button>
+    <button onclick="openDashboard()">Открыть Premium Dashboard</button>
+    
+    <div id="results"></div>
+
+    <script>
+        function log(message, className = 'info') {
+            const div = document.createElement('div');
+            div.className = className;
+            div.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+            document.getElementById('results').appendChild(div);
+        }
+
+        function setupTestUser() {
+            const testUser = {
+                id: 1,
+                company_name: 'Test Company',
+                email: 'test@company.com',
+                contact_person: 'Test Admin',
+                phone: '+7-123-456-7890'
+            };
+            
+            localStorage.setItem('user', JSON.stringify(testUser));
+            localStorage.setItem('user_type', 'company');
+            localStorage.setItem('access_token', 'test-token-123');
+            
+            log('✅ Тестовый пользователь создан', 'success');
+            log(`Компания: ${testUser.company_name}`, 'info');
+            log(`Email: ${testUser.email}`, 'info');
+        }
+        
+        function clearUser() {
+            localStorage.removeItem('user');
+            localStorage.removeItem('user_type');
+            localStorage.removeItem('access_token');
+            log('🗑️ Данные пользователя очищены', 'success');
+        }
+        
+        function checkUser() {
+            const user = localStorage.getItem('user');
+            const userType = localStorage.getItem('user_type');
+            const token = localStorage.getItem('access_token');
+            
+            if (user && userType) {
+                log('👤 Текущий пользователь:', 'info');
+                log(`Тип: ${userType}`, 'info');
+                log(`Данные: ${user}`, 'info');
+                log(`Токен: ${token ? 'установлен' : 'отсутствует'}`, 'info');
+            } else {
+                log('❌ Пользователь не найден', 'info');
+            }
+        }
+        
+        function openDashboard() {
+            const user = localStorage.getItem('user');
+            if (!user) {
+                log('⚠️ Сначала создайте тестового пользователя!', 'info');
+                return;
+            }
+            
+            window.open('http://localhost:8080/premium_dashboard.html', '_blank');
+            log('🚀 Открываю Premium Dashboard...', 'success');
+        }
+        
+        // Автоматическая проверка при загрузке
+        window.addEventListener('load', checkUser);
+    </script>
+</body>
+</html>

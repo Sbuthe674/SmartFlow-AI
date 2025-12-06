@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест подключения API</title>
+</head>
+<body>
+    <h1>Тест подключения к API</h1>
+    <button id="testBtn">Тестировать API</button>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('testBtn').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Тестируем подключение...';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/tickets');
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<h3>✅ Успешно!</h3><p>Получено ${data.length} тикетов</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<h3>❌ Ошибка HTTP:</h3><p>Статус: ${response.status}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<h3>❌ Ошибка подключения:</h3><p>${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

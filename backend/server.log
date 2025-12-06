@@ -126,3 +126,7 @@ INFO:__main__:  Body: Обращение от: uzbek (uzbek@gmail.com)
 Сообщение:
 ваиравира...
 INFO:     127.0.0.1:56650 - "POST /api/email/send HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [30762]
