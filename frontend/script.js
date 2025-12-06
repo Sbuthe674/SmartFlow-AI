@@ -454,6 +454,31 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.js-open-modal').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
+            
+            // Для кнопки "Войти" сначала проверяем, не авторизован ли уже пользователь
+            if (this.classList.contains('sign-in-button')) {
+                const savedUser = localStorage.getItem('user');
+                const userType = localStorage.getItem('user_type');
+                if (savedUser && userType) {
+                    try {
+                        const user = JSON.parse(savedUser);
+                        if (userType === 'client') {
+                            showClientDashboard(user);
+                            return;
+                        } else if (userType === 'company') {
+                            showCompanyDashboard(user);
+                            return;
+                        }
+                    } catch (e) {
+                        console.error('Ошибка парсинга пользователя:', e);
+                        // Если ошибка - очищаем localStorage и продолжаем показывать модальное окно входа
+                        localStorage.removeItem('user');
+                        localStorage.removeItem('user_type');
+                        localStorage.removeItem('access_token');
+                    }
+                }
+            }
+            
             const targetModalId = this.getAttribute('data-target-modal');
             
             // Если кликнули на ссылку внутри модального окна (переход со входа на регистрацию)
@@ -906,21 +931,8 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', logoutUser);
     });
 
-    // Проверка авторизации при загрузке страницы
-    const savedUser = localStorage.getItem('user');
-    const userType = localStorage.getItem('user_type');
-    if (savedUser && userType) {
-        try {
-            const user = JSON.parse(savedUser);
-            if (userType === 'client') {
-                showClientDashboard(user);
-            } else if (userType === 'company') {
-                showCompanyDashboard(user);
-            }
-        } catch (e) {
-            console.error('Ошибка парсинга пользователя:', e);
-        }
-    }
+    // Автоматическая проверка авторизации отключена - сайт всегда начинается с главной страницы
+    // Пользователь должен нажать "Войти" для перехода в личный кабинет
     
     // Инициализация текста модальных окон (поскольку они используют updateContent)
     updateContent(currentLang);
