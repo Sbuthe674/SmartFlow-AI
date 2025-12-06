@@ -118,28 +118,28 @@
                             <p class="status-open user-status"><span data-key="status_label">Статус</span>: <span data-key="status_active">Активный</span></p>
                         </div>
                         <div class="info-section">
-                            <h4>Основная информация</h4>
-                            <div class="info-item"><label>Email:</label><span id="profile-email">client@acme.com</span></div>
-                            <div class="info-item"><label>Дата Регистрации:</label><span id="profile-date">15.08.2024</span></div>
-                            <div class="info-item"><label>Тарифный План:</label><span class="plan-pro">Продвинутый (PRO)</span></div>
+                            <h4 data-key="profile_main_info">Основная информация</h4>
+                            <div class="info-item"><label data-key="profile_email_label">Email:</label><span id="profile-email">client@acme.com</span></div>
+                            <div class="info-item"><label data-key="profile_date_label">Дата Регистрации:</label><span id="profile-date">15.08.2024</span></div>
+                            <div class="info-item"><label data-key="profile_plan_label">Тарифный План:</label><span class="plan-pro" data-key="profile_plan_pro">Продвинутый (PRO)</span></div>
                             
-                            <h4 class="usage-header"><i class="fas fa-chart-bar"></i> Использование тарифа</h4>
+                            <h4 class="usage-header"><i class="fas fa-chart-bar"></i> <span data-key="profile_usage_title">Использование тарифа</span></h4>
                             
                             <div class="usage-item">
-                                <label>Токены ИИ (90%):</label>
+                                <label data-key="profile_ai_tokens">Токены ИИ (90%):</label>
                                 <div class="progress-bar-container"><div class="progress-bar red-fill" style="width: 90%;"></div></div>
-                                <span class="usage-value usage-critical">9,000 из 10,000</span>
+                                <span class="usage-value usage-critical">9,000 <span data-key="profile_of">из</span> 10,000</span>
                             </div>
                             <div class="usage-item">
-                                <label>Запросы API (45%):</label>
+                                <label data-key="profile_api_requests">Запросы API (45%):</label>
                                 <div class="progress-bar-container"><div class="progress-bar green-fill" style="width: 45%;"></div></div>
-                                <span class="usage-value">450 из 1,000</span>
+                                <span class="usage-value">450 <span data-key="profile_of">из</span> 1,000</span>
                             </div>
                         </div>
                     </div>
                     <div class="profile-actions">
-                        <button class="action-btn action-red"><i class="fas fa-key"></i> Сменить Пароль</button>
-                        <button class="action-btn action-border"><i class="fas fa-file-invoice"></i> История Платежей</button>
+                        <button class="action-btn action-red"><i class="fas fa-key"></i> <span data-key="profile_change_password">Сменить Пароль</span></button>
+                        <button class="action-btn action-border"><i class="fas fa-file-invoice"></i> <span data-key="profile_payment_history">История Платежей</span></button>
                         </div>
                 </div>
             </div>
@@ -201,7 +201,18 @@
                 status_awaiting_placeholder: 'Мы ждем вашего ответа для продолжения работы.',
                 
                 // Профиль
-                profile_settings: 'Настройки Аккаунта'
+                profile_settings: 'Настройки Аккаунта',
+                profile_main_info: 'Основная информация',
+                profile_email_label: 'Email:',
+                profile_date_label: 'Дата Регистрации:',
+                profile_plan_label: 'Тарифный План:',
+                profile_plan_pro: 'Продвинутый (PRO)',
+                profile_usage_title: 'Использование тарифа',
+                profile_ai_tokens: 'Токены ИИ (90%):',
+                profile_api_requests: 'Запросы API (45%):',
+                profile_of: 'из',
+                profile_change_password: 'Сменить Пароль',
+                profile_payment_history: 'История Платежей'
             },
             kz: {
                 // Общие
@@ -254,7 +265,18 @@
                 status_awaiting_placeholder: 'Біз сіздің жауабыңызды жұмысты жалғастыру үшін күтеміз.',
                 
                 // Профиль
-                profile_settings: 'Аккаунт баптаулары'
+                profile_settings: 'Аккаунт баптаулары',
+                profile_main_info: 'Негізгі ақпарат',
+                profile_email_label: 'Email:',
+                profile_date_label: 'Тіркелу күні:',
+                profile_plan_label: 'Тариф жоспары:',
+                profile_plan_pro: 'Жетілдірілген (PRO)',
+                profile_usage_title: 'Тариф пайдалануы',
+                profile_ai_tokens: 'ИИ токендері (90%):',
+                profile_api_requests: 'API сұрауları (45%):',
+                profile_of: 'дан',
+                profile_change_password: 'Құпия сөзді өзгерту',
+                profile_payment_history: 'Төлем тарихы'
             },
             en: {
                 // Общие
@@ -307,7 +329,18 @@
                 status_awaiting_placeholder: 'We are waiting for your response to continue.',
                 
                 // Профиль
-                profile_settings: 'Account Settings'
+                profile_settings: 'Account Settings',
+                profile_main_info: 'Main Information',
+                profile_email_label: 'Email:',
+                profile_date_label: 'Registration Date:',
+                profile_plan_label: 'Plan:',
+                profile_plan_pro: 'Advanced (PRO)',
+                profile_usage_title: 'Plan Usage',
+                profile_ai_tokens: 'AI Tokens (90%):',
+                profile_api_requests: 'API Requests (45%):',
+                profile_of: 'of',
+                profile_change_password: 'Change Password',
+                profile_payment_history: 'Payment History'
             }
         };
 
