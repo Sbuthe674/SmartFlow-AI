@@ -462,6 +462,33 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     });
     
+    // Initialize default active section (overview)
+    function initializeActiveSection() {
+        // Hide all sections first
+        document.querySelectorAll('.section-content').forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show overview section by default
+        const overviewSection = document.getElementById('overview');
+        if (overviewSection) {
+            overviewSection.style.display = 'block';
+        }
+        
+        // Make sure overview menu item is active
+        document.querySelectorAll('.menu-item').forEach(menuItem => {
+            menuItem.classList.remove('active');
+        });
+        
+        const overviewMenuItem = document.querySelector('[data-section="overview"]');
+        if (overviewMenuItem) {
+            overviewMenuItem.classList.add('active');
+        }
+    }
+    
+    // Call initialization
+    initializeActiveSection();
+    
     // 1. ГЕНЕРАТОР ИНЦИДЕНТОВ (LIVE FEED)
     const logFeed = document.getElementById('log-feed');
     
@@ -3036,8 +3063,8 @@ function updateSLAChart() {
     
     bars.forEach(bar => {
         const newHeight = Math.random() * 80 + 20; // 20-100%
-        const color = newHeight > 80 ? 'var(--success-color)' : 
-                     newHeight > 60 ? 'var(--warning-color)' : 'var(--error-color)';
+        const color = newHeight > 80 ? 'var(--accent-green)' : 
+                     newHeight > 60 ? 'var(--accent-orange)' : 'var(--accent-red)';
         
         bar.style.height = `${newHeight}%`;
         bar.style.background = color;
